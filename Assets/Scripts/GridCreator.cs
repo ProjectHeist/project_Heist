@@ -5,9 +5,9 @@ using UnityEngine;
 public class GridCreator : MonoBehaviour
 {
     // Start is called before the first frame update
-    private int width = 10;
-    private int height = 10;
-    private float gridSpaceSize = 5f;
+    private int width = 25;
+    private int height = 25;
+    private float gridSpaceSize = 1f;
     [SerializeField] private GameObject gridCellPrefab;
     private GameObject[,] tile;
     void Start()
