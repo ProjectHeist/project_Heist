@@ -33,6 +33,8 @@ public class GridMapManager : MonoBehaviour
     {
         tile = new GameObject[width, height];
         pathfinder.spots = new Vector3Int[width, height];
+        pathfinder.width = width;
+        pathfinder.height = height;
 
         for (int x = 0; x < width; x++)
         {
@@ -41,18 +43,16 @@ public class GridMapManager : MonoBehaviour
                 if (true)
                 {
                     CreateTile(x, y);
-                    pathfinder.spots[x, y] = new Vector3Int(x, y, 0);
                 }
                 else
                 {
-                    pathfinder.spots[x, y] = new Vector3Int(x, y, 1);
                 }
             }
         }
     }
 
     //이후 실제 그리드 생성과 Spots 배정을 분리할 예정
-    /*private void CreateSpots()
+    private void CreateSpots()
     {
         pathfinder.spots = new Vector3Int[width, height];
 
@@ -70,7 +70,7 @@ public class GridMapManager : MonoBehaviour
                 }
             }
         }
-    }*/
+    }
 
     //(x,y) 위치에 격자 생성, Astar에 이용될 Spots 매핑
     private void CreateTile(int x, int y)
