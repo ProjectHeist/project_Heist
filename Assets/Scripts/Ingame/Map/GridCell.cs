@@ -27,7 +27,18 @@ public class GridCell : MonoBehaviour
     {
 
     }
+    public void CheckObject()
+    {
+        Vector2Int position = new Vector2Int(posX, posY);
+        Vector3 gridpos = GridMapManager.Instance.GetWorldPositionFromGridPosition(position);
+        Collider[] colliders = Physics.OverlapSphere(gridpos, 0.4f);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i].gameObject.tag == "Player")
+            {
+                objectInThisGrid = colliders[i].gameObject;
 
-
-
+            }
+        }
+    }
 }

@@ -6,20 +6,51 @@ public class GridMapManager : MonoBehaviour
 {
 
     //전체 맵의 격자 수, 격자당 크기
-    private int width = 50;
-    private int height = 50;
+    public int width = 50;
+    public int height = 50;
+    public Vector3Int[,] spots;
     private float gridSpaceSize = 1f;
+    public ScriptableObject mapData;
 
     [SerializeField] private GameObject gridCellPrefab;
+
+    // 실제 타일들의 리스트
     private GameObject[,] tile;
     private int[,] map;
 
-    private FindPath pathfinder = FindPath.Instance;
+    // FindPath instance에 맵의 상태를 저장, 플레이어 객체나 적 객체에서 이를 사용하여 최단거리 계산
+
+    private static GridMapManager instance = null;
+
+    void Awake()
+    {
+        if (null == instance)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    public static GridMapManager Instance
+    {
+        get
+        {
+            if (null == instance)
+            {
+                return null;
+            }
+            return instance;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         CreateGrid();
+        CreateSpots();
     }
 
     // Update is called once per frame
@@ -32,9 +63,7 @@ public class GridMapManager : MonoBehaviour
     private void CreateGrid()
     {
         tile = new GameObject[width, height];
-        pathfinder.spots = new Vector3Int[width, height];
-        pathfinder.width = width;
-        pathfinder.height = height;
+        spots = new Vector3Int[width, height];
 
         for (int x = 0; x < width; x++)
         {
@@ -54,7 +83,7 @@ public class GridMapManager : MonoBehaviour
     //이후 실제 그리드 생성과 Spots 배정을 분리할 예정
     private void CreateSpots()
     {
-        pathfinder.spots = new Vector3Int[width, height];
+        spots = new Vector3Int[width, height];
 
         for (int x = 0; x < width; x++)
         {
@@ -62,11 +91,11 @@ public class GridMapManager : MonoBehaviour
             {
                 if (true)
                 {
-                    pathfinder.spots[x, y] = new Vector3Int(x, y, 0);
+                    spots[x, y] = new Vector3Int(x, y, 0);
                 }
                 else
                 {
-                    pathfinder.spots[x, y] = new Vector3Int(x, y, 1);
+                    spots[x, y] = new Vector3Int(x, y, 1);
                 }
             }
         }
@@ -93,8 +122,8 @@ public class GridMapManager : MonoBehaviour
     // 격자 내 좌표를 실제 좌표로 표현
     public Vector3 GetWorldPositionFromGridPosition(Vector2Int gridPosition)
     {
-        float x = gridPosition.x * gridSpaceSize;
-        float y = gridPosition.y * gridSpaceSize;
-        return new Vector3(x, 0, y);
+        float x = gridPosition.x * gridSpaceSize + 0.5f;
+        float y = gridPosition.y * gridSpaceSize + 0.5f;
+        return new Vector3(x, 0.5f, y);
     }
 }

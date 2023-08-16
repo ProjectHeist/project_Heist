@@ -5,10 +5,6 @@ using UnityEngine;
 public class Astar
 {
     public Spot[,] Spots;
-    public List<Spot> openSet = new List<Spot>();
-    public List<Spot> closedSet = new List<Spot>();
-    public Spot End;
-    public Spot Start;
 
     public Astar(Vector3Int[,] grid, int columns, int rows)
     {
@@ -32,6 +28,8 @@ public class Astar
     }
     public List<Spot> CreatePath(Vector3Int[,] grid, Vector2Int start, Vector2Int end, int length)
     {
+        Spot End = null;
+        Spot Start = null;
         var columns = Spots.GetUpperBound(0) + 1;
         var rows = Spots.GetUpperBound(1) + 1;
         Spots = new Spot[columns, rows];
@@ -43,30 +41,94 @@ public class Astar
                 Spots[i, j] = new Spot(grid[i, j].x, grid[i, j].y, grid[i, j].z);
             }
         }
-        Start = new Spot(start.x, start.y, 0);
-        End = new Spot(end.x, end.y, 0);
+
+        for (int i = 0; i < columns; i++)
+        {
+            for (int j = 0; j < rows; j++)
+            {
+                Spots[i, j].AddNeighbours(Spots, i, j);
+                if (Spots[i, j].X == start.x && Spots[i, j].Y == start.y)
+                    Start = Spots[i, j];
+                else if (Spots[i, j].X == end.x && Spots[i, j].Y == end.y)
+                    End = Spots[i, j];
+            }
+        }
+
+        if (!IsValidPath(grid, Start, End))
+            return null;
+        List<Spot> openSet = new List<Spot>();
+        List<Spot> closedSet = new List<Spot>();
         openSet.Add(Start);
+
         while (openSet.Count > 0)
         {
             int winner = 0;
             for (int i = 0; i < openSet.Count; i++)
-            {
                 if (openSet[i].F < openSet[winner].F)
                     winner = i;
                 else if (openSet[i].F == openSet[winner].F)
-                    if ()
+                    if (openSet[i].H < openSet[winner].H)
+                        winner = i;
+
+            var current = openSet[winner];
+            if (End != null && openSet[winner] == End)
+            {
+                List<Spot> Path = new List<Spot>();
+                var temp = current;
+                Path.Add(temp);
+                while (temp.previous != null)
+                {
+                    Path.Add(temp.previous);
+                    temp = temp.previous;
+                }
+                if (length - (Path.Count - 1) < 0)
+                {
+                    Path.RemoveRange(0, (Path.Count - 1) - length);
+                }
+                return Path;
             }
-            Spot current = openSet[winner];
-            if (current == End)
-                Debug.Log("Complete");
             openSet.Remove(current);
             closedSet.Add(current);
 
-            if (current.Neighbors.Count == 0)
+            var neighbors = current.Neighbors;
+            for (int i = 0; i < neighbors.Count; i++)
             {
-                current.AddNeighbours(Spots);
+                var n = neighbors[i];
+                if (!closedSet.Contains(n) && n.Height < 1)
+                {
+                    var tempG = current.G + 1;
+                    bool newPath = false;
+                    if (openSet.Contains(n))
+                    {
+                        if (tempG < n.G)
+                        {
+                            n.G = tempG;
+                            newPath = true;
+                        }
+                    }
+                    else
+                    {
+                        n.G = tempG;
+                        newPath = true;
+                        openSet.Add(n);
+                    }
+                    if (newPath)
+                    {
+                        n.H = Heuristic(n, End);
+                        n.F = n.G + n.H;
+                        n.previous = current;
+                    }
+                }
             }
+
         }
+        return null;
+    }
+    private int Heuristic(Spot a, Spot b)
+    {
+        var dx = Mathf.Abs(a.X - b.X);
+        var dy = Mathf.Abs(a.Y - b.Y);
+        return 1 * (dx + dy);
     }
 }
 
@@ -78,6 +140,7 @@ public class Spot
     public int G;
     public int H;
     public int Height = 0;
+    public Vector2Int position;
     public List<Spot> Neighbors;
     public Spot previous = null;
     public Spot(int x, int y, int height)
@@ -88,6 +151,7 @@ public class Spot
         G = 0;
         H = 0;
         Neighbors = new List<Spot>();
+        position = new Vector2Int(x, y);
         Height = height;
     }
     public void AddNeighbours(Spot[,] grid, int x, int y)
@@ -100,7 +164,7 @@ public class Spot
         {
             Neighbors.Add(grid[x - 1, y]);
         }
-        if (y > grid.GetUpperBound(1))
+        if (y < grid.GetUpperBound(1))
         {
             Neighbors.Add(grid[x, y + 1]);
         }
