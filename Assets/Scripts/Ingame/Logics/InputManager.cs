@@ -2,62 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-enum ControlState
+public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 담당, 이를테면 공격 키를 누르고 그리드를 누를 시 해당 위치에 있는 적의 정보를 보여주고 공격
 {
-    Select,
-    PlayerMove,
-    PlayerAttack,
-    PlayerInteract
-}
-
-public class GridInputManager : MonoBehaviour //그리드에 들어가는 입력을 담당, 이를테면 공격 키를 누르고 그리드를 누를 시 해당 위치에 있는 적의 정보를 보여주고 공격
-{
-    // Start is called before the first frame update
-    [SerializeField] private GridMapManager gridMapManager;
     [SerializeField] private LayerMask gridLayer;
-    public Vector2Int clickedGridPos;
+    private Vector2Int clickedGridPos;
     private GridCell clickedGridCell;
-    private GridCell selectedGridCell;
-    public GameObject currentPlayer;
-    public PlayerMove playerMove;
-    public bool selected = false;
 
-    ControlState currentState = ControlState.Select;
+    // 플레이어 선택과 관련된 변수
+    public bool selected = false; // 플레이어가 선택되었는가? 
 
     // Update is called once per frame
     void Update()
     {
+        // 마우스 컨트롤
         if (Input.GetMouseButtonDown(0))
         {
-            Astar astar = new Astar(GridMapManager.Instance.spots, GridMapManager.Instance.width, GridMapManager.Instance.height);
             clickedGridCell = IsMouseOverAGridSpace();
             if (clickedGridCell != null)
             {
                 clickedGridPos = new Vector2Int(clickedGridCell.posX, clickedGridCell.posY); // 마우스로 클릭한 그리드의 위치
                 ShowInfo();
-                switch (currentState) // 조작 상태에 따라
+                if (!selected || PlayerController.Instance.currentState == ControlState.Selected) // 플레이어가 선택되지 않은 상태에서, 혹은 선택된 플레이어가 아무것도 하지 않는 상태에서 그리드를 클릭했을 시
                 {
-                    case ControlState.Select:
-                        Select();
-                        break;
-                    case ControlState.PlayerMove: // 해당 그리드로 플레이어가 갈지
-                        playerMove = currentPlayer.GetComponent<PlayerMove>();
-                        playerMove.SetTargetPosition(clickedGridPos);
-                        currentState = ControlState.Select;
-                        break;
-                    case ControlState.PlayerAttack: // 해당 그리드에 있는 적을 공격할지
-                        break;
-                    case ControlState.PlayerInteract: // 해당 그리드에 있는 물체와 상호작용할지
-                        break;
+                    Select(); //해당 위치에 플레이어가 있는지 찾는다 
+                }
+                if (selected) //플레이어가 있는 경우
+                {
+                    PlayerController.Instance.OnMouseClick(clickedGridPos); //해당 플레이어를 컨트롤하는 클래스를 이용해 컨트롤한다 
                 }
             }
         }
-
-        if (Input.GetKeyDown(KeyCode.W))
+        else if (Input.GetKeyDown(KeyCode.W))
         {
-            if (currentState == ControlState.Select && selected)
+            if (PlayerController.Instance.currentState == ControlState.Selected && selected) // 플레이어가 선택되었으며 아무 행동도 취하지 않았을 때
             {
-                currentState = ControlState.PlayerMove;
+                PlayerController.Instance.currentState = ControlState.PlayerMove; // 플레이어 상태를 이동 상태로 전환 (클릭 시 이동)
                 Debug.Log("State Changed to Move");
             }
         }
@@ -71,9 +50,9 @@ public class GridInputManager : MonoBehaviour //그리드에 들어가는 입력
         }
         else if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (currentState != ControlState.Select)
+            if (PlayerController.Instance.currentState != ControlState.Selected)
             {
-                currentState = ControlState.Select;
+                PlayerController.Instance.currentState = ControlState.Selected;
                 Debug.Log("State Changed to Select");
             }
         }
@@ -86,13 +65,13 @@ public class GridInputManager : MonoBehaviour //그리드에 들어가는 입력
 
     private void Select() // 플레이어를 선택하는 함수
     {
-        selectedGridCell = clickedGridCell;
         clickedGridCell.CheckObject();
         if (clickedGridCell.objectInThisGrid != null) //무언가가 있는 타일을 클릭했을 때
         {
             if (clickedGridCell.objectInThisGrid.tag == "Player") // 플레이어가 있는 타일일 때
             {
-                currentPlayer = clickedGridCell.objectInThisGrid;
+                PlayerController.Instance.currentPlayer = clickedGridCell.objectInThisGrid; // 타일 위에 있는 물체를 현재 플레이어로 삼고 
+                PlayerController.Instance.currentState = ControlState.Selected; // 플레이어의 상태를 선택됨으로 변경
                 selected = true;
                 Debug.Log("Player Selected");
             }
@@ -101,7 +80,7 @@ public class GridInputManager : MonoBehaviour //그리드에 들어가는 입력
                 selected = false;
             }
         }
-        else
+        else // 아무것도 없을 때
         {
             selected = false;
         }
