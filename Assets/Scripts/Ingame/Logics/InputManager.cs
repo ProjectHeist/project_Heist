@@ -32,7 +32,7 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
                 }
             }
         }
-        else if (Input.GetKeyDown(KeyCode.W))
+        else if (Input.GetKeyDown(KeyCode.Q))
         {
             if (PlayerController.Instance.currentState == ControlState.Selected && selected) // 플레이어가 선택되었으며 아무 행동도 취하지 않았을 때
             {
@@ -40,11 +40,11 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
                 Debug.Log("State Changed to Move");
             }
         }
-        else if (Input.GetKeyDown(KeyCode.Q))
+        else if (Input.GetKeyDown(KeyCode.E))
         {
 
         }
-        else if (Input.GetKeyDown(KeyCode.E))
+        else if (Input.GetKeyDown(KeyCode.R))
         {
 
         }

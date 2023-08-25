@@ -6,10 +6,27 @@ public class GameManager : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    DataManager _data = new DataManager();
+    private static GameManager instance = null;
+    public DataManager _data = new DataManager();
     void Awake()
     {
-        _data.init();
+        if (null == instance)
+        {
+            instance = this;
+        }
+        init();
+    }
+
+    public static GameManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                return null;
+            }
+            return instance;
+        }
     }
 
     // Update is called once per frame
@@ -18,8 +35,8 @@ public class GameManager : MonoBehaviour
 
     }
 
-    static void init()
+    void init()
     {
-
+        _data.init();
     }
 }

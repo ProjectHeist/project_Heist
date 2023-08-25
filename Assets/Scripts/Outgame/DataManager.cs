@@ -8,7 +8,7 @@ public class DataManager
     public MapData testData;
     public void init()
     {
-
+        LoadData();
     }
 
     public void LoadMap()
@@ -21,7 +21,10 @@ public class DataManager
     }
     public void LoadData()
     {
-
+        var loadedJson = Resources.Load<TextAsset>("Data/Map/TestMap1");
+        testData = JsonUtility.FromJson<MapData>(loadedJson.text);
+        Debug.Log(testData.inwalkable);
+        Debug.Log(testData.height);
     }
 }
 
@@ -36,9 +39,17 @@ public class CharacterData
     public int attackRange;
 }
 
+[System.Serializable]
 public class MapData
 {
     public int width;
     public int height;
-    public int[][] inwalkable;
+    public GridVector[] inwalkable;
+}
+
+[System.Serializable]
+public class GridVector
+{
+    public int x;
+    public int y;
 }

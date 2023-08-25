@@ -10,6 +10,7 @@ public class MapCreator : MonoBehaviour
     public int width = 50;
     public int height = 50;
     private float gridSpaceSize = 1f;
+    private MapData mapdata;
 
     [SerializeField] private GameObject gridCellPrefab;
 
@@ -22,7 +23,6 @@ public class MapCreator : MonoBehaviour
     void init()
     {
         CreateGrid();
-        CreateSpots();
     }
 
     //맵 데이터를 바탕으로 맵에 격자 생성
@@ -33,33 +33,25 @@ public class MapCreator : MonoBehaviour
         MapManager.Instance.gridSpaceSize = gridSpaceSize;
         MapManager.Instance.tile = new GameObject[width, height];
         MapManager.Instance.spots = new Vector3Int[width, height];
-
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                if (true)
-                {
-                    CreateTile(x, y);
-                }
-                else
-                {
-                }
-            }
-        }
-    }
-
-    //이후 실제 그리드 생성과 Spots 배정을 분리할 예정
-    private void CreateSpots()
-    {
         MapManager.Instance.spots = new Vector3Int[width, height];
 
+        mapdata = GameManager.Instance._data.testData;
+
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                if (true)
+                bool isWalkable = true;
+                for (int i = 0; i < mapdata.inwalkable.Length; i++)
                 {
+                    if (mapdata.inwalkable[i].x == x && mapdata.inwalkable[i].y == y)
+                    {
+                        isWalkable = false;
+                    }
+                }
+                if (isWalkable)
+                {
+                    CreateTile(x, y);
                     MapManager.Instance.spots[x, y] = new Vector3Int(x, y, 0);
                 }
                 else

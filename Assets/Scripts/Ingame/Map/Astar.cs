@@ -124,6 +124,8 @@ public class Astar
         }
         return null;
     }
+
+
     private int Heuristic(Spot a, Spot b)
     {
         var dx = Mathf.Abs(a.X - b.X);
