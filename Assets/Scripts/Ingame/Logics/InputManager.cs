@@ -87,6 +87,7 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
             {
                 PlayerController.Instance.currentPlayer = clickedGridCell.objectInThisGrid; // 타일 위에 있는 물체를 현재 플레이어로 삼고 
                 PlayerController.Instance.currentState = ControlState.Selected; // 플레이어의 상태를 선택됨으로 변경
+                GameManager.Instance._ui.DeleteRange(); // 기존 선택된 상태를 해제하고
                 ShowSelectedPlayer();
                 selected = true;
                 Debug.Log("Player Selected");

@@ -73,6 +73,7 @@ public class PlayerMove : MonoBehaviour
         path = null;
         currentPos = MapManager.Instance.GetGridPositionFromWorld(transform.position);
         GameManager.Instance._ui.DeleteRange();
+        GameManager.Instance._ui.SelectedState(currentPos);
     }
 
 }
