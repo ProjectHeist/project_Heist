@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 
     private static GameManager instance = null;
     public DataManager _data = new DataManager();
+    public UIManager _ui = new UIManager();
     void Awake()
     {
         if (null == instance)

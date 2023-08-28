@@ -28,10 +28,13 @@ public class PlayerMove : MonoBehaviour
 
     public void SetTargetPosition(Vector2Int targetPosition)
     {
-        currentPathIndex = 0;
-        Astar astar = new Astar(MapManager.Instance.spots, MapManager.Instance.width, MapManager.Instance.height);
-        path = astar.CreatePath(MapManager.Instance.spots, currentPos, targetPosition, 1000);
-        path.Reverse();
+        if (currentPos != targetPosition)
+        {
+            currentPathIndex = 0;
+            Astar astar = new Astar(MapManager.Instance.spots, MapManager.Instance.width, MapManager.Instance.height);
+            path = astar.CreatePath(MapManager.Instance.spots, currentPos, targetPosition, 1000);
+            path.Reverse();
+        }
     }
 
     public void MoveToDest()
@@ -69,6 +72,7 @@ public class PlayerMove : MonoBehaviour
     {
         path = null;
         currentPos = MapManager.Instance.GetGridPositionFromWorld(transform.position);
+        GameManager.Instance._ui.DeleteRange();
     }
 
 }

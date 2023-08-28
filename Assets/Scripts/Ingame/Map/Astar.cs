@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
+using UnityEditor;
 using UnityEngine;
 
 public class Astar
@@ -141,6 +143,7 @@ public class Spot
     public int F;
     public int G;
     public int H;
+    public int dist;
     public int Height = 0;
     public Vector2Int position;
     public List<Spot> Neighbors;
@@ -152,6 +155,7 @@ public class Spot
         F = 0;
         G = 0;
         H = 0;
+        dist = 0;
         Neighbors = new List<Spot>();
         position = new Vector2Int(x, y);
         Height = height;
