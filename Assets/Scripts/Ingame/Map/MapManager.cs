@@ -64,6 +64,11 @@ public class MapManager : MonoBehaviour
         return new Vector3(x, 0.5f, y);
     }
 
+    public GameObject GetGridCellFromPosition(Vector2Int gridPosition)
+    {
+        return tile[gridPosition.x, gridPosition.y];
+    }
+
     public void GridIsWalkable(int x, int y, bool isWalkable)
     {
         if (isWalkable)

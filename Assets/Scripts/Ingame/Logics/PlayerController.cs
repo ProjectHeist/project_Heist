@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public enum ControlState
 {
-    Selected,
+    Default,
     PlayerMove,
     PlayerAttack,
     PlayerInteract
@@ -51,17 +52,34 @@ public class PlayerController : MonoBehaviour
         Astar astar = new Astar(MapManager.Instance.spots, MapManager.Instance.width, MapManager.Instance.height);
         switch (currentState) // 조작 상태에 따라
         {
-            case ControlState.Selected:
+            case ControlState.Default:
                 break;
             case ControlState.PlayerMove: // 해당 그리드로 플레이어가 갈지
                 playerMove = currentPlayer.GetComponent<PlayerMove>();
                 playerMove.SetTargetPosition(GridPos);
-                currentState = ControlState.Selected;
+                currentState = ControlState.Default;
                 break;
             case ControlState.PlayerAttack: // 해당 그리드에 있는 적을 공격할지
+                Vector2Int playerPos = MapManager.Instance.GetGridPositionFromWorld(currentPlayer.transform.position);
+                int dist = Math.Abs(GridPos.x - playerPos.x) + Math.Abs(GridPos.y - playerPos.y);
+
+                GridCell gridcell = MapManager.Instance.GetGridCellFromPosition(GridPos).GetComponent<GridCell>();
+                gridcell.CheckEnemy();
+                GameObject enemy = gridcell.enemyInThisGrid;
+
+                decideAttack(enemy, dist);
                 break;
             case ControlState.PlayerInteract: // 해당 그리드에 있는 물체와 상호작용할지
                 break;
+        }
+    }
+
+    public void decideAttack(GameObject enemy, int dist)
+    {
+        if (enemy != null)
+        {
+            PlayerAttack playerAttack = currentPlayer.GetComponent<PlayerAttack>();
+            playerAttack.AttackTarget(enemy, dist);
         }
     }
 

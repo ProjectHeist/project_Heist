@@ -10,11 +10,11 @@ public class UIManager
         MapManager.Instance.tile[position.x, position.y].GetComponentInChildren<Renderer>().material.color = new Color(100, 0, 0);
     }
 
-    public void DisplayMoveRange(List<Vector2Int> range)
+    public void DisplayRange(List<Vector2Int> range, Color color)
     {
         for (int i = 0; i < range.Count; i++)
         {
-            MapManager.Instance.tile[range[i].x, range[i].y].GetComponentInChildren<Renderer>().material.color = new Color(0, 0, 100);
+            MapManager.Instance.tile[range[i].x, range[i].y].GetComponentInChildren<Renderer>().material.color = color;
         }
     }
 
