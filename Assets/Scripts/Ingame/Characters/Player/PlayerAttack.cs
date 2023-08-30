@@ -34,6 +34,7 @@ public class PlayerAttack : MonoBehaviour
         if (rand <= finalaccuracy)
         {
             Debug.Log("Attack Hit");
+            target.GetComponent<EnemyState>().OnEnemyHit(playerState.damage);
         }
         else
         {

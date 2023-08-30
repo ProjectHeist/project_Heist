@@ -15,7 +15,6 @@ public class PlayerMove : MonoBehaviour
 
     void Start()
     {
-        currentPos = MapManager.Instance.GetGridPositionFromWorld(gameObject.transform.position);
         playerState = gameObject.GetComponent<PlayerState>();
         Debug.Log(currentPos);
     }
@@ -28,6 +27,7 @@ public class PlayerMove : MonoBehaviour
 
     public void SetTargetPosition(Vector2Int targetPosition)
     {
+        currentPos = MapManager.Instance.GetGridPositionFromWorld(gameObject.transform.position);
         if (currentPos != targetPosition)
         {
             currentPathIndex = 0;

@@ -94,7 +94,8 @@ GameObject:
   - component: {fileID: 9148712873458090973}
   - component: {fileID: 9148712873458090974}
   - component: {fileID: 9148712873458090787}
-  - component: {fileID: 9148712873458090972}
+  - component: {fileID: 2965208389006938765}
+  - component: {fileID: 3279100291990693272}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -144,9 +145,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destination: {x: 0, y: 0}
-  playerState: {fileID: 9148712873458090972}
+  playerState: {fileID: 0}
   moveSpeed: 5
---- !u!114 &9148712873458090972
+--- !u!114 &2965208389006938765
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -155,13 +156,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 9148712873458090975}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b90cc04fad04fc44ab7e6b1e6e1839cb, type: 3}
+  m_Script: {fileID: 11500000, guid: ea16e9984a52ba54fa8c4ab58efe11f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 100
-  moveRange: 10
-  critRate: 20
-  accuracy: 80
-  hide: 3
-  damage: 40
-  attackRange: 8
+--- !u!114 &3279100291990693272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9148712873458090975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c7855bae696b144eba6acd4042a557a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HP: 0
+  moveRange: 0
+  critRate: 0
+  accuracy: 0
+  damage: 0
+  maxAttackRange: 0
+  minAttackRange: 0
+  canAttack: 0
+  canMove: 0
