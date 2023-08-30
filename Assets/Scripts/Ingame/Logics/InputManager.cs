@@ -21,7 +21,6 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
             if (clickedGridCell != null)
             {
                 clickedGridPos = new Vector2Int(clickedGridCell.posX, clickedGridCell.posY); // 마우스로 클릭한 그리드의 위치
-                ShowInfo();
                 if (!selected || PlayerController.Instance.currentState == ControlState.Default) // 플레이어가 선택되지 않은 상태에서, 혹은 선택된 플레이어가 아무것도 하지 않는 상태에서 그리드를 클릭했을 시
                 {
                     Select(); //해당 위치에 플레이어가 있는지 찾는다 
@@ -91,24 +90,22 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
 
     private void Select() // 플레이어를 선택하는 함수
     {
+        clickedGridCell.CheckPlayer();
         clickedGridCell.CheckEnemy();
         if (clickedGridCell.playerInThisGrid != null) //무언가가 있는 타일을 클릭했을 때
         {
-            if (clickedGridCell.playerInThisGrid.tag == "Player") // 플레이어가 있는 타일일 때
-            {
                 PlayerController.Instance.currentPlayer = clickedGridCell.playerInThisGrid; // 타일 위에 있는 물체를 현재 플레이어로 삼고 
                 PlayerController.Instance.currentState = ControlState.Default; // 플레이어의 상태를 선택됨으로 변경
                 GameManager.Instance._ui.DeleteRange(); // 기존 선택된 상태를 해제하고
                 ShowSelectedPlayer();
                 selected = true;
                 Debug.Log("Player Selected");
-            }
-            else //적이나 물체가 있는 타일일 때
-            {
-                selected = false;
-                Vector2Int currentpos = MapManager.Instance.GetGridPositionFromWorld(PlayerController.Instance.currentPlayer.transform.position);
-                GameManager.Instance._ui.DeleteRange();
-            }
+        }
+        else if(clickedGridCell.enemyInThisGrid!=null){
+            ShowInfo();
+        }
+        else if(clickedGridCell.objectInThisGrid!=null){
+            ShowInfo();
         }
         else // 아무것도 없을 때
         {

@@ -80,6 +80,8 @@ public class PlayerController : MonoBehaviour
         {
             PlayerAttack playerAttack = currentPlayer.GetComponent<PlayerAttack>();
             playerAttack.AttackTarget(enemy, dist);
+            currentState=ControlState.Default;
+            GameManager.Instance._ui.DeleteRange();
         }
     }
 
