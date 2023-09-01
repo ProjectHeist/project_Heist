@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapManager : MonoBehaviour
+public class MapManager
 {
     public int width;
     public int height;
@@ -15,36 +15,6 @@ public class MapManager : MonoBehaviour
     // Start is called before the first frame update
     private static MapManager instance = null;
 
-    void Awake()
-    {
-        if (null == instance)
-        {
-            instance = this;
-        }
-    }
-
-    public static MapManager Instance
-    {
-        get
-        {
-            if (null == instance)
-            {
-                return null;
-            }
-            return instance;
-        }
-    }
-
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     // 실제 좌표를 격자 내 좌표로 표현
     public Vector2Int GetGridPositionFromWorld(Vector3 worldPosition)

@@ -27,12 +27,12 @@ public class PlayerMove : MonoBehaviour
 
     public void SetTargetPosition(Vector2Int targetPosition)
     {
-        currentPos = MapManager.Instance.GetGridPositionFromWorld(gameObject.transform.position);
+        currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
         if (currentPos != targetPosition)
         {
             currentPathIndex = 0;
-            Astar astar = new Astar(MapManager.Instance.spots, MapManager.Instance.width, MapManager.Instance.height);
-            path = astar.CreatePath(MapManager.Instance.spots, currentPos, targetPosition, 1000);
+            Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
+            path = astar.CreatePath(IngameManager.Instance.mapManager.spots, currentPos, targetPosition, 1000);
             path.Reverse();
         }
     }
@@ -44,7 +44,7 @@ public class PlayerMove : MonoBehaviour
             if (path.Count <= playerState.moveRange)
             {
                 Vector2Int target = path[currentPathIndex].position;
-                Vector3 targetPosition = MapManager.Instance.GetWorldPositionFromGridPosition(target);
+                Vector3 targetPosition = IngameManager.Instance.mapManager.GetWorldPositionFromGridPosition(target);
                 if (Vector3.Distance(transform.position, targetPosition) > 0.1f)
                 {
                     Vector3 moveDir = (targetPosition - transform.position).normalized;
@@ -71,7 +71,7 @@ public class PlayerMove : MonoBehaviour
     public void StopMoving()
     {
         path = null;
-        currentPos = MapManager.Instance.GetGridPositionFromWorld(transform.position);
+        currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(transform.position);
         GameManager.Instance._ui.DeleteRange();
         GameManager.Instance._ui.SelectedState(currentPos);
     }

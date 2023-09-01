@@ -38,8 +38,8 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
                 GameObject player = PlayerController.Instance.currentPlayer; // 플레이어 가져오기
                 CharacterState state = player.GetComponent<PlayerState>(); // 플레이어 스탯 가져오기
 
-                GetRange getRange = new GetRange(MapManager.Instance.spots, MapManager.Instance.width, MapManager.Instance.height); // 범위 구하기 
-                List<Vector2Int> moveRange = getRange.getWalkableSpots(MapManager.Instance.GetGridPositionFromWorld(player.transform.position), state.moveRange - 1); // 이동 범위 담는 리스트 
+                GetRange getRange = new GetRange(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height); // 범위 구하기 
+                List<Vector2Int> moveRange = getRange.getWalkableSpots(IngameManager.Instance.mapManager.GetGridPositionFromWorld(player.transform.position), state.moveRange - 1); // 이동 범위 담는 리스트 
                 GameManager.Instance._ui.DisplayRange(moveRange, Color.blue); // 플레이어의 이동 가능한 위치를 표현
                 PlayerController.Instance.currentState = ControlState.PlayerMove; // 플레이어 상태를 이동 상태로 전환 (클릭 시 이동)
                 Debug.Log("State Changed to Move");
@@ -54,9 +54,9 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
                 Color maxRange = new Color(0, 256, 0);
                 Color minRange = new Color(100, 256, 100);
 
-                GetRange getRange = new GetRange(MapManager.Instance.spots, MapManager.Instance.width, MapManager.Instance.height); // 범위 구하기 
-                List<Vector2Int> maxAttackRange = getRange.getWalkableSpots(MapManager.Instance.GetGridPositionFromWorld(player.transform.position), state.maxAttackRange - 1); // 최대 공격 범위 담는 리스트 
-                List<Vector2Int> minAttackRange = getRange.getWalkableSpots(MapManager.Instance.GetGridPositionFromWorld(player.transform.position), state.minAttackRange - 1); // 최소 공격 범위 담는 리스트 
+                GetRange getRange = new GetRange(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height); // 범위 구하기 
+                List<Vector2Int> maxAttackRange = getRange.getWalkableSpots(IngameManager.Instance.mapManager.GetGridPositionFromWorld(player.transform.position), state.maxAttackRange - 1); // 최대 공격 범위 담는 리스트 
+                List<Vector2Int> minAttackRange = getRange.getWalkableSpots(IngameManager.Instance.mapManager.GetGridPositionFromWorld(player.transform.position), state.minAttackRange - 1); // 최소 공격 범위 담는 리스트 
                 GameManager.Instance._ui.DisplayRange(maxAttackRange, maxRange); // 플레이어의 최대 사거리를 표현
                 GameManager.Instance._ui.DisplayRange(minAttackRange, minRange); // 플레이어의 필중 사거리를 표현
                 PlayerController.Instance.currentState = ControlState.PlayerAttack; // 플레이어 상태를 공격 상태로 전환 (클릭 시 공격)
@@ -67,7 +67,7 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
         {
             if (PlayerController.Instance.currentState == ControlState.Default && selected)
             {
-
+                PlayerController.Instance.currentState = ControlState.PlayerInteract; // 플레이어 상태를 상호작용 상태로 전환 (클릭 시 상호작용)
             }
         }
         else if (Input.GetKeyDown(KeyCode.Escape))
@@ -118,7 +118,7 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
 
     private void ShowSelectedPlayer()
     {
-        Vector2Int currentpos = MapManager.Instance.GetGridPositionFromWorld(PlayerController.Instance.currentPlayer.transform.position);
+        Vector2Int currentpos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(PlayerController.Instance.currentPlayer.transform.position);
         GameManager.Instance._ui.SelectedState(currentpos);
     }
 

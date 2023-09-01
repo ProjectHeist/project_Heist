@@ -19,20 +19,11 @@ public class GridCell : MonoBehaviour
         posX = x;
         posY = y;
     }
-    void Start()
-    {
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     public void CheckPlayer()
     {
         Vector2Int position = new Vector2Int(posX, posY);
-        Vector3 gridpos = MapManager.Instance.GetWorldPositionFromGridPosition(position);
+        Vector3 gridpos = IngameManager.Instance.mapManager.GetWorldPositionFromGridPosition(position);
         Collider[] colliders = Physics.OverlapSphere(gridpos, 0.4f);
         for (int i = 0; i < colliders.Length; i++)
         {
@@ -45,13 +36,26 @@ public class GridCell : MonoBehaviour
     public void CheckEnemy()
     {
         Vector2Int position = new Vector2Int(posX, posY);
-        Vector3 gridpos = MapManager.Instance.GetWorldPositionFromGridPosition(position);
+        Vector3 gridpos = IngameManager.Instance.mapManager.GetWorldPositionFromGridPosition(position);
         Collider[] colliders = Physics.OverlapSphere(gridpos, 0.4f);
         for (int i = 0; i < colliders.Length; i++)
         {
             if (colliders[i].gameObject.tag == "Enemy")
             {
                 enemyInThisGrid = colliders[i].gameObject;
+            }
+        }
+    }
+    public void CheckObject()
+    {
+        Vector2Int position = new Vector2Int(posX, posY);
+        Vector3 gridpos = IngameManager.Instance.mapManager.GetWorldPositionFromGridPosition(position);
+        Collider[] colliders = Physics.OverlapSphere(gridpos, 0.4f);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i].gameObject.tag == "Object")
+            {
+                objectInThisGrid = colliders[i].gameObject;
             }
         }
     }

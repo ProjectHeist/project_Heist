@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     public void OnMouseClick(Vector2Int GridPos)
     {
-        Astar astar = new Astar(MapManager.Instance.spots, MapManager.Instance.width, MapManager.Instance.height);
+        Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
         switch (currentState) // 조작 상태에 따라
         {
             case ControlState.Default:
@@ -60,16 +60,18 @@ public class PlayerController : MonoBehaviour
                 currentState = ControlState.Default;
                 break;
             case ControlState.PlayerAttack: // 해당 그리드에 있는 적을 공격할지
-                Vector2Int playerPos = MapManager.Instance.GetGridPositionFromWorld(currentPlayer.transform.position);
+                Vector2Int playerPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(currentPlayer.transform.position);
                 int dist = Math.Abs(GridPos.x - playerPos.x) + Math.Abs(GridPos.y - playerPos.y);
 
-                GridCell gridcell = MapManager.Instance.GetGridCellFromPosition(GridPos).GetComponent<GridCell>();
+                GridCell gridcell = IngameManager.Instance.mapManager.GetGridCellFromPosition(GridPos).GetComponent<GridCell>();
                 gridcell.CheckEnemy();
                 GameObject enemy = gridcell.enemyInThisGrid;
 
                 decideAttack(enemy, dist);
                 break;
             case ControlState.PlayerInteract: // 해당 그리드에 있는 물체와 상호작용할지
+                PlayerInteract playerInteract = currentPlayer.GetComponent<PlayerInteract>();
+                playerInteract.Interact(GridPos);
                 break;
         }
     }
@@ -80,7 +82,7 @@ public class PlayerController : MonoBehaviour
         {
             PlayerAttack playerAttack = currentPlayer.GetComponent<PlayerAttack>();
             playerAttack.AttackTarget(enemy, dist);
-            currentState=ControlState.Default;
+            currentState = ControlState.Default;
             GameManager.Instance._ui.DeleteRange();
         }
     }

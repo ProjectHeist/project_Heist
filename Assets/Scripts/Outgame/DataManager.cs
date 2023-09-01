@@ -8,12 +8,16 @@ public class DataManager
     public MapData testData;
     public void init()
     {
-        LoadData();
+        LoadMap();
+        //LoadData();
     }
 
     public void LoadMap()
     {
-
+        var loadedJson = Resources.Load<TextAsset>("Data/Map/TestMap1");
+        testData = JsonUtility.FromJson<MapData>(loadedJson.text);
+        Debug.Log(testData.inwalkable);
+        Debug.Log(testData.height);
     }
     public void SaveData()
     {
@@ -21,10 +25,8 @@ public class DataManager
     }
     public void LoadData()
     {
-        var loadedJson = Resources.Load<TextAsset>("Data/Map/TestMap1");
-        testData = JsonUtility.FromJson<MapData>(loadedJson.text);
-        Debug.Log(testData.inwalkable);
-        Debug.Log(testData.height);
+        var loadedJson = Resources.Load<TextAsset>("Data/Map/TagList");
+        string[] tagList = JsonUtility.FromJson<string[]>(loadedJson.text);
     }
 }
 

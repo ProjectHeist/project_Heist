@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
-public class DoorBehaviour : MonoBehaviour
+public class Door : MonoBehaviour
 {
-    // Start is called before the first frame update
     public bool isOpened = false;
+
     public void OnDoorInteracted()
     {
         if (isOpened)
