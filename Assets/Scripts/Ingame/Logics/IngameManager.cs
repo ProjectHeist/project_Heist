@@ -10,6 +10,7 @@ public class IngameManager : MonoBehaviour
     private static IngameManager instance = null;
     public MapCreator mapCreator;
     public MapManager mapManager = new MapManager();
+    public PlayerController playerController = new PlayerController();
 
     public static IngameManager Instance
     {

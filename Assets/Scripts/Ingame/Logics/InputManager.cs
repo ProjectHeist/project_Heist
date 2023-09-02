@@ -21,35 +21,35 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
             if (clickedGridCell != null)
             {
                 clickedGridPos = new Vector2Int(clickedGridCell.posX, clickedGridCell.posY); // 마우스로 클릭한 그리드의 위치
-                if (!selected || PlayerController.Instance.currentState == ControlState.Default) // 플레이어가 선택되지 않은 상태에서, 혹은 선택된 플레이어가 아무것도 하지 않는 상태에서 그리드를 클릭했을 시
+                if (!selected || IngameManager.Instance.playerController.currentState == ControlState.Default) // 플레이어가 선택되지 않은 상태에서, 혹은 선택된 플레이어가 아무것도 하지 않는 상태에서 그리드를 클릭했을 시
                 {
                     Select(); //해당 위치에 플레이어가 있는지 찾는다 
                 }
                 if (selected) //플레이어가 있는 경우
                 {
-                    PlayerController.Instance.OnMouseClick(clickedGridPos); //해당 플레이어를 컨트롤하는 클래스를 이용해 컨트롤한다 
+                    IngameManager.Instance.playerController.OnMouseClick(clickedGridPos); //해당 플레이어를 컨트롤하는 클래스를 이용해 컨트롤한다 
                 }
             }
         }
         else if (Input.GetKeyDown(KeyCode.Q))
         {
-            if (PlayerController.Instance.currentState == ControlState.Default && selected) // 플레이어가 선택되었으며 아무 행동도 취하지 않았을 때
+            if (IngameManager.Instance.playerController.currentState == ControlState.Default && selected) // 플레이어가 선택되었으며 아무 행동도 취하지 않았을 때
             {
-                GameObject player = PlayerController.Instance.currentPlayer; // 플레이어 가져오기
+                GameObject player = IngameManager.Instance.playerController.currentPlayer; // 플레이어 가져오기
                 CharacterState state = player.GetComponent<PlayerState>(); // 플레이어 스탯 가져오기
 
                 GetRange getRange = new GetRange(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height); // 범위 구하기 
                 List<Vector2Int> moveRange = getRange.getWalkableSpots(IngameManager.Instance.mapManager.GetGridPositionFromWorld(player.transform.position), state.moveRange - 1); // 이동 범위 담는 리스트 
                 GameManager.Instance._ui.DisplayRange(moveRange, Color.blue); // 플레이어의 이동 가능한 위치를 표현
-                PlayerController.Instance.currentState = ControlState.PlayerMove; // 플레이어 상태를 이동 상태로 전환 (클릭 시 이동)
+                IngameManager.Instance.playerController.currentState = ControlState.PlayerMove; // 플레이어 상태를 이동 상태로 전환 (클릭 시 이동)
                 Debug.Log("State Changed to Move");
             }
         }
         else if (Input.GetKeyDown(KeyCode.E))
         {
-            if (PlayerController.Instance.currentState == ControlState.Default && selected)
+            if (IngameManager.Instance.playerController.currentState == ControlState.Default && selected)
             {
-                GameObject player = PlayerController.Instance.currentPlayer;
+                GameObject player = IngameManager.Instance.playerController.currentPlayer;
                 CharacterState state = player.GetComponent<CharacterState>();
                 Color maxRange = new Color(0, 256, 0);
                 Color minRange = new Color(100, 256, 100);
@@ -59,22 +59,31 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
                 List<Vector2Int> minAttackRange = getRange.getWalkableSpots(IngameManager.Instance.mapManager.GetGridPositionFromWorld(player.transform.position), state.minAttackRange - 1); // 최소 공격 범위 담는 리스트 
                 GameManager.Instance._ui.DisplayRange(maxAttackRange, maxRange); // 플레이어의 최대 사거리를 표현
                 GameManager.Instance._ui.DisplayRange(minAttackRange, minRange); // 플레이어의 필중 사거리를 표현
-                PlayerController.Instance.currentState = ControlState.PlayerAttack; // 플레이어 상태를 공격 상태로 전환 (클릭 시 공격)
+
+                IngameManager.Instance.playerController.currentState = ControlState.PlayerAttack; // 플레이어 상태를 공격 상태로 전환 (클릭 시 공격)
                 Debug.Log("State Changed to Attack");
             }
         }
         else if (Input.GetKeyDown(KeyCode.R))
         {
-            if (PlayerController.Instance.currentState == ControlState.Default && selected)
+            if (IngameManager.Instance.playerController.currentState == ControlState.Default && selected)
             {
-                PlayerController.Instance.currentState = ControlState.PlayerInteract; // 플레이어 상태를 상호작용 상태로 전환 (클릭 시 상호작용)
+                GameObject player = IngameManager.Instance.playerController.currentPlayer;
+                Color InteractRange = Color.yellow;
+
+                GetRange getRange = new GetRange(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height); // 범위 구하기 
+                List<Vector2Int> maxInteractRange = getRange.getWalkableSpots(IngameManager.Instance.mapManager.GetGridPositionFromWorld(player.transform.position), 2); // 최대 상호작용 범위 담는 리스트 \
+                GameManager.Instance._ui.DisplayRange(maxInteractRange, InteractRange); // 플레이어의 최대 사거리를 표현
+
+                IngameManager.Instance.playerController.currentState = ControlState.PlayerInteract; // 플레이어 상태를 상호작용 상태로 전환 (클릭 시 상호작용)
+                Debug.Log("State Changed to Interact");
             }
         }
         else if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (PlayerController.Instance.currentState != ControlState.Default)
+            if (IngameManager.Instance.playerController.currentState != ControlState.Default)
             {
-                PlayerController.Instance.currentState = ControlState.Default;
+                IngameManager.Instance.playerController.currentState = ControlState.Default;
                 GameManager.Instance._ui.DeleteRange();
                 ShowSelectedPlayer();
                 Debug.Log("State Changed to Select");
@@ -94,8 +103,8 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
         clickedGridCell.CheckEnemy();
         if (clickedGridCell.playerInThisGrid != null) //무언가가 있는 타일을 클릭했을 때
         {
-            PlayerController.Instance.currentPlayer = clickedGridCell.playerInThisGrid; // 타일 위에 있는 물체를 현재 플레이어로 삼고 
-            PlayerController.Instance.currentState = ControlState.Default; // 플레이어의 상태를 선택됨으로 변경
+            IngameManager.Instance.playerController.currentPlayer = clickedGridCell.playerInThisGrid; // 타일 위에 있는 물체를 현재 플레이어로 삼고 
+            IngameManager.Instance.playerController.currentState = ControlState.Default; // 플레이어의 상태를 선택됨으로 변경
             GameManager.Instance._ui.DeleteRange(); // 기존 선택된 상태를 해제하고
             ShowSelectedPlayer();
             selected = true;
@@ -118,7 +127,7 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
 
     private void ShowSelectedPlayer()
     {
-        Vector2Int currentpos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(PlayerController.Instance.currentPlayer.transform.position);
+        Vector2Int currentpos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(IngameManager.Instance.playerController.currentPlayer.transform.position);
         GameManager.Instance._ui.SelectedState(currentpos);
     }
 

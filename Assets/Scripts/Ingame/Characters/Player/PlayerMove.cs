@@ -13,12 +13,6 @@ public class PlayerMove : MonoBehaviour
     public List<Spot> path = null;
     public float moveSpeed = 100.0f;
 
-    void Start()
-    {
-        playerState = gameObject.GetComponent<PlayerState>();
-        Debug.Log(currentPos);
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -27,6 +21,8 @@ public class PlayerMove : MonoBehaviour
 
     public void SetTargetPosition(Vector2Int targetPosition)
     {
+        playerState = gameObject.GetComponent<PlayerState>();
+
         currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
         if (currentPos != targetPosition)
         {

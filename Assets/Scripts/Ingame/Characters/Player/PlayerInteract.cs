@@ -6,15 +6,12 @@ using UnityEngine;
 public class PlayerInteract : MonoBehaviour
 {
     // Start is called before the first frame update
-    public void Interact(Vector2Int gridPos)
+    public void Interact(GameObject _object, int dist)
     {
-        GameObject selectedGrid = IngameManager.Instance.mapManager.GetGridCellFromPosition(gridPos);
-        GridCell gridCell = selectedGrid.GetComponent<GridCell>();
-        gridCell.CheckObject();
-        switch (gridCell.objectInThisGrid.tag)
+        switch (_object.tag)
         {
             case "Door":
-                gridCell.objectInThisGrid.GetComponent<Door>().OnDoorInteracted();
+                _object.GetComponent<Door>().OnDoorInteracted();
                 break;
         }
     }

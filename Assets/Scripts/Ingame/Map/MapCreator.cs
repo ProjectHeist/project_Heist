@@ -52,6 +52,7 @@ public class MapCreator : MonoBehaviour
                 }
                 else
                 {
+                    CreateTile(x, y);
                     IngameManager.Instance.mapManager.spots[x, y] = new Vector3Int(x, y, 1);
                 }
             }
@@ -59,7 +60,7 @@ public class MapCreator : MonoBehaviour
     }
 
     //(x,y) 위치에 격자 생성, Astar에 이용될 Spots 매핑
-    private void CreateTile(int x, int y)
+    public void CreateTile(int x, int y)
     {
         IngameManager.Instance.mapManager.tile[x, y] = Instantiate(gridCellPrefab, new Vector3(x * gridSpaceSize, 0, y * gridSpaceSize), Quaternion.identity);
         IngameManager.Instance.mapManager.tile[x, y].GetComponent<GridCell>().SetPosition(x, y);

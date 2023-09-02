@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PlayerState : CharacterState
 {
-    void Awake()
+    void Awake() // 이후에 제대로 GameManager의 DataManager의 함수를 통해 불러올 예정
     {
         GetPlayerInfo();
     }

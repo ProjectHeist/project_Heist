@@ -12,9 +12,6 @@ public class MapManager
     public GameObject[,] tile;
     public int[,] map;
 
-    // Start is called before the first frame update
-    private static MapManager instance = null;
-
 
     // 실제 좌표를 격자 내 좌표로 표현
     public Vector2Int GetGridPositionFromWorld(Vector3 worldPosition)

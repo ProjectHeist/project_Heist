@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
+  - Door
+  - Wall
+  - Money
+  - Computer
+  - Vent
   layers:
   - Default
   - TransparentFX

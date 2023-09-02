@@ -10,41 +10,14 @@ public enum ControlState
     PlayerAttack,
     PlayerInteract
 }
-public class PlayerController : MonoBehaviour
+public class PlayerController
 {
     // Start is called before the first frame update
-    private static PlayerController instance = null;
     public ControlState currentState;
 
     // variables
     public GameObject currentPlayer;
     private PlayerMove playerMove;
-
-    void Awake()
-    {
-        if (null == instance)
-        {
-            instance = this;
-        }
-    }
-
-    public static PlayerController Instance
-    {
-        get
-        {
-            if (null == instance)
-            {
-                return null;
-            }
-            return instance;
-        }
-    }
-
-
-    void Start()
-    {
-
-    }
 
     // Update is called once per frame
     public void OnMouseClick(Vector2Int GridPos)
@@ -70,21 +43,61 @@ public class PlayerController : MonoBehaviour
                 decideAttack(enemy, dist);
                 break;
             case ControlState.PlayerInteract: // 해당 그리드에 있는 물체와 상호작용할지
-                PlayerInteract playerInteract = currentPlayer.GetComponent<PlayerInteract>();
-                playerInteract.Interact(GridPos);
+                Vector2Int _playerPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(currentPlayer.transform.position);
+                int distance = Math.Abs(GridPos.x - _playerPos.x) + Math.Abs(GridPos.y - _playerPos.y);
+
+                GridCell _gridcell = IngameManager.Instance.mapManager.GetGridCellFromPosition(GridPos).GetComponent<GridCell>();
+                _gridcell.CheckObject();
+                GameObject _object = _gridcell.objectInThisGrid;
+
+                decideInteract(_object, distance);
                 break;
+        }
+    }
+
+    public void decideInteract(GameObject interactObject, int dist)
+    {
+        if (dist <= 2)
+        {
+            if (interactObject != null)
+            {
+                PlayerInteract playerInteract = currentPlayer.GetComponent<PlayerInteract>();
+                playerInteract.Interact(interactObject, dist);
+                currentState = ControlState.Default;
+                GameManager.Instance._ui.DeleteRange();
+            }
+            else
+            {
+                Debug.Log("Please Select object to interact");
+            }
+        }
+        else
+        {
+            Debug.Log("Out of Range");
         }
     }
 
     public void decideAttack(GameObject enemy, int dist)
     {
-        if (enemy != null)
+        if (dist <= currentPlayer.GetComponent<PlayerState>().maxAttackRange)
         {
-            PlayerAttack playerAttack = currentPlayer.GetComponent<PlayerAttack>();
-            playerAttack.AttackTarget(enemy, dist);
-            currentState = ControlState.Default;
-            GameManager.Instance._ui.DeleteRange();
+            if (enemy != null)
+            {
+                PlayerAttack playerAttack = currentPlayer.GetComponent<PlayerAttack>();
+                playerAttack.AttackTarget(enemy, dist);
+                currentState = ControlState.Default;
+                GameManager.Instance._ui.DeleteRange();
+            }
+            else
+            {
+                Debug.Log("Please Select enemy to attack");
+            }
         }
+        else
+        {
+            Debug.Log("Out of range");
+        }
+
     }
 
 
