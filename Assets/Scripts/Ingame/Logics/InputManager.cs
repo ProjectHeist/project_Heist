@@ -7,6 +7,7 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
     [SerializeField] private LayerMask gridLayer;
     private Vector2Int clickedGridPos;
     private GridCell clickedGridCell;
+    public bool AllowInput = true;
 
     // 플레이어 선택과 관련된 변수
     public bool selected = false; // 플레이어가 선택되었는가? 
@@ -17,6 +18,7 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
         // 마우스 컨트롤
         if (Input.GetMouseButtonDown(0))
         {
+            AllowInput = false;
             clickedGridCell = IsMouseOverAGridSpace();
             if (clickedGridCell != null)
             {
@@ -30,8 +32,9 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
                     IngameManager.Instance.playerController.OnMouseClick(clickedGridPos); //해당 플레이어를 컨트롤하는 클래스를 이용해 컨트롤한다 
                 }
             }
+            AllowInput = true;
         }
-        else if (Input.GetKeyDown(KeyCode.Q))
+        else if (Input.GetKeyDown(KeyCode.Q) && AllowInput)
         {
             if (IngameManager.Instance.playerController.currentState == ControlState.Default && selected) // 플레이어가 선택되었으며 아무 행동도 취하지 않았을 때
             {
@@ -44,8 +47,12 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
                 IngameManager.Instance.playerController.currentState = ControlState.PlayerMove; // 플레이어 상태를 이동 상태로 전환 (클릭 시 이동)
                 Debug.Log("State Changed to Move");
             }
+            else if (IngameManager.Instance.playerController.currentState == ControlState.PlayerAttack && selected)
+            {
+                Escape();
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.E))
+        else if (Input.GetKeyDown(KeyCode.E) && AllowInput)
         {
             if (IngameManager.Instance.playerController.currentState == ControlState.Default && selected)
             {
@@ -63,8 +70,12 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
                 IngameManager.Instance.playerController.currentState = ControlState.PlayerAttack; // 플레이어 상태를 공격 상태로 전환 (클릭 시 공격)
                 Debug.Log("State Changed to Attack");
             }
+            else if (IngameManager.Instance.playerController.currentState == ControlState.PlayerAttack && selected)
+            {
+                Escape();
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.R))
+        else if (Input.GetKeyDown(KeyCode.R) && AllowInput)
         {
             if (IngameManager.Instance.playerController.currentState == ControlState.Default && selected)
             {
@@ -78,18 +89,27 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
                 IngameManager.Instance.playerController.currentState = ControlState.PlayerInteract; // 플레이어 상태를 상호작용 상태로 전환 (클릭 시 상호작용)
                 Debug.Log("State Changed to Interact");
             }
+            else if (IngameManager.Instance.playerController.currentState == ControlState.PlayerInteract && selected)
+            {
+                Escape();
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.Escape))
+        else if (Input.GetKeyDown(KeyCode.Escape) && AllowInput)
         {
             if (IngameManager.Instance.playerController.currentState != ControlState.Default)
             {
-                IngameManager.Instance.playerController.currentState = ControlState.Default;
-                GameManager.Instance._ui.DeleteRange();
-                ShowSelectedPlayer();
-                Debug.Log("State Changed to Select");
+                Escape();
             }
         }
 
+    }
+
+    private void Escape()
+    {
+        IngameManager.Instance.playerController.currentState = ControlState.Default;
+        GameManager.Instance._ui.DeleteRange();
+        ShowSelectedPlayer();
+        Debug.Log("State Changed to Select");
     }
 
     private void ShowInfo()  // 해당 그리드에 있는 물체의 정보를 보여주는 함수

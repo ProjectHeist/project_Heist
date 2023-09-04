@@ -53,7 +53,7 @@ public class GridCell : MonoBehaviour
         Collider[] colliders = Physics.OverlapSphere(gridpos, 0.4f);
         for (int i = 0; i < colliders.Length; i++)
         {
-            if (colliders[i].gameObject.tag == "Door")
+            if (IngameManager.Instance.tags.Contains(colliders[i].gameObject.tag))
             {
                 objectInThisGrid = colliders[i].gameObject;
             }

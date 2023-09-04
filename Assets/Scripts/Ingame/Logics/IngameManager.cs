@@ -11,6 +11,7 @@ public class IngameManager : MonoBehaviour
     public MapCreator mapCreator;
     public MapManager mapManager = new MapManager();
     public PlayerController playerController = new PlayerController();
+    public InputManager InputManager;
 
     public static IngameManager Instance
     {
@@ -26,16 +27,16 @@ public class IngameManager : MonoBehaviour
 
     public List<GameObject> players;
     public List<GameObject> enemies;
-    public string[] tags = { "Door", "Wall", "Money", "Computer", "Vent" };
+    public List<string> tags = new List<string>();
 
     void Start()
     {
-        /*tags.Add("Door");
+        tags.Add("Door");
         tags.Add("Wall");
         tags.Add("Computer");
         tags.Add("Money");
-        tags.Add("Vent");*/
-        for (int i = 0; i < tags.Length; i++)
+        tags.Add("Vent");
+        for (int i = 0; i < tags.Count; i++)
         {
             Debug.Log(tags[i]);
         }

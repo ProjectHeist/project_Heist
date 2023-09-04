@@ -4,20 +4,19 @@ using UnityEngine;
 
 public class DataManager
 {
-    TextAsset textAsset;
     public MapData testData;
+    public MasterData masterData;
+
     public void init()
     {
         LoadMap();
-        //LoadData();
+        LoadData();
     }
 
     public void LoadMap()
     {
         var loadedJson = Resources.Load<TextAsset>("Data/Map/TestMap1");
         testData = JsonUtility.FromJson<MapData>(loadedJson.text);
-        Debug.Log(testData.inwalkable);
-        Debug.Log(testData.height);
     }
     public void SaveData()
     {
@@ -25,8 +24,8 @@ public class DataManager
     }
     public void LoadData()
     {
-        var loadedJson = Resources.Load<TextAsset>("Data/Map/TagList");
-        string[] tagList = JsonUtility.FromJson<string[]>(loadedJson.text);
+        var loadedJson = Resources.Load<TextAsset>("Data/Master/TestMasterData");
+        masterData = JsonUtility.FromJson<MasterData>(loadedJson.text);
     }
 }
 
@@ -54,4 +53,13 @@ public class GridVector
 {
     public int x;
     public int y;
+}
+
+[System.Serializable]
+public class MasterData
+{
+    public int money;
+    public int[] levels;
+    public int stage;
+    public string playerName;
 }

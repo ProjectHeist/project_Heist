@@ -13,6 +13,10 @@ public class PlayerInteract : MonoBehaviour
             case "Door":
                 _object.GetComponent<Door>().OnDoorInteracted();
                 break;
+            case "Money":
+                _object.GetComponent<Money>().OnMoneyInteracted();
+                break;
+
         }
     }
 

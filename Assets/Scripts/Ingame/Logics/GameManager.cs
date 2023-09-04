@@ -5,12 +5,11 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-
     private static GameManager instance = null;
     public DataManager _data = new DataManager();
     public UIManager _ui = new UIManager();
     public IngameManager _ingame;
+
     void Awake()
     {
         if (null == instance)
