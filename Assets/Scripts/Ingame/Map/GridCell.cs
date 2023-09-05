@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GridCell : MonoBehaviour
@@ -51,9 +52,10 @@ public class GridCell : MonoBehaviour
         Vector2Int position = new Vector2Int(posX, posY);
         Vector3 gridpos = IngameManager.Instance.mapManager.GetWorldPositionFromGridPosition(position);
         Collider[] colliders = Physics.OverlapSphere(gridpos, 0.4f);
+        List<string> tags = IngameManager.Instance.tags;
         for (int i = 0; i < colliders.Length; i++)
         {
-            if (IngameManager.Instance.tags.Contains(colliders[i].gameObject.tag))
+            if (tags.Contains(colliders[i].gameObject.tag))
             {
                 objectInThisGrid = colliders[i].gameObject;
             }

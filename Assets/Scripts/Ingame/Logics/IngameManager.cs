@@ -25,22 +25,11 @@ public class IngameManager : MonoBehaviour
         }
     }
 
+    //-------------------PlayerList and Enemies--------------------//
     public List<GameObject> players;
     public List<GameObject> enemies;
-    public List<string> tags = new List<string>();
-
-    void Start()
-    {
-        tags.Add("Door");
-        tags.Add("Wall");
-        tags.Add("Computer");
-        tags.Add("Money");
-        tags.Add("Vent");
-        for (int i = 0; i < tags.Count; i++)
-        {
-            Debug.Log(tags[i]);
-        }
-    }
+    public List<string> tags;
+    //-------------------------------------------------------------//
 
     public void init()
     {
@@ -49,5 +38,17 @@ public class IngameManager : MonoBehaviour
             instance = this;
         }
         mapCreator.init();
+        tags = GetTags();
     }
+
+    public List<string> GetTags()
+    {
+        List<string> tags = new List<string>();
+        for (int i = 0; i < GameManager.Instance._data.tagList.tag.Length; i++)
+        {
+            tags.Add(GameManager.Instance._data.tagList.tag[i]);
+        }
+        return tags;
+    }
+
 }

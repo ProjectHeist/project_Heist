@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public UIManager _ui = new UIManager();
     public IngameManager _ingame;
 
+
     void Awake()
     {
         if (null == instance)
@@ -41,5 +42,10 @@ public class GameManager : MonoBehaviour
     {
         _data.init();
         _ingame.init();
+    }
+
+    void selectPlayer()
+    {
+
     }
 }

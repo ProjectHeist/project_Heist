@@ -4,62 +4,33 @@ using UnityEngine;
 
 public class DataManager
 {
-    public MapData testData;
-    public MasterData masterData;
+    public PlayerDatabase playerDatabase = new PlayerDatabase();
+    public MapDatabase mapDatabase = new MapDatabase();
+    public WeaponDatabase weaponDatabase = new WeaponDatabase();
+    public MasterDatabase masterDatabase = new MasterDatabase();
+    public TagList tagList;
 
     public void init()
     {
-        LoadMap();
+        Load();
         LoadData();
     }
 
-    public void LoadMap()
+    public void Load()
     {
-        var loadedJson = Resources.Load<TextAsset>("Data/Map/TestMap1");
-        testData = JsonUtility.FromJson<MapData>(loadedJson.text);
-    }
-    public void SaveData()
-    {
-
+        mapDatabase.Load();
+        masterDatabase.Load();
     }
     public void LoadData()
     {
-        var loadedJson = Resources.Load<TextAsset>("Data/Master/TestMasterData");
-        masterData = JsonUtility.FromJson<MasterData>(loadedJson.text);
+        var LoadedJson = Resources.Load<TextAsset>("Data/Map/TagList");
+        Debug.Log(LoadedJson.text);
+        tagList = JsonUtility.FromJson<TagList>(LoadedJson.text);
+        Debug.Log(tagList.tag[0]);
     }
 }
 
-public class CharacterData
+public class TagList
 {
-    public int HP;
-    public int moveRange;
-    public int critRate;
-    public float accuracy;
-    public int hide;
-    public int damage;
-    public int attackRange;
-}
-
-[System.Serializable]
-public class MapData
-{
-    public int width;
-    public int height;
-    public GridVector[] inwalkable;
-}
-
-[System.Serializable]
-public class GridVector
-{
-    public int x;
-    public int y;
-}
-
-[System.Serializable]
-public class MasterData
-{
-    public int money;
-    public int[] levels;
-    public int stage;
-    public string playerName;
+    public string[] tag;
 }

@@ -8,5 +8,11 @@
         1
     ],
     "stage": 0,
-    "name": "정상길"
+    "playerNumbers": [
+        3,
+        4,
+        7,
+        9
+    ],
+    "masterName": "정상길"
 }

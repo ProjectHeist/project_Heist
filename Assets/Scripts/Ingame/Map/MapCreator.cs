@@ -31,7 +31,7 @@ public class MapCreator : MonoBehaviour
         IngameManager.Instance.mapManager.spots = new Vector3Int[width, height];
         IngameManager.Instance.mapManager.spots = new Vector3Int[width, height];
 
-        mapdata = GameManager.Instance._data.testData;
+        mapdata = GameManager.Instance._data.mapDatabase.testData;
 
         for (int x = 0; x < width; x++)
         {
