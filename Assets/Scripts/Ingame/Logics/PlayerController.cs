@@ -29,7 +29,7 @@ public class PlayerController
                 break;
             case ControlState.PlayerMove: // 해당 그리드로 플레이어가 갈지
                 playerMove = currentPlayer.GetComponent<PlayerMove>();
-                playerMove.SetTargetPosition(GridPos);
+                playerMove.MoveToDest(GridPos);
                 currentState = ControlState.Default;
                 break;
             case ControlState.PlayerAttack: // 해당 그리드에 있는 적을 공격할지
@@ -99,8 +99,5 @@ public class PlayerController
         }
 
     }
-
-
-
 
 }

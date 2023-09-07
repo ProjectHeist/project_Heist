@@ -25,6 +25,9 @@ public class IngameManager : MonoBehaviour
         }
     }
 
+    public int turn;   // 0 is player's turn, 1 is enemy's turn
+    public int phase;
+
     //-------------------PlayerList and Enemies--------------------//
     public List<GameObject> players;
     public List<GameObject> enemies;
@@ -39,6 +42,28 @@ public class IngameManager : MonoBehaviour
         }
         mapCreator.init();
         tags = GetTags();
+        turn = 0;
+        phase = 1;
+    }
+
+    public void EnemyTurn()
+    {
+        turn = 1;
+        // Methods For enemies, Controled by IngameManager
+
+        turn = 0;
+        phase++;
+        OnTurnChange();
+    }
+
+    public void OnTurnChange()
+    {
+        foreach (GameObject player in players)
+        {
+            PlayerState ps = player.GetComponent<PlayerState>();
+            ps.canMove = 1;
+            ps.canAttack = 1;
+        }
     }
 
     public List<string> GetTags()

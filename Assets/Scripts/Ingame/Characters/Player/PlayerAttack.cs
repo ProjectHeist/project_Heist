@@ -10,24 +10,32 @@ public class PlayerAttack : MonoBehaviour
     public void AttackTarget(GameObject target, int dist)
     {
         PlayerState playerState = gameObject.GetComponent<PlayerState>();
-        float finalaccuracy = 0.0f;
-        if (dist <= playerState.minAttackRange)
+        if (playerState.canAttack > 0)
         {
-            finalaccuracy = 1.0f;
+            float finalaccuracy = 0.0f;
+            if (dist <= playerState.minAttackRange)
+            {
+                finalaccuracy = 1.0f;
+            }
+            else
+            {
+                finalaccuracy = playerState.accuracy + (float)(playerState.maxAttackRange - dist) / (playerState.maxAttackRange - playerState.minAttackRange) * (1.0f - playerState.accuracy);
+            }
+            float rand = UnityEngine.Random.Range(0.0f, 1.0f);
+            if (rand <= finalaccuracy)
+            {
+                Debug.Log("Attack Hit");
+                target.GetComponent<EnemyState>().OnEnemyHit(playerState.damage);
+            }
+            else
+            {
+                Debug.Log("Attack Missed");
+            }
+            playerState.canAttack--;
         }
         else
         {
-            finalaccuracy = playerState.accuracy + (float)(playerState.maxAttackRange - dist) / (playerState.maxAttackRange - playerState.minAttackRange) * (1.0f - playerState.accuracy);
-        }
-        float rand = UnityEngine.Random.Range(0.0f, 1.0f);
-        if (rand <= finalaccuracy)
-        {
-            Debug.Log("Attack Hit");
-            target.GetComponent<EnemyState>().OnEnemyHit(playerState.damage);
-        }
-        else
-        {
-            Debug.Log("Attack Missed");
+            Debug.Log("Player Cannot Attack more!");
         }
     }
 }

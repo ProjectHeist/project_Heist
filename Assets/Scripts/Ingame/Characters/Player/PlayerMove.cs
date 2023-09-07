@@ -7,6 +7,7 @@ public class PlayerMove : MonoBehaviour
 {
     // Start is called before the first frame update
     private int currentPathIndex;
+    private bool arrived;
     private Vector2Int currentPos;
     public Vector2Int destination;
     public PlayerState playerState;
@@ -14,28 +15,33 @@ public class PlayerMove : MonoBehaviour
     public float moveSpeed = 100.0f;
 
     // Update is called once per frame
-    void Update()
-    {
-        MoveToDest();
-    }
 
-    public void SetTargetPosition(Vector2Int targetPosition)
+    public void MoveToDest(Vector2Int targetPosition)
     {
+        arrived = false;
         playerState = gameObject.GetComponent<PlayerState>();
 
-        currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
-        if (currentPos != targetPosition)
+        if (playerState.canMove > 0)
         {
-            currentPathIndex = 0;
-            Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
-            path = astar.CreatePath(IngameManager.Instance.mapManager.spots, currentPos, targetPosition, 1000);
-            path.Reverse();
+            currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
+            if (currentPos != targetPosition)
+            {
+                currentPathIndex = 0;
+                Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
+                path = astar.CreatePath(IngameManager.Instance.mapManager.spots, currentPos, targetPosition, 1000);
+                path.Reverse();
+            }
+            StartCoroutine(Move());
+        }
+        else
+        {
+            Debug.Log("Player cannot move more!");
         }
     }
 
-    public void MoveToDest()
+    IEnumerator Move()
     {
-        if (path != null)
+        while (!arrived)
         {
             if (path.Count <= playerState.moveRange)
             {
@@ -53,6 +59,7 @@ public class PlayerMove : MonoBehaviour
                     if (currentPathIndex >= path.Count)
                     {
                         StopMoving();
+                        playerState.canMove -= 1;
                     }
                 }
             }
@@ -61,7 +68,10 @@ public class PlayerMove : MonoBehaviour
                 Debug.Log("Can't go to position");
                 StopMoving();
             }
+            yield return null;
         }
+
+
     }
 
     public void StopMoving()
@@ -70,6 +80,7 @@ public class PlayerMove : MonoBehaviour
         currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(transform.position);
         GameManager.Instance._ui.DeleteRange();
         GameManager.Instance._ui.SelectedState(currentPos);
+        arrived = true;
     }
 
 }

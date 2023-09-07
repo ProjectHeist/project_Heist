@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MasterDatabase : MonoBehaviour
+public class MasterDatabase
 {
     public MasterData masterData;
 
