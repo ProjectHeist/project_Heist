@@ -66,6 +66,16 @@ public class IngameManager : MonoBehaviour
         }
     }
 
+    public void Extraction()
+    {
+        //set Extraction point if certain missions are accomplished
+    }
+
+    public void EndGame()
+    {
+        // end game and change scene if all players are extracted
+    }
+
     public List<string> GetTags()
     {
         List<string> tags = new List<string>();

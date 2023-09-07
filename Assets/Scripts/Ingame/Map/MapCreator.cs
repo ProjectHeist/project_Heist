@@ -32,20 +32,14 @@ public class MapCreator : MonoBehaviour
         IngameManager.Instance.mapManager.spots = new Vector3Int[width, height];
 
         mapdata = GameManager.Instance._data.mapDatabase.testData;
+        List<Vector2Int> inwalkable = mapdata.getInwalkables();
 
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                bool isWalkable = true;
-                for (int i = 0; i < mapdata.inwalkable.Length; i++)
-                {
-                    if (mapdata.inwalkable[i].x == x && mapdata.inwalkable[i].y == y)
-                    {
-                        isWalkable = false;
-                    }
-                }
-                if (isWalkable)
+                Vector2Int currentCell = new Vector2Int(x, y);
+                if (!inwalkable.Contains(currentCell))
                 {
                     CreateTile(x, y);
                     IngameManager.Instance.mapManager.spots[x, y] = new Vector3Int(x, y, 0);

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MapDatabase
@@ -18,12 +19,68 @@ public class MapData
 {
     public int width;
     public int height;
-    public GridVector[] inwalkable;
+    public Inwalkable[] inwalkable;
+
+    public List<Vector2Int> getInwalkables()
+    {
+        List<Vector2Int> inwalkables = new List<Vector2Int>();
+        for (int i = 0; i < inwalkable.Length; i++)
+        {
+            Vector2Int startpoint = new Vector2Int(inwalkable[i].x, inwalkable[i].y);
+            if (inwalkable[i].direction == "+x")
+            {
+                for (int j = 1; j < inwalkable[i].length; j++)
+                {
+                    Vector2Int newPoint = new Vector2Int(startpoint.x + j, startpoint.y);
+                    if (!inwalkables.Contains(newPoint))
+                    {
+                        inwalkables.Add(newPoint);
+                    }
+                }
+            }
+            else if (inwalkable[i].direction == "-x")
+            {
+                for (int j = 1; j < inwalkable[i].length; j++)
+                {
+                    Vector2Int newPoint = new Vector2Int(startpoint.x - j, startpoint.y);
+                    if (!inwalkables.Contains(newPoint))
+                    {
+                        inwalkables.Add(newPoint);
+                    }
+                }
+            }
+            else if (inwalkable[i].direction == "+y")
+            {
+                for (int j = 1; j < inwalkable[i].length; j++)
+                {
+                    Vector2Int newPoint = new Vector2Int(startpoint.x, startpoint.y + j);
+                    if (!inwalkables.Contains(newPoint))
+                    {
+                        inwalkables.Add(newPoint);
+                    }
+                }
+            }
+            else if (inwalkable[i].direction == "-y")
+            {
+                for (int j = 1; j < inwalkable[i].length; j++)
+                {
+                    Vector2Int newPoint = new Vector2Int(startpoint.x, startpoint.y - j);
+                    if (!inwalkables.Contains(newPoint))
+                    {
+                        inwalkables.Add(newPoint);
+                    }
+                }
+            }
+        }
+        return inwalkables;
+    }
 }
 
 [System.Serializable]
-public class GridVector
+public class Inwalkable
 {
     public int x;
     public int y;
+    public int length;
+    public string direction;
 }
