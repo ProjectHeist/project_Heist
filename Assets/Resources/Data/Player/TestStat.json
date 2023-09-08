@@ -6,15 +6,47 @@
             "playerName": "김찬호",
             "playerHP": 100,
             "playerAccuracy": 0.5,
-            "playerMoveRange": 10
+            "playerMoveRange": 15
         },
         {
             "playerNumber": 1,
             "playerClass": 1,
             "playerName": "손인욱",
-            "playerHP": 50,
+            "playerHP": 150,
             "playerAccuracy": 0.8,
-            "playerMoveRange": 15
+            "playerMoveRange": 10
+        },
+        {
+            "playerNumber": 2,
+            "playerClass": 2,
+            "playerName": "장지환",
+            "playerHP": 50,
+            "playerAccuracy": 0.2,
+            "playerMoveRange": 20
+        },
+        {
+            "playerNumber": 3,
+            "playerClass": 1,
+            "playerName": "엄준식",
+            "playerHP": 100,
+            "playerAccuracy": 1.0,
+            "playerMoveRange": 10
+        },
+        {
+            "playerNumber": 4,
+            "playerClass": 3,
+            "playerName": "이재석",
+            "playerHP": 25,
+            "playerAccuracy": 0.1,
+            "playerMoveRange": 10
+        },
+        {
+            "playerNumber": 5,
+            "playerClass": 2,
+            "playerName": "박종우",
+            "playerHP": 200,
+            "playerAccuracy": 0.5,
+            "playerMoveRange": 10
         }
     ]
 }

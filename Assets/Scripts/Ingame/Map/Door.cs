@@ -30,7 +30,7 @@ public class Door : MonoBehaviour
 
     IEnumerator Open()
     {
-        Vector3 targetPosition = transform.position + Vector3.forward;
+        Vector3 targetPosition = transform.position + transform.forward;
         while (transform.position != targetPosition)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);

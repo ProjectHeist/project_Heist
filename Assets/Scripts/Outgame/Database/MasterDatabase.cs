@@ -19,6 +19,7 @@ public class MasterData
     public int money;
     public int[] levels;
     public int stage;
-    public int playerNumbers;
+    public int[] playerNumbers;
+    public int[] weaponNumbers;
     public string masterName;
 }

@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class IngameManager : MonoBehaviour
 {
@@ -94,27 +96,26 @@ public class IngameManager : MonoBehaviour
         }
         if (ObjectiveCleared)
         {
+            Debug.Log("Start Extraction");
+            extractionPoint.CheckPlayer();
+            if (extractionPoint.playerInThisGrid != null)
+            {
+                extractionPoint.playerInThisGrid.SetActive(false);
+                extractedplayers++;
+            }
             if (extractedplayers >= players.Count)
             {
                 Debug.Log("End Extraction");
+                EndGame();
             }
-            else
-            {
-                Debug.Log("Start Extraction");
-                extractionPoint.CheckPlayer();
-                if (extractionPoint.playerInThisGrid != null)
-                {
-                    extractionPoint.playerInThisGrid.SetActive(false);
-                    extractedplayers++;
-                }
-            }
-
         }
     }
 
     public void EndGame()
     {
         // end game and change scene if all players are extracted
+        GameManager.Instance._data.masterDatabase.masterData.money += TotalMoney;
+        SceneManager.LoadScene("LobbyScene");
     }
 
     public List<string> GetTags()

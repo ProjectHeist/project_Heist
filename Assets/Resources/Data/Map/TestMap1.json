@@ -11,8 +11,32 @@
         {
             "x": 7,
             "y": 22,
-            "length": 7,
+            "length": 39,
             "direction": "+x"
+        },
+        {
+            "x": 14,
+            "y": 22,
+            "length": 10,
+            "direction": "+y"
+        },
+        {
+            "x": 14,
+            "y": 31,
+            "length": 32,
+            "direction": "+x"
+        },
+        {
+            "x": 45,
+            "y": 0,
+            "length": 32,
+            "direction": "+y"
+        },
+        {
+            "x": 20,
+            "y": 9,
+            "length": 5,
+            "direction": "+y"
         }
     ]
 }

@@ -4,7 +4,7 @@
             "weaponNumber": 0,
             "weaponName": "TestHG",
             "weaponMinAttackRange": 6,
-            "weaponMaxAttackRange": 12,
+            "weaponMaxAttackRange": 10,
             "weaponDamage": 30,
             "weaponCritRate": 0.3
         },
@@ -12,9 +12,33 @@
             "weaponNumber": 1,
             "weaponName": "TestAR",
             "weaponMinAttackRange": 10,
-            "weaponMaxAttackRange": 20,
+            "weaponMaxAttackRange": 15,
             "weaponDamage": 60,
             "weaponCritRate": 0.1
+        },
+        {
+            "weaponNumber": 2,
+            "weaponName": "TestSG",
+            "weaponMinAttackRange": 4,
+            "weaponMaxAttackRange": 9,
+            "weaponDamage": 100,
+            "weaponCritRate": 0.3
+        },
+        {
+            "weaponNumber": 3,
+            "weaponName": "TestSMG",
+            "weaponMinAttackRange": 8,
+            "weaponMaxAttackRange": 12,
+            "weaponDamage": 60,
+            "weaponCritRate": 0.1
+        },
+        {
+            "weaponNumber": 4,
+            "weaponName": "TestSR",
+            "weaponMinAttackRange": 15,
+            "weaponMaxAttackRange": 20,
+            "weaponDamage": 100,
+            "weaponCritRate": 0.5
         }
     ]
 }

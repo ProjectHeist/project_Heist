@@ -3,7 +3,7 @@ public class WeaponStat
 {
     public int weaponNumber;
 
-    public float weaponName;
+    public string weaponName;
 
     public int weaponMinAttackRange;
 

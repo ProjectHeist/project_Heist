@@ -19,7 +19,6 @@ public class DataManager
     public void Load()
     {
         mapDatabase.Load();
-        masterDatabase.Load();
         playerDatabase.Load();
         weaponDatabase.Load();
     }
@@ -27,6 +26,12 @@ public class DataManager
     {
         var LoadedJson = Resources.Load<TextAsset>("Data/Map/TagList");
         tagList = JsonUtility.FromJson<TagList>(LoadedJson.text);
+        masterDatabase.Load();
+    }
+
+    public void SaveData()
+    {
+
     }
 }
 
