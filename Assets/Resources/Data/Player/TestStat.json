@@ -1,20 +1,20 @@
 {
     "playerStats": [
         {
-            "Number": 0,
-            "Class": 0,
-            "Name": "김찬호",
-            "HP": 100,
-            "accuracy": 0.5,
-            "moveRange": 10
+            "playerNumber": 0,
+            "playerClass": 0,
+            "playerName": "김찬호",
+            "playerHP": 100,
+            "playerAccuracy": 0.5,
+            "playerMoveRange": 10
         },
         {
-            "Number": 1,
-            "Class": 0,
-            "Name": "손인욱",
-            "HP": 50,
-            "accuracy": 0.8,
-            "moveRange": 15
+            "playerNumber": 1,
+            "playerClass": 1,
+            "playerName": "손인욱",
+            "playerHP": 50,
+            "playerAccuracy": 0.8,
+            "playerMoveRange": 15
         }
     ]
 }

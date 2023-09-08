@@ -20,13 +20,13 @@ public class DataManager
     {
         mapDatabase.Load();
         masterDatabase.Load();
+        playerDatabase.Load();
+        weaponDatabase.Load();
     }
     public void LoadData()
     {
         var LoadedJson = Resources.Load<TextAsset>("Data/Map/TagList");
-        Debug.Log(LoadedJson.text);
         tagList = JsonUtility.FromJson<TagList>(LoadedJson.text);
-        Debug.Log(tagList.tag[0]);
     }
 }
 

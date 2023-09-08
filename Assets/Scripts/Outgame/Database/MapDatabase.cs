@@ -27,6 +27,10 @@ public class MapData
         for (int i = 0; i < inwalkable.Length; i++)
         {
             Vector2Int startpoint = new Vector2Int(inwalkable[i].x, inwalkable[i].y);
+            if (!inwalkables.Contains(startpoint))
+            {
+                inwalkables.Add(startpoint);
+            }
             if (inwalkable[i].direction == "+x")
             {
                 for (int j = 1; j < inwalkable[i].length; j++)

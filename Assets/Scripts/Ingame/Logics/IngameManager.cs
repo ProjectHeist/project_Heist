@@ -12,6 +12,13 @@ public class IngameManager : MonoBehaviour
     public MapManager mapManager = new MapManager();
     public PlayerController playerController = new PlayerController();
     public InputManager InputManager;
+    public List<GameObject> Prefabs;
+    public bool ObjectiveCleared = false;
+    public int TotalMoney = 0;
+    public bool Deployed = false;
+    public int deployedplayers = 0;
+    public int extractedplayers = 0;
+    public GridCell extractionPoint;
 
     public static IngameManager Instance
     {
@@ -25,8 +32,8 @@ public class IngameManager : MonoBehaviour
         }
     }
 
-    public int turn;   // 0 is player's turn, 1 is enemy's turn
-    public int phase;
+    public int turn = 1;
+    public int phase = 0; // 0 is player's phase, 1 is enemy's phase
 
     //-------------------PlayerList and Enemies--------------------//
     public List<GameObject> players;
@@ -42,21 +49,21 @@ public class IngameManager : MonoBehaviour
         }
         mapCreator.init();
         tags = GetTags();
-        turn = 0;
-        phase = 1;
+        extractionPoint = mapManager.GetGridCellFromPosition(new Vector2Int(0, 0)).GetComponent<GridCell>();
     }
 
-    public void EnemyTurn()
+    public void EnemyPhase() // 페이즈 종료 버튼 눌렀을 때 
     {
-        turn = 1;
+        CheckObjective();
+        phase = 1;
         // Methods For enemies, Controled by IngameManager
 
-        turn = 0;
-        phase++;
-        OnTurnChange();
+        phase = 0;
+        turn++;
+        StartPlayerPhase();
     }
 
-    public void OnTurnChange()
+    public void StartPlayerPhase()
     {
         foreach (GameObject player in players)
         {
@@ -66,9 +73,43 @@ public class IngameManager : MonoBehaviour
         }
     }
 
-    public void Extraction()
+    public void Deploy(Vector2Int deployPos)
     {
-        //set Extraction point if certain missions are accomplished
+        Vector3 deploy = mapManager.GetWorldPositionFromGridPosition(deployPos);
+        players[deployedplayers].transform.position = deploy;
+        players[deployedplayers].SetActive(true);
+        deployedplayers++;
+        if (deployedplayers >= players.Count)
+        {
+            Deployed = true;
+        }
+    }
+
+    public void CheckObjective()
+    {
+        //check objective and decide ending game
+        if (TotalMoney >= 20000)
+        {
+            ObjectiveCleared = true;
+        }
+        if (ObjectiveCleared)
+        {
+            if (extractedplayers >= players.Count)
+            {
+                Debug.Log("End Extraction");
+            }
+            else
+            {
+                Debug.Log("Start Extraction");
+                extractionPoint.CheckPlayer();
+                if (extractionPoint.playerInThisGrid != null)
+                {
+                    extractionPoint.playerInThisGrid.SetActive(false);
+                    extractedplayers++;
+                }
+            }
+
+        }
     }
 
     public void EndGame()

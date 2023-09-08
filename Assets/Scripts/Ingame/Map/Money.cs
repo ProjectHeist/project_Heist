@@ -9,7 +9,7 @@ public class Money : MonoBehaviour
     public void OnMoneyInteracted()
     {
         Debug.Log(GameManager.Instance._data.masterDatabase.masterData.money);
-        GameManager.Instance._data.masterDatabase.masterData.money += value;
+        IngameManager.Instance.TotalMoney += value;
         Debug.Log(GameManager.Instance._data.masterDatabase.masterData.money);
         Destroy(gameObject);
     }

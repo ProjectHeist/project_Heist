@@ -4,12 +4,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PhaseText : MonoBehaviour
+public class TurnText : MonoBehaviour
 {
     // Update is called once per frame
-    public TextMeshProUGUI phaseText;
+    public TextMeshProUGUI turnText;
     void Update()
     {
-        phaseText.text = "Current Phase: " + IngameManager.Instance.phase;
+        turnText.text = "Current Turn: " + IngameManager.Instance.turn;
     }
 }

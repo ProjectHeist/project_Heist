@@ -23,11 +23,15 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
             if (clickedGridCell != null)
             {
                 clickedGridPos = new Vector2Int(clickedGridCell.posX, clickedGridCell.posY); // 마우스로 클릭한 그리드의 위치
-                if (!selected || IngameManager.Instance.playerController.currentState == ControlState.Default) // 플레이어가 선택되지 않은 상태에서, 혹은 선택된 플레이어가 아무것도 하지 않는 상태에서 그리드를 클릭했을 시
+                if (!IngameManager.Instance.Deployed)
+                {
+                    IngameManager.Instance.Deploy(clickedGridPos);
+                }
+                else if (!selected || IngameManager.Instance.playerController.currentState == ControlState.Default) // 플레이어가 선택되지 않은 상태에서, 혹은 선택된 플레이어가 아무것도 하지 않는 상태에서 그리드를 클릭했을 시
                 {
                     Select(); //해당 위치에 플레이어가 있는지 찾는다 
                 }
-                if (selected) //플레이어가 있는 경우
+                else if (selected) //플레이어가 있는 경우
                 {
                     IngameManager.Instance.playerController.OnMouseClick(clickedGridPos); //해당 플레이어를 컨트롤하는 클래스를 이용해 컨트롤한다 
                 }

@@ -11,7 +11,7 @@ public class PlayerState : CharacterState
         canAttack = 1;
         canMove = 1;
     }
-    public PlayerState(PlayerStat playerStat, WeaponStat weaponStat)
+    public void SetState(PlayerStat playerStat, WeaponStat weaponStat)
     {
         Number = playerStat.playerNumber;
         Name = playerStat.playerName;
@@ -25,6 +25,7 @@ public class PlayerState : CharacterState
     }
 
     private int Number; // 도감에 존재하는 플레이어 넘버
+    [SerializeField]
     private string Name; // 플레이어의 실제 이름 
     private int Class; // 플레이어의 클래스
 
@@ -48,23 +49,6 @@ public class PlayerState : CharacterState
         {
             return Class;
         }
-    }
-    void Awake() // 이후에 제대로 GameManager의 DataManager의 함수를 통해 불러올 예정
-    {
-        GetPlayerInfo();
-    }
-    public void GetPlayerInfo()
-    {
-        Number = 0;
-        HP = 100;
-        accuracy = 0.5f;
-        moveRange = 10;
-        damage = 20;
-        maxAttackRange = 12;
-        minAttackRange = 6;
-        critRate = 0.2f;
-        canAttack = 1;
-        canMove = 1;
     }
     public void OnPlayerHit(int damage)
     {

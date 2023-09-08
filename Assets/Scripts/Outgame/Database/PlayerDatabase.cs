@@ -8,10 +8,13 @@ public class PlayerDatabase
 
     public void Load()
     {
-
+        var LoadedJson = Resources.Load<TextAsset>("Data/Player/TestStat");
+        totalPlayerStat = JsonUtility.FromJson<PlayerStatList>(LoadedJson.text);
+        Debug.Log(totalPlayerStat.playerStats[0].playerName);
     }
 }
 
+[System.Serializable]
 public class PlayerStatList
 {
     public PlayerStat[] playerStats;

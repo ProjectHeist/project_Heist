@@ -95,8 +95,8 @@ GameObject:
   - component: {fileID: 9148712873458090974}
   - component: {fileID: 9148712873458090787}
   - component: {fileID: 2965208389006938765}
-  - component: {fileID: 3279100291990693272}
   - component: {fileID: 7615001538418219682}
+  - component: {fileID: -593838773911248754}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -160,7 +160,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea16e9984a52ba54fa8c4ab58efe11f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3279100291990693272
+--- !u!114 &7615001538418219682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9148712873458090975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15243099554597b4292ef609855e18c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-593838773911248754
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -179,17 +191,5 @@ MonoBehaviour:
   damage: 0
   maxAttackRange: 0
   minAttackRange: 0
-  canAttack: 0
-  canMove: 0
---- !u!114 &7615001538418219682
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9148712873458090975}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15243099554597b4292ef609855e18c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  canAttack: 1
+  canMove: 1

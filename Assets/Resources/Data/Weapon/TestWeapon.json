@@ -1,0 +1,20 @@
+{
+    "weaponStats": [
+        {
+            "weaponNumber": 0,
+            "weaponName": "TestHG",
+            "weaponMinAttackRange": 6,
+            "weaponMaxAttackRange": 12,
+            "weaponDamage": 30,
+            "weaponCritRate": 0.3
+        },
+        {
+            "weaponNumber": 1,
+            "weaponName": "TestAR",
+            "weaponMinAttackRange": 10,
+            "weaponMaxAttackRange": 20,
+            "weaponDamage": 60,
+            "weaponCritRate": 0.1
+        }
+    ]
+}
