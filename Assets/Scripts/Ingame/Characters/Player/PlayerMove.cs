@@ -20,23 +20,12 @@ public class PlayerMove : MonoBehaviour
     {
         arrived = false;
         playerState = gameObject.GetComponent<PlayerState>();
-
-        if (playerState.canMove > 0)
-        {
-            currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
-            if (currentPos != targetPosition)
-            {
-                currentPathIndex = 0;
-                Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
-                path = astar.CreatePath(IngameManager.Instance.mapManager.spots, currentPos, targetPosition, 1000);
-                path.Reverse();
-            }
-            StartCoroutine(Move());
-        }
-        else
-        {
-            Debug.Log("Player cannot move more!");
-        }
+        currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
+        currentPathIndex = 0;
+        Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
+        path = astar.CreatePath(IngameManager.Instance.mapManager.spots, currentPos, targetPosition, 1000);
+        path.Reverse();
+        StartCoroutine(Move());
     }
 
     IEnumerator Move()
@@ -59,7 +48,6 @@ public class PlayerMove : MonoBehaviour
                     if (currentPathIndex >= path.Count)
                     {
                         StopMoving();
-                        playerState.canMove -= 1;
                     }
                 }
             }

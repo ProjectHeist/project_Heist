@@ -29,8 +29,7 @@ public class PlayerController
                 break;
             case ControlState.PlayerMove: // 해당 그리드로 플레이어가 갈지
                 playerMove = currentPlayer.GetComponent<PlayerMove>();
-                playerMove.MoveToDest(GridPos);
-                currentState = ControlState.Default;
+                decideMove(GridPos);
                 break;
             case ControlState.PlayerAttack: // 해당 그리드에 있는 적을 공격할지
                 Vector2Int playerPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(currentPlayer.transform.position);
@@ -55,6 +54,21 @@ public class PlayerController
         }
     }
 
+    public void decideMove(Vector2Int position)
+    {
+        if (IngameManager.Instance.mapManager.GetGridPositionFromWorld(currentPlayer.transform.position) != position)
+        {
+            playerMove.MoveToDest(position);
+            currentPlayer.GetComponent<PlayerState>().canMove--;
+            currentState = ControlState.Default;
+            IngameManager.Instance.controlPanel.DisplayMove(true, false);
+            if (currentPlayer.GetComponent<PlayerState>().canMove == 0)
+            {
+                IngameManager.Instance.controlPanel.DisplayMove(false, false);
+            }
+        }
+    }
+
     public void decideInteract(GameObject interactObject, int dist)
     {
         if (dist <= 2)
@@ -65,6 +79,7 @@ public class PlayerController
                 playerInteract.Interact(interactObject, dist);
                 currentState = ControlState.Default;
                 GameManager.Instance._ui.DeleteRange();
+                IngameManager.Instance.controlPanel.DisplayInteract(false);
             }
             else
             {
@@ -85,8 +100,14 @@ public class PlayerController
             {
                 PlayerAttack playerAttack = currentPlayer.GetComponent<PlayerAttack>();
                 playerAttack.AttackTarget(enemy, dist);
+                currentPlayer.GetComponent<PlayerState>().canAttack--;
                 currentState = ControlState.Default;
                 GameManager.Instance._ui.DeleteRange();
+                IngameManager.Instance.controlPanel.DisplayAttack(true, false);
+                if (currentPlayer.GetComponent<PlayerState>().canAttack == 0)
+                {
+                    IngameManager.Instance.controlPanel.DisplayAttack(false, false);
+                }
             }
             else
             {

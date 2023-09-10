@@ -17,6 +17,7 @@ public class MapDatabase
 [System.Serializable]
 public class MapData
 {
+    public int maxPlayerNum;
     public int width;
     public int height;
     public Inwalkable[] inwalkable;

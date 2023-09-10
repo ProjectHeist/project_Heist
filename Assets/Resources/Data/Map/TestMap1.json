@@ -1,4 +1,5 @@
 {
+    "maxPlayerNum": 8,
     "width": 50,
     "height": 50,
     "inwalkable": [

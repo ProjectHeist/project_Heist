@@ -47,6 +47,26 @@ public class GetRange
         return walkableSpots;
     }
 
+    public List<Vector2Int> getrg(Vector2Int start, int Range)
+    {
+        OpenSet.Clear();
+        reachable.Clear();
+        reachable.Add(start, 0);
+        OpenSet.Enqueue(new Spot(start.x, start.y, 0));
+        while (OpenSet.Count > 0)
+        {
+            Spot parent = OpenSet.Dequeue();
+            int childDist = parent.dist + 1;
+            newCheckChild(parent.X - 1, parent.Y, childDist, Range, reachable);
+            newCheckChild(parent.X + 1, parent.Y, childDist, Range, reachable);
+            newCheckChild(parent.X, parent.Y - 1, childDist, Range, reachable);
+            newCheckChild(parent.X, parent.Y + 1, childDist, Range, reachable);
+        }
+        List<Vector2Int> walkableSpots = reachable.Keys.ToList();
+
+        return walkableSpots;
+    }
+
     void CheckChild(int x, int y, int distance, int maxDistance, Dictionary<Vector2Int, int> reachable)
     {
         var position = new Vector2Int(x, y);
@@ -74,5 +94,31 @@ public class GetRange
             OpenSet.Enqueue(newSpot);
         }
     }
+
+    void newCheckChild(int x, int y, int distance, int maxDistance, Dictionary<Vector2Int, int> reachable)
+    {
+        var position = new Vector2Int(x, y);
+        bool isInBounds = x >= 0 && x < currentmap.GetUpperBound(0) && y >= 0 && y < currentmap.GetUpperBound(1);
+        if (!isInBounds)
+        {
+            return;
+        }
+
+        if (reachable.ContainsKey(position))
+        {
+            return;
+        }
+
+        reachable.Add(position, distance);
+
+        if (distance < maxDistance)
+        {
+            Spot newSpot = new Spot(x, y, 0);
+            newSpot.dist = distance;
+            OpenSet.Enqueue(newSpot);
+        }
+    }
+
+
 
 }

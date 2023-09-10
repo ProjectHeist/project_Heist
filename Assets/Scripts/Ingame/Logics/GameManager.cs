@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public DataManager _data = new DataManager();
     public UIManager _ui = new UIManager();
     public IngameManager _ingame;
+    public int[] playerIndex;
+    public int[] weaponIndex;
 
 
     void Awake()
@@ -47,38 +49,15 @@ public class GameManager : MonoBehaviour
     void init()
     {
         _data.init();
-        //StartGame();
     }
 
-    public void StartGame(string mapName)
+    public void StartGame(string mapName, int[] playerList, int[] weaponList)
     {
-        //Change Scene and get IngameManager, and do things
+        playerIndex = playerList;
+        weaponIndex = weaponList;
         SceneManager.LoadScene(mapName);
-        _ingame = GameObject.FindGameObjectWithTag("IngameManager").GetComponent<IngameManager>();
-        int[] testplayerlist = { 1, 0 };
-        int[] testweaponlist = { 0, 1 };
-        _ingame.init();
-        CreatePlayerList(testplayerlist, testweaponlist);
+        //Change Scene and get IngameManager, and do things
     }
 
-    public void SelectPlayers()
-    {
-        // 출격시킬 캐릭터와 무기를 선택하는 함수, 결정 시 아래로 넘어감.
-    }
 
-    void CreatePlayerList(int[] playerlist, int[] weaponlist)
-    {
-
-        for (int i = 0; i < playerlist.Length; i++)
-        {
-            PlayerStat ps = _data.playerDatabase.totalPlayerStat.playerStats[playerlist[i]];
-            Debug.Log(ps.playerMoveRange);
-            WeaponStat ws = _data.weaponDatabase.weaponStatList.weaponStats[weaponlist[i]];
-            Debug.Log(ws.weaponDamage);
-            GameObject player = Instantiate(_ingame.Prefabs[0]);
-            player.GetComponent<PlayerState>().SetState(ps, ws);
-            _ingame.players.Add(player);
-            player.SetActive(false);
-        }
-    }
 }

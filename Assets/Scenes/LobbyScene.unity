@@ -11532,8 +11532,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Current Money: '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
+  m_sharedMaterial: {fileID: 3643465130414686926, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -15124,6 +15124,7 @@ GameObject:
   - component: {fileID: 1413112387}
   - component: {fileID: 1413112386}
   - component: {fileID: 1413112385}
+  - component: {fileID: 1413112388}
   m_Layer: 5
   m_Name: MissionButton
   m_TagString: Untagged
@@ -15195,7 +15196,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1413112386}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1413112388}
+        m_TargetAssemblyTypeName: MissionButton, Assembly-CSharp
+        m_MethodName: LoadMission
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1413112386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15234,6 +15247,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1413112383}
   m_CullTransparentMesh: 1
+--- !u!114 &1413112388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413112383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4636f657fda46aa459c58feeb7206186, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1416084843
 GameObject:
   m_ObjectHideFlags: 0
@@ -16649,8 +16674,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: SELECT MISSION
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
+  m_sharedMaterial: {fileID: 3643465130414686926, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -21445,8 +21470,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Player: '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
+  m_sharedMaterial: {fileID: 3643465130414686926, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -22531,8 +22556,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: EXIT TO TITLE
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
+  m_sharedMaterial: {fileID: 3643465130414686926, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
