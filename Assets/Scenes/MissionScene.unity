@@ -455,7 +455,7 @@ GameObject:
   - component: {fileID: 163479014}
   - component: {fileID: 163479013}
   m_Layer: 0
-  m_Name: PrepareManager
+  m_Name: MissionManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3673,6 +3673,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f30f84108ffd0f449a6eb1c3f135314, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentMaster:
+    index: 0
+    money: 0
+    levels: 
+    stage: 0
+    playerNumbers: 
+    weaponNumbers: 
+    masterName: 
   _ingame: {fileID: 0}
   playerIndex: 
   weaponIndex: 

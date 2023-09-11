@@ -9,6 +9,6 @@ public class PlayerText : MonoBehaviour
 
     void Update()
     {
-        nametext.text = "Player: " + GameManager.Instance._data.masterDatabase.masterData.masterName;
+        nametext.text = "Player: " + GameManager.Instance.currentMaster.masterName;
     }
 }

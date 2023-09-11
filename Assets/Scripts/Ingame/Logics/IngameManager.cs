@@ -128,7 +128,7 @@ public class IngameManager : MonoBehaviour
     public void EndGame()
     {
         // end game and change scene if all players are extracted
-        GameManager.Instance._data.masterDatabase.masterData.money += TotalMoney;
+        GameManager.Instance.currentMaster.money += TotalMoney;
         SceneManager.LoadScene("LobbyScene");
     }
 

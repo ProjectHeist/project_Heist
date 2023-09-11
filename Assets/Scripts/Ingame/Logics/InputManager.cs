@@ -115,13 +115,6 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
                 Escape();
             }
         }
-        else if (Input.GetKeyDown(KeyCode.Escape) && AllowInput)
-        {
-            if (IngameManager.Instance.playerController.currentState != ControlState.Default)
-            {
-                Escape();
-            }
-        }
 
     }
 

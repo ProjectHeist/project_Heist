@@ -9,6 +9,6 @@ public class MasterMoneyText : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        mastermoney.text = "Current Money: " + GameManager.Instance._data.masterDatabase.masterData.money + "$";
+        mastermoney.text = "Current Money: " + GameManager.Instance.currentMaster.money + "$";
     }
 }

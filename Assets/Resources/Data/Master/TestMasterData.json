@@ -1,25 +1,30 @@
 {
-    "money": 10000,
-    "levels": [
-        1,
-        1,
-        1,
-        1,
-        1
-    ],
-    "stage": 0,
-    "playerNumbers": [
-        0,
-        1,
-        3,
-        4,
-        5
-    ],
-    "weaponNumbers": [
-        0,
-        0,
-        1,
-        2
-    ],
-    "masterName": "정상길"
+    "Datas": [
+        {
+            "index": 0,
+            "money": 10000,
+            "levels": [
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "stage": 0,
+            "playerNumbers": [
+                0,
+                1,
+                3,
+                4,
+                5
+            ],
+            "weaponNumbers": [
+                0,
+                0,
+                1,
+                2
+            ],
+            "masterName": "정상길"
+        }
+    ]
 }

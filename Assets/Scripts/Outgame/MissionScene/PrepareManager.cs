@@ -60,16 +60,16 @@ public class PrepareManager : MonoBehaviour
 
         PlayerStat[] totalplayer = gm._data.playerDatabase.totalPlayerStat.playerStats;
         currentplayers = new List<PlayerStat>(); // 현재 플레이어가 가지고 있는 캐릭터들
-        for (int i = 0; i < gm._data.masterDatabase.masterData.playerNumbers.Length; i++)
+        for (int i = 0; i < gm.currentMaster.playerNumbers.Count; i++)
         {
-            int idx = gm._data.masterDatabase.masterData.playerNumbers[i];
+            int idx = gm.currentMaster.playerNumbers[i];
             currentplayers.Add(totalplayer[idx]);
         }
         WeaponStat[] totalweapons = gm._data.weaponDatabase.weaponStatList.weaponStats;
         currentweapons = new List<WeaponStat>(); //현재 플레이어가 가지고 있는 무기들
-        for (int i = 0; i < gm._data.masterDatabase.masterData.weaponNumbers.Length; i++)
+        for (int i = 0; i < gm.currentMaster.weaponNumbers.Count; i++)
         {
-            int idx = gm._data.masterDatabase.masterData.weaponNumbers[i];
+            int idx = gm.currentMaster.weaponNumbers[i];
             currentweapons.Add(totalweapons[idx]);
         }
 
