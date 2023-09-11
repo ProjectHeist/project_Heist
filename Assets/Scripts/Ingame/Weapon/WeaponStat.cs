@@ -1,6 +1,7 @@
 [System.Serializable]
 public class WeaponStat
 {
+    public int weaponCost;
     public int weaponNumber;
 
     public string weaponName;

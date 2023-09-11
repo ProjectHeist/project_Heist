@@ -1,6 +1,8 @@
 {
     "playerStats": [
         {
+            "playerCost": 1000,
+            "playerPercent": 0.1,
             "playerNumber": 0,
             "playerClass": 0,
             "playerName": "김찬호",
@@ -9,6 +11,8 @@
             "playerMoveRange": 15
         },
         {
+            "playerCost": 2000,
+            "playerPercent": 0.05,
             "playerNumber": 1,
             "playerClass": 1,
             "playerName": "손인욱",
@@ -17,6 +21,8 @@
             "playerMoveRange": 10
         },
         {
+            "playerCost": 500,
+            "playerPercent": 0.3,
             "playerNumber": 2,
             "playerClass": 2,
             "playerName": "장지환",
@@ -25,6 +31,8 @@
             "playerMoveRange": 20
         },
         {
+            "playerCost": 9999,
+            "playerPercent": 0,
             "playerNumber": 3,
             "playerClass": 1,
             "playerName": "엄준식",
@@ -33,6 +41,8 @@
             "playerMoveRange": 10
         },
         {
+            "playerCost": 1000,
+            "playerPercent": 0.1,
             "playerNumber": 4,
             "playerClass": 3,
             "playerName": "이재석",
@@ -41,6 +51,8 @@
             "playerMoveRange": 10
         },
         {
+            "playerCost": 1000,
+            "playerPercent": 0.1,
             "playerNumber": 5,
             "playerClass": 2,
             "playerName": "박종우",

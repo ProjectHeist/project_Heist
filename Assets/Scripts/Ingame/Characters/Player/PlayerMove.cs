@@ -30,6 +30,15 @@ public class PlayerMove : MonoBehaviour
 
     IEnumerator Move()
     {
+        if (path.Count <= playerState.moveRange)
+        {
+            gameObject.GetComponent<PlayerState>().canMove--;
+            IngameManager.Instance.controlPanel.DisplayMove(true, false);
+            if (gameObject.GetComponent<PlayerState>().canMove == 0)
+            {
+                IngameManager.Instance.controlPanel.DisplayMove(false, false);
+            }
+        }
         while (!arrived)
         {
             if (path.Count <= playerState.moveRange)
@@ -49,6 +58,7 @@ public class PlayerMove : MonoBehaviour
                     {
                         StopMoving();
                     }
+
                 }
             }
             else

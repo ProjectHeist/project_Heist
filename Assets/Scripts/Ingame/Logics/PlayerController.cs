@@ -59,13 +59,7 @@ public class PlayerController
         if (IngameManager.Instance.mapManager.GetGridPositionFromWorld(currentPlayer.transform.position) != position)
         {
             playerMove.MoveToDest(position);
-            currentPlayer.GetComponent<PlayerState>().canMove--;
             currentState = ControlState.Default;
-            IngameManager.Instance.controlPanel.DisplayMove(true, false);
-            if (currentPlayer.GetComponent<PlayerState>().canMove == 0)
-            {
-                IngameManager.Instance.controlPanel.DisplayMove(false, false);
-            }
         }
     }
 

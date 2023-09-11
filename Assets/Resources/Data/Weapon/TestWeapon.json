@@ -1,6 +1,7 @@
 {
     "weaponStats": [
         {
+            "weaponCost": 100,
             "weaponNumber": 0,
             "weaponName": "TestHG",
             "weaponMinAttackRange": 6,
@@ -9,6 +10,7 @@
             "weaponCritRate": 0.3
         },
         {
+            "weaponCost": 500,
             "weaponNumber": 1,
             "weaponName": "TestAR",
             "weaponMinAttackRange": 10,
@@ -17,6 +19,7 @@
             "weaponCritRate": 0.1
         },
         {
+            "weaponCost": 200,
             "weaponNumber": 2,
             "weaponName": "TestSG",
             "weaponMinAttackRange": 4,
@@ -25,6 +28,7 @@
             "weaponCritRate": 0.3
         },
         {
+            "weaponCost": 250,
             "weaponNumber": 3,
             "weaponName": "TestSMG",
             "weaponMinAttackRange": 8,
@@ -33,6 +37,7 @@
             "weaponCritRate": 0.1
         },
         {
+            "weaponCost": 1000,
             "weaponNumber": 4,
             "weaponName": "TestSR",
             "weaponMinAttackRange": 15,

@@ -1,6 +1,8 @@
 [System.Serializable]
 public class PlayerStat
 {
+    public int playerCost;
+    public float playerPercent;
     public int playerNumber;
 
     public int playerClass;
