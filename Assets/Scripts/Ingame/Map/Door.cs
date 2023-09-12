@@ -6,9 +6,7 @@ using UnityEngine;
 public class Door : MonoBehaviour
 {
     public bool isOpened = false;
-    private int DoorMove = 0;  // if doorMove=0 stop if doorMove=1 open if doorMove=2 close
-
-    private float WaitForSeconds = 1.0f;
+    public int requiredTime = 0;
     private float speed = 1f;
 
     public void OnDoorInteracted()

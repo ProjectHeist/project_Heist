@@ -85,22 +85,33 @@ public class IngameManager : MonoBehaviour
         foreach (GameObject player in players)
         {
             PlayerState ps = player.GetComponent<PlayerState>();
-            ps.canMove = 1;
-            ps.canAttack = 1;
-            controlPanel.Move.GetComponent<Image>().color = new Color(255, 255, 255, 0.5f);
-            controlPanel.Attack.GetComponent<Image>().color = new Color(255, 255, 255, 0.5f);
+            if (ps.InteractionTime > 0)
+            {
+                ps.InteractionTime--;
+            }
+            else
+            {
+                ps.canMove = 1;
+                ps.canAttack = 1;
+                controlPanel.Move.GetComponent<Image>().color = new Color(255, 255, 255, 0.5f);
+                controlPanel.Attack.GetComponent<Image>().color = new Color(255, 255, 255, 0.5f);
+            }
         }
     }
 
     public void Deploy(Vector2Int deployPos)
     {
         Vector3 deploy = mapManager.GetWorldPositionFromGridPosition(deployPos);
-        players[deployedplayers].transform.position = deploy;
-        players[deployedplayers].SetActive(true);
-        deployedplayers++;
-        if (deployedplayers >= players.Count)
+        if (mapManager.spots[deployPos.x, deployPos.y].z == 0) // 벽 소환 방지
         {
-            Deployed = true;
+            players[deployedplayers].transform.position = deploy;
+            players[deployedplayers].SetActive(true);
+            mapManager.spots[deployPos.x, deployPos.y].z = 1;
+            deployedplayers++;
+            if (deployedplayers >= players.Count)
+            {
+                Deployed = true;
+            }
         }
     }
 
@@ -183,6 +194,7 @@ public class IngameManager : MonoBehaviour
         for (int i = 0; i < mapdata.EnemyNum; i++)
         {
             Vector3 spawnPos = mapManager.GetWorldPositionFromGridPosition(new Vector2Int(mapdata.enemyPos[i].x, mapdata.enemyPos[i].y));
+            mapManager.spots[mapdata.enemyPos[i].x, mapdata.enemyPos[i].y].z = 1;
             GameObject enemy = Instantiate(Prefabs[1], spawnPos, Quaternion.identity);
             enemy.GetComponent<EnemyState>().GetEnemyInfo();
             HPBar hp = enemy.GetComponentInChildren<HPBar>();

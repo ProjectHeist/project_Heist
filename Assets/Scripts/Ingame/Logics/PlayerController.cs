@@ -56,7 +56,7 @@ public class PlayerController
 
     public void decideMove(Vector2Int position)
     {
-        if (IngameManager.Instance.mapManager.GetGridPositionFromWorld(currentPlayer.transform.position) != position)
+        if (IngameManager.Instance.mapManager.GetGridPositionFromWorld(currentPlayer.transform.position) != position && IngameManager.Instance.mapManager.spots[position.x, position.y].z == 0)
         {
             playerMove.MoveToDest(position);
             currentState = ControlState.Default;

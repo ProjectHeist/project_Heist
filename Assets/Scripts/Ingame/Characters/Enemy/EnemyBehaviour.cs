@@ -137,10 +137,14 @@ public class EnemyBehaviour : MonoBehaviour
     public void Chase()
     {
         MapManager map = IngameManager.Instance.mapManager;
+        Vector2Int currentpos = map.GetGridPositionFromWorld(gameObject.transform.position);
+        map.spots[map.GetGridPositionFromWorld(target.transform.position).x, map.GetGridPositionFromWorld(target.transform.position).y].z = 0;
         Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
         List<Spot> path = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(gameObject.transform.position), map.GetGridPositionFromWorld(target.transform.position), 1000);
+        map.spots[map.GetGridPositionFromWorld(target.transform.position).x, map.GetGridPositionFromWorld(target.transform.position).y].z = 1;
         List<Spot> newPath = new List<Spot>();
         path.Reverse();
+        map.spots[currentpos.x, currentpos.y].z = 0;
         if (path.Count < es.moveRange)
         {
             for (int i = 0; i < path.Count - 1; i++)
@@ -156,8 +160,6 @@ public class EnemyBehaviour : MonoBehaviour
             }
         }
         StartCoroutine(Move(newPath));
-
-
     }
 
     IEnumerator Move(List<Spot> path)
@@ -180,6 +182,8 @@ public class EnemyBehaviour : MonoBehaviour
             }
             yield return null;
         }
+        Vector2Int currentpos = map.GetGridPositionFromWorld(gameObject.transform.position);
+        map.spots[currentpos.x, currentpos.y].z = 1;
 
         if (InRange(map.GetGridPositionFromWorld(gameObject.transform.position), map.GetGridPositionFromWorld(target.transform.position), es.maxAttackRange))
         {

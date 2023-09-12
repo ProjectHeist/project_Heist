@@ -26,6 +26,8 @@ public class CharacterState : MonoBehaviour
             {
                 IngameManager.Instance.enemies.Remove(gameObject);
             }
+            Vector2Int pos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
+            IngameManager.Instance.mapManager.spots[pos.x, pos.y].z = 0;
             Destroy(gameObject, 0.5f);
         }
         else
