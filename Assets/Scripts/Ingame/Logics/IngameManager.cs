@@ -14,6 +14,7 @@ public class IngameManager : MonoBehaviour
     public MapCreator mapCreator;
     public MapManager mapManager = new MapManager();
     public PlayerController playerController = new PlayerController();
+    public Transform mainCamera;
     public ControlPanel controlPanel;
     public InputManager InputManager;
     public List<GameObject> Prefabs;
@@ -62,13 +63,17 @@ public class IngameManager : MonoBehaviour
         extractionPoint = mapManager.GetGridCellFromPosition(new Vector2Int(0, 0)).GetComponent<GridCell>();
         turn = 1;
         CreatePlayerList();
+        CreateEnemy();
     }
 
     public void EnemyPhase() // 페이즈 종료 버튼 눌렀을 때 
     {
         CheckObjective();
         phase = 1;
-        // Methods For enemies, Controled by IngameManager
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            enemies[i].GetComponent<EnemyBehaviour>().EnemyAct();
+        }
 
         phase = 0;
         turn++;
@@ -165,9 +170,24 @@ public class IngameManager : MonoBehaviour
 
                 GameObject player = Instantiate(Prefabs[0]);
                 player.GetComponent<PlayerState>().SetState(ps, ws);
+                player.GetComponentInChildren<HPBar>().SetMaxHealth(player.GetComponent<PlayerState>().HP);
                 players.Add(player);
                 player.SetActive(false);
             }
+        }
+    }
+
+    void CreateEnemy()
+    {
+        MapData mapdata = GameManager.Instance._data.mapDatabase.testData;
+        for (int i = 0; i < mapdata.EnemyNum; i++)
+        {
+            Vector3 spawnPos = mapManager.GetWorldPositionFromGridPosition(new Vector2Int(mapdata.enemyPos[i].x, mapdata.enemyPos[i].y));
+            GameObject enemy = Instantiate(Prefabs[1], spawnPos, Quaternion.identity);
+            enemy.GetComponent<EnemyState>().GetEnemyInfo();
+            HPBar hp = enemy.GetComponentInChildren<HPBar>();
+            hp.SetMaxHealth(enemy.GetComponent<EnemyState>().HP);
+            enemies.Add(enemy);
         }
     }
 

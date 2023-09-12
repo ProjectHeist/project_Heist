@@ -18,6 +18,8 @@ public class MapDatabase
 public class MapData
 {
     public int maxPlayerNum;
+    public int EnemyNum;
+    public newVector[] enemyPos;
     public int width;
     public int height;
     public Inwalkable[] inwalkable;
@@ -88,4 +90,11 @@ public class Inwalkable
     public int y;
     public int length;
     public string direction;
+}
+
+[System.Serializable]
+public class newVector
+{
+    public int x;
+    public int y;
 }

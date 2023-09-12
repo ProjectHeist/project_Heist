@@ -20,6 +20,7 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
         // 마우스 컨트롤
         if (Input.GetMouseButtonDown(0))
         {
+            GameManager.Instance._ui.DeleteRange();
             AllowInput = false;
             clickedGridCell = IsMouseOverAGridSpace();
             if (clickedGridCell != null)
@@ -126,10 +127,48 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
         Debug.Log("State Changed to Select");
     }
 
-    private void ShowEnemyInfo(GameObject gameObject)  // 해당 그리드에 있는 물체의 정보를 보여주는 함수
+    private void ShowEnemyInfo(GameObject enemy)  // 해당 그리드에 있는 물체의 정보를 보여주는 함수
     {
         //Debug.Log(clickedGridPos);
+        Color detectRange = Color.magenta;
 
+        MapManager map = IngameManager.Instance.mapManager;
+        EnemyState es = enemy.GetComponent<EnemyState>();
+        GetRange getRange = new GetRange(map.spots, map.width, map.height);
+        List<Vector2Int> range = getRange.getrg(map.GetGridPositionFromWorld(enemy.transform.position), es.detectRange);
+        List<Vector2Int> newRange = new List<Vector2Int>();
+        for (int i = 0; i < range.Count; i++)
+        {
+            if (es.faceDir == 0) //+x
+            {
+                if (range[i].x > map.GetGridPositionFromWorld(enemy.transform.position).x)
+                {
+                    newRange.Add(range[i]);
+                }
+            }
+            else if (es.faceDir == 1) // -x
+            {
+                if (range[i].x < map.GetGridPositionFromWorld(enemy.transform.position).x)
+                {
+                    newRange.Add(range[i]);
+                }
+            }
+            else if (es.faceDir == 2) //+y
+            {
+                if (range[i].y > map.GetGridPositionFromWorld(enemy.transform.position).y)
+                {
+                    newRange.Add(range[i]);
+                }
+            }
+            else //-y
+            {
+                if (range[i].y < map.GetGridPositionFromWorld(enemy.transform.position).y)
+                {
+                    newRange.Add(range[i]);
+                }
+            }
+        }
+        GameManager.Instance._ui.DisplayRange(newRange, detectRange);
     }
 
     private void ShowObjectInfo(GameObject gameObject)  // 해당 그리드에 있는 물체의 정보를 보여주는 함수

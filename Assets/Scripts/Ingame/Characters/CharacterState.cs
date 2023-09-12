@@ -18,11 +18,20 @@ public class CharacterState : MonoBehaviour
     {
         if (HP - damage <= 0)
         {
+            if (gameObject.tag == "Player")
+            {
+                IngameManager.Instance.players.Remove(gameObject);
+            }
+            else
+            {
+                IngameManager.Instance.enemies.Remove(gameObject);
+            }
             Destroy(gameObject, 0.5f);
         }
         else
         {
             HP -= damage;
+            gameObject.GetComponentInChildren<HPBar>().SetValue(HP);
         }
     }
 }
