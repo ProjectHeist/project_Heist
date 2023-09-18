@@ -100,6 +100,18 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
             if (IngameManager.Instance.playerController.currentState == ControlState.Default && selected)
             {
                 GameObject player = IngameManager.Instance.playerController.currentPlayer;
+                CharacterState state = player.GetComponent<CharacterState>();
+            }
+            else if (IngameManager.Instance.playerController.currentState == ControlState.PlayerEX && selected)
+            {
+
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.F) && AllowInput)
+        {
+            if (IngameManager.Instance.playerController.currentState == ControlState.Default && selected)
+            {
+                GameObject player = IngameManager.Instance.playerController.currentPlayer;
                 Color InteractRange = Color.yellow;
 
                 GetRange getRange = new GetRange(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height); // 범위 구하기 

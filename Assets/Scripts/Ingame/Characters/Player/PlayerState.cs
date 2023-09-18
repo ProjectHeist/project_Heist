@@ -6,10 +6,13 @@ using UnityEngine;
 
 public class PlayerState : CharacterState
 {
+    public int EXcooldown; // 현재 남아있는 쿨타임
+    private int EXcooltime; // 쿨타임
     public PlayerState()
     {
         canAttack = 1;
         canMove = 1;
+        EXcooldown = 0;
     }
     public void SetState(PlayerStat playerStat, WeaponStat weaponStat)
     {

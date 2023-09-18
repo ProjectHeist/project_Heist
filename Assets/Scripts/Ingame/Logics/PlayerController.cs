@@ -8,7 +8,8 @@ public enum ControlState
     Default,
     PlayerMove,
     PlayerAttack,
-    PlayerInteract
+    PlayerInteract,
+    PlayerEX
 }
 public class PlayerController
 {
@@ -50,6 +51,8 @@ public class PlayerController
                 GameObject _object = _gridcell.objectInThisGrid;
 
                 decideInteract(_object, distance);
+                break;
+            case ControlState.PlayerEX:
                 break;
         }
     }

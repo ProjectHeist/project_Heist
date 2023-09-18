@@ -11,6 +11,7 @@ public class ControlPanel : MonoBehaviour
     public GameObject Move;
     public GameObject Attack;
     public GameObject Interact;
+    public GameObject EX;
     public float speed = 50.0f;
 
     void Update()
@@ -83,9 +84,28 @@ public class ControlPanel : MonoBehaviour
         {
             RectTransform rect = Interact.GetComponent<RectTransform>();
             StartCoroutine(movefordirection(Interact, rect.anchoredPosition + new Vector2(0, -20)));
-
         }
+    }
+    public void DisplayEX(bool canEX, bool isSelected)
+    {
+        if (canEX)
+        {
+            if (isSelected) //선택 시
+            {
+                RectTransform rect = EX.GetComponent<RectTransform>();
+                StartCoroutine(movefordirection(EX, rect.anchoredPosition + new Vector2(0, 20)));
 
+            }
+            else //취소 시
+            {
+                RectTransform rect = Attack.GetComponent<RectTransform>();
+                StartCoroutine(movefordirection(EX, rect.anchoredPosition + new Vector2(0, -20)));
+            }
+        }
+        else
+        {
+            EX.GetComponent<Image>().color = new Color(255, 0, 0, 0.5f);
+        }
     }
 
     public IEnumerator movefordirection(GameObject panel, Vector2 target)
