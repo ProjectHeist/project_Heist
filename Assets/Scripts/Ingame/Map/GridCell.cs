@@ -44,6 +44,11 @@ public class GridCell : MonoBehaviour
             if (colliders[i].gameObject.tag == "Enemy")
             {
                 enemyInThisGrid = colliders[i].gameObject;
+                break;
+            }
+            else
+            {
+                enemyInThisGrid = null;
             }
         }
     }

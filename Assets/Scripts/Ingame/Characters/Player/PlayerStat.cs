@@ -14,5 +14,6 @@ public class PlayerStat
     public float playerAccuracy;
 
     public int playerMoveRange;
+    public int playerEX;
 
 }

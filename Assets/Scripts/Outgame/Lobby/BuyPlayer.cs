@@ -38,7 +38,7 @@ public class BuyPlayer : MonoBehaviour
     {
         playeridx = idx;
         PlayerStat ps = GameManager.Instance._data.playerDatabase.totalPlayerStat.playerStats[idx];
-        infoText.text = "Name: " + ps.playerName + "\nCost: " + ps.playerCost + "$" + "\nPercent: " + ps.playerPercent * 100 + "%" + "\nHP: " + ps.playerHP + "\nAccuracy: " + ps.playerAccuracy * 100 + "%" + "\nMoveRange: " + ps.playerMoveRange;
+        infoText.text = "이름: " + ps.playerName + "\n계약금: " + ps.playerCost + "$" + "\n분배 비율: " + ps.playerPercent * 100 + "%" + "\n체력: " + ps.playerHP + "\n명중률: " + ps.playerAccuracy * 100 + "%" + "\n이동 범위: " + ps.playerMoveRange;
     }
 
     public void OnBuyBtnClicked()

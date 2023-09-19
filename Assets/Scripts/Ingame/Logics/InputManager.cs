@@ -46,7 +46,7 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
             if (IngameManager.Instance.playerController.currentState == ControlState.Default && selected) // 플레이어가 선택되었으며 아무 행동도 취하지 않았을 때
             {
                 GameObject player = IngameManager.Instance.playerController.currentPlayer; // 플레이어 가져오기
-                CharacterState state = player.GetComponent<PlayerState>(); // 플레이어 스탯 가져오기
+                PlayerState state = player.GetComponent<PlayerState>(); // 플레이어 스탯 가져오기
                 if (state.canMove > 0)
                 {
                     GetRange getRange = new GetRange(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height); // 범위 구하기 
@@ -61,7 +61,7 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
             {
                 Escape();
                 GameObject player = IngameManager.Instance.playerController.currentPlayer; // 플레이어 가져오기
-                CharacterState state = player.GetComponent<PlayerState>(); // 플레이어 스탯 가져오기
+                PlayerState state = player.GetComponent<PlayerState>(); // 플레이어 스탯 가져오기
                 IngameManager.Instance.controlPanel.DisplayMove(true, false);
             }
         }
@@ -90,23 +90,36 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
             else if (IngameManager.Instance.playerController.currentState == ControlState.PlayerAttack && selected)
             {
                 GameObject player = IngameManager.Instance.playerController.currentPlayer; // 플레이어 가져오기
-                CharacterState state = player.GetComponent<PlayerState>(); // 플레이어 스탯 가져오기
+                PlayerState state = player.GetComponent<PlayerState>(); // 플레이어 스탯 가져오기
                 IngameManager.Instance.controlPanel.DisplayAttack(true, false);
                 Escape();
             }
         }
-        else if (Input.GetKeyDown(KeyCode.R) && AllowInput)
+        /*else if (Input.GetKeyDown(KeyCode.R) && AllowInput)
         {
             if (IngameManager.Instance.playerController.currentState == ControlState.Default && selected)
             {
                 GameObject player = IngameManager.Instance.playerController.currentPlayer;
-                CharacterState state = player.GetComponent<CharacterState>();
+                PlayerState state = player.GetComponent<PlayerState>();
+                //PlayerEX ex = player.GetComponent<PlayerEX>();
+                Color Range = new Color(0, 100, 200);
+                if (state.EXcooldown == 0)
+                {
+                    IngameManager.Instance.controlPanel.DisplayEX(true, true);
+                    /*if (ex.range != -1)
+                    {
+                        GetRange getRange = new GetRange(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height); // 범위 구하기 
+                        List<Vector2Int> skillRange = getRange.getrg(IngameManager.Instance.mapManager.GetGridPositionFromWorld(player.transform.position), ex.range - 1); // 최대 공격 범위 담는 리스트 
+                        GameManager.Instance._ui.DisplayRange(skillRange, Range);
+                        Debug.Log("State Changed to EX");
+                    }
+                }
             }
             else if (IngameManager.Instance.playerController.currentState == ControlState.PlayerEX && selected)
             {
-
+                IngameManager.Instance.controlPanel.DisplayEX(true, false);
             }
-        }
+        }*/
         else if (Input.GetKeyDown(KeyCode.F) && AllowInput)
         {
             if (IngameManager.Instance.playerController.currentState == ControlState.Default && selected)

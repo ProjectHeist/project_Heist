@@ -85,7 +85,7 @@ public class IngameManager : MonoBehaviour
         foreach (GameObject player in players)
         {
             PlayerState ps = player.GetComponent<PlayerState>();
-            if (ps.InteractionTime > 0)
+            if (ps.InteractionTime > 0) // 상호작용 중이면 못움직임
             {
                 ps.InteractionTime--;
             }
@@ -95,6 +95,12 @@ public class IngameManager : MonoBehaviour
                 ps.canAttack = 1;
                 controlPanel.Move.GetComponent<Image>().color = new Color(255, 255, 255, 0.5f);
                 controlPanel.Attack.GetComponent<Image>().color = new Color(255, 255, 255, 0.5f);
+            }
+
+            if (ps.EXcooldown != 0)
+            {
+                ps.EXcooldown--;
+                controlPanel.EX.GetComponent<Image>().color = new Color(255, 255, 255, 0.5f);
             }
         }
     }
@@ -182,6 +188,7 @@ public class IngameManager : MonoBehaviour
                 GameObject player = Instantiate(Prefabs[0]);
                 player.GetComponent<PlayerState>().SetState(ps, ws);
                 player.GetComponentInChildren<HPBar>().SetMaxHealth(player.GetComponent<PlayerState>().HP);
+
                 players.Add(player);
                 player.SetActive(false);
             }

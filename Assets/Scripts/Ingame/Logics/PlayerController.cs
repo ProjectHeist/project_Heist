@@ -53,6 +53,8 @@ public class PlayerController
                 decideInteract(_object, distance);
                 break;
             case ControlState.PlayerEX:
+                //PlayerEX ex = currentPlayer.GetComponent<PlayerEX>();
+                //decideEX(GridPos, ex);
                 break;
         }
     }
@@ -116,6 +118,18 @@ public class PlayerController
             Debug.Log("Out of range");
         }
 
+    }
+
+    public void decideEX(Vector2Int gridpos, PlayerEX ex)
+    {
+        if (ex.range != -1) // 특수 스킬
+        {
+
+        }
+        else // 자버프형 스킬
+        {
+            ex.UseEX(currentPlayer.GetComponent<PlayerState>());
+        }
     }
 
 }

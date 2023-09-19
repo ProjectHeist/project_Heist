@@ -39,7 +39,7 @@ public class BuyWeapon : MonoBehaviour
     {
         weaponidx = idx;
         WeaponStat ws = GameManager.Instance._data.weaponDatabase.weaponStatList.weaponStats[idx];
-        infoText.text = "Name: " + ws.weaponName + "\nCost: " + ws.weaponCost + "$" + "\nPercent: " + ws.weaponCritRate * 100 + "%" + "\nMaxRange: " + ws.weaponMaxAttackRange + "\nMinRange: " + ws.weaponMinAttackRange + "\nDamage: " + ws.weaponDamage;
+        infoText.text = "이름: " + ws.weaponName + "\n가격: " + ws.weaponCost + "$" + "\n치명타 확률: " + ws.weaponCritRate * 100 + "%" + "\n사거리: " + ws.weaponMaxAttackRange + "\n명중 보장 사거리: " + ws.weaponMinAttackRange + "\n피해량: " + ws.weaponDamage;
     }
 
     public void OnBuyBtnClicked()

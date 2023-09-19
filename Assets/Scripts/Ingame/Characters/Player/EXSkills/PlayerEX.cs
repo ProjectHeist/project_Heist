@@ -2,11 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerEX : MonoBehaviour
+public abstract class PlayerEX : ScriptableObject
 {
-    private PlayerState ps;
-    public void UseEX()
+    public int skillNo;
+    public int duration = 0; //지속시간
+    public int coolTime;
+    public int range = -1;
+    public string skillname;
+    public string skillcontent;
+    public virtual void UseEX(PlayerState ps)
     {
-        ps = gameObject.GetComponent<PlayerState>();
+
     }
 }

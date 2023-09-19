@@ -8,7 +8,8 @@
             "playerName": "김찬호",
             "playerHP": 100,
             "playerAccuracy": 0.5,
-            "playerMoveRange": 15
+            "playerMoveRange": 15,
+            "PlayerEX": 1
         },
         {
             "playerCost": 2000,
@@ -18,7 +19,8 @@
             "playerName": "손인욱",
             "playerHP": 150,
             "playerAccuracy": 0.8,
-            "playerMoveRange": 10
+            "playerMoveRange": 10,
+            "PlayerEX": 0
         },
         {
             "playerCost": 500,
@@ -28,7 +30,8 @@
             "playerName": "장지환",
             "playerHP": 50,
             "playerAccuracy": 0.2,
-            "playerMoveRange": 20
+            "playerMoveRange": 20,
+            "PlayerEX": 1
         },
         {
             "playerCost": 9999,
@@ -38,7 +41,8 @@
             "playerName": "엄준식",
             "playerHP": 100,
             "playerAccuracy": 1.0,
-            "playerMoveRange": 10
+            "playerMoveRange": 10,
+            "PlayerEX": 3
         },
         {
             "playerCost": 1000,
@@ -48,7 +52,8 @@
             "playerName": "이재석",
             "playerHP": 25,
             "playerAccuracy": 0.1,
-            "playerMoveRange": 10
+            "playerMoveRange": 10,
+            "PlayerEX": 3
         },
         {
             "playerCost": 1000,
@@ -58,7 +63,8 @@
             "playerName": "박종우",
             "playerHP": 200,
             "playerAccuracy": 0.5,
-            "playerMoveRange": 10
+            "playerMoveRange": 10,
+            "PlayerEX": 2
         }
     ]
 }

@@ -94,7 +94,6 @@ public class ControlPanel : MonoBehaviour
             {
                 RectTransform rect = EX.GetComponent<RectTransform>();
                 StartCoroutine(movefordirection(EX, rect.anchoredPosition + new Vector2(0, 20)));
-
             }
             else //취소 시
             {
