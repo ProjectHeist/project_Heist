@@ -80,7 +80,7 @@ public class IngameManager : MonoBehaviour
         StartPlayerPhase();
     }
 
-    public void StartPlayerPhase()
+    public void StartPlayerPhase() //플레이어의 페이즈일 때 모든 플레이어에 대해 돌면서 작용함
     {
         foreach (GameObject player in players)
         {
@@ -136,6 +136,7 @@ public class IngameManager : MonoBehaviour
             {
                 extractionPoint.playerInThisGrid.transform.position = new Vector3(-100, -100, -100);
                 extractionPoint.playerInThisGrid.SetActive(false);
+                mapManager.spots[extractionPoint.posX, extractionPoint.posY].z = 0;
                 extractionPoint.playerInThisGrid = null;
                 extractedplayers++;
             }
@@ -166,9 +167,20 @@ public class IngameManager : MonoBehaviour
 
     void CreatePlayerList()
     {
-        int[] playerlist = GameManager.Instance.playerIndex;
-        int[] weaponlist = GameManager.Instance.weaponIndex;
-        for (int i = 0; i < playerlist.Length; i++)
+        //int[] playerlist = GameManager.Instance.playerIndex; //테스트 시 이 부분은 주석 처리 
+        //int[] weaponlist = GameManager.Instance.weaponIndex; //테스트 시 이 부분은 주석 처리 
+        for (int i = 0; i < 3; i++) //테스트용 리스트 
+        {
+            PlayerStat ps = GameManager.Instance._data.playerDatabase.totalPlayerStat.playerStats[i];
+            WeaponStat ws = GameManager.Instance._data.weaponDatabase.weaponStatList.weaponStats[i];
+            GameObject player = Instantiate(Prefabs[0]);
+            player.GetComponent<PlayerState>().SetState(ps, ws);
+            player.GetComponentInChildren<HPBar>().SetMaxHealth(player.GetComponent<PlayerState>().HP);
+
+            players.Add(player);
+            player.SetActive(false);
+        }
+        /*for (int i = 0; i < playerlist.Length; i++) //테스트 시 이 부분은 주석 처리
         {
             if (playerlist[i] != -1) // 플레이어를 해당 슬롯에 편성했을 시
             {
@@ -192,7 +204,7 @@ public class IngameManager : MonoBehaviour
                 players.Add(player);
                 player.SetActive(false);
             }
-        }
+        }*/
     }
 
     void CreateEnemy()

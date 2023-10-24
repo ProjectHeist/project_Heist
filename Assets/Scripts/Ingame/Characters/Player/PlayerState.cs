@@ -31,7 +31,7 @@ public class PlayerState : CharacterState
     [SerializeField]
     private string Name; // 플레이어의 실제 이름 
     private int Class; // 플레이어의 클래스
-    public int InteractionTime = 0;
+    public int InteractionTime = 0; //상호작용 중인 시간 
     public bool isInteracting = false;
 
     public int playerNumber
