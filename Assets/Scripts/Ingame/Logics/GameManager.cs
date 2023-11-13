@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     private static GameManager instance = null;
     public MasterData currentMaster;
     public DataManager _data = new DataManager();
-    public UIManager _ui = new UIManager();
+    public DisplayRange _ui = new DisplayRange();
     public IngameManager _ingame;
     public int[] playerIndex;
     public int[] weaponIndex;

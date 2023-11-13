@@ -20,7 +20,7 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
         // 마우스 컨트롤
         if (Input.GetMouseButtonDown(0))
         {
-            GameManager.Instance._ui.DeleteRange();
+            IngameManager.Instance.ingameUI.range.Delete(new Vector2Int(-1, -1));
             AllowInput = false;
             clickedGridCell = IsMouseOverAGridSpace();
             if (clickedGridCell != null)
@@ -51,10 +51,10 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
                 {
                     GetRange getRange = new GetRange(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height); // 범위 구하기 
                     List<Vector2Int> moveRange = getRange.getWalkableSpots(IngameManager.Instance.mapManager.GetGridPositionFromWorld(player.transform.position), state.moveRange - 1); // 이동 범위 담는 리스트 
-                    GameManager.Instance._ui.DisplayRange(moveRange, Color.blue); // 플레이어의 이동 가능한 위치를 표현
+                    IngameManager.Instance.ingameUI.range.Display(moveRange, Color.blue); // 플레이어의 이동 가능한 위치를 표현
                     IngameManager.Instance.playerController.currentState = ControlState.PlayerMove; // 플레이어 상태를 이동 상태로 전환 (클릭 시 이동)
                     Debug.Log("State Changed to Move");
-                    IngameManager.Instance.controlPanel.DisplayMove(true, true);
+                    IngameManager.Instance.ingameUI.SelectPanel(PanelType.Move);
                 }
             }
             else if (IngameManager.Instance.playerController.currentState == ControlState.PlayerMove && selected) // 이미 눌러놨을 경우
@@ -62,7 +62,7 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
                 Escape();
                 GameObject player = IngameManager.Instance.playerController.currentPlayer; // 플레이어 가져오기
                 PlayerState state = player.GetComponent<PlayerState>(); // 플레이어 스탯 가져오기
-                IngameManager.Instance.controlPanel.DisplayMove(true, false);
+                IngameManager.Instance.ingameUI.DeselectPanel(PanelType.Move);
             }
         }
         else if (Input.GetKeyDown(KeyCode.E) && AllowInput)
@@ -79,19 +79,20 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
                     GetRange getRange = new GetRange(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height); // 범위 구하기 
                     List<Vector2Int> maxAttackRange = getRange.getrg(IngameManager.Instance.mapManager.GetGridPositionFromWorld(player.transform.position), state.maxAttackRange - 1); // 최대 공격 범위 담는 리스트 
                     List<Vector2Int> minAttackRange = getRange.getrg(IngameManager.Instance.mapManager.GetGridPositionFromWorld(player.transform.position), state.minAttackRange - 1); // 최소 공격 범위 담는 리스트 
-                    GameManager.Instance._ui.DisplayRange(maxAttackRange, maxRange); // 플레이어의 최대 사거리를 표현
-                    GameManager.Instance._ui.DisplayRange(minAttackRange, minRange); // 플레이어의 필중 사거리를 표현
+
+                    IngameManager.Instance.ingameUI.range.Display(maxAttackRange, maxRange); // 플레이어의 최대 사거리를 표현
+                    IngameManager.Instance.ingameUI.range.Display(minAttackRange, minRange); // 플레이어의 필중 사거리를 표현
 
                     IngameManager.Instance.playerController.currentState = ControlState.PlayerAttack; // 플레이어 상태를 공격 상태로 전환 (클릭 시 공격)
                     Debug.Log("State Changed to Attack");
-                    IngameManager.Instance.controlPanel.DisplayAttack(true, true);
+                    IngameManager.Instance.ingameUI.SelectPanel(PanelType.Attack);
                 }
             }
             else if (IngameManager.Instance.playerController.currentState == ControlState.PlayerAttack && selected)
             {
                 GameObject player = IngameManager.Instance.playerController.currentPlayer; // 플레이어 가져오기
                 PlayerState state = player.GetComponent<PlayerState>(); // 플레이어 스탯 가져오기
-                IngameManager.Instance.controlPanel.DisplayAttack(true, false);
+                IngameManager.Instance.ingameUI.DeselectPanel(PanelType.Attack);
                 Escape();
             }
         }
@@ -129,15 +130,15 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
 
                 GetRange getRange = new GetRange(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height); // 범위 구하기 
                 List<Vector2Int> maxInteractRange = getRange.getWalkableSpots(IngameManager.Instance.mapManager.GetGridPositionFromWorld(player.transform.position), 2); // 최대 상호작용 범위 담는 리스트 \
-                GameManager.Instance._ui.DisplayRange(maxInteractRange, InteractRange); // 플레이어의 최대 사거리를 표현
+                IngameManager.Instance.ingameUI.range.Display(maxInteractRange, InteractRange); // 플레이어의 최대 사거리를 표현
 
                 IngameManager.Instance.playerController.currentState = ControlState.PlayerInteract; // 플레이어 상태를 상호작용 상태로 전환 (클릭 시 상호작용)
                 Debug.Log("State Changed to Interact");
-                IngameManager.Instance.controlPanel.DisplayInteract(true);
+                IngameManager.Instance.ingameUI.SelectPanel(PanelType.Interact);
             }
             else if (IngameManager.Instance.playerController.currentState == ControlState.PlayerInteract && selected)
             {
-                IngameManager.Instance.controlPanel.DisplayInteract(false);
+                IngameManager.Instance.ingameUI.DeselectPanel(PanelType.Interact);
                 Escape();
             }
         }
@@ -147,7 +148,8 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
     private void Escape()
     {
         IngameManager.Instance.playerController.currentState = ControlState.Default;
-        GameManager.Instance._ui.DeleteRange();
+        Vector2Int currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(IngameManager.Instance.playerController.currentPlayer.transform.position);
+        IngameManager.Instance.ingameUI.range.Delete(currentPos);
         ShowSelectedPlayer();
         Debug.Log("State Changed to Select");
     }
@@ -193,7 +195,7 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
                 }
             }
         }
-        GameManager.Instance._ui.DisplayRange(newRange, detectRange);
+        IngameManager.Instance.ingameUI.range.Display(newRange, detectRange);
     }
 
     private void ShowObjectInfo(GameObject gameObject)  // 해당 그리드에 있는 물체의 정보를 보여주는 함수
@@ -206,43 +208,47 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
     {
         clickedGridCell.CheckPlayer();
         clickedGridCell.CheckEnemy();
-        if (clickedGridCell.playerInThisGrid != null) //무언가가 있는 타일을 클릭했을 때
+        if (clickedGridCell.playerInThisGrid != null) // 플레이어가 있는 타일을 클릭할 때
         {
+            IngameManager.Instance.ingameUI.DisplayName(clickedGridCell.playerInThisGrid);
             IngameManager.Instance.playerController.currentPlayer = clickedGridCell.playerInThisGrid; // 타일 위에 있는 물체를 현재 플레이어로 삼고 
             IngameManager.Instance.playerController.currentState = ControlState.Default; // 플레이어의 상태를 선택됨으로 변경
-            GameManager.Instance._ui.DeleteRange(); // 기존 선택된 상태를 해제하고
+            IngameManager.Instance.ingameUI.range.Delete(new Vector2Int(-1, -1)); // 기존 선택된 상태를 해제하고
             ShowSelectedPlayer();
             selected = true;
             Debug.Log("Player Selected");
             if (clickedGridCell.playerInThisGrid.GetComponent<PlayerState>().canMove > 0)
             {
-                IngameManager.Instance.controlPanel.Move.GetComponent<Image>().color = new Color(255, 255, 255, 0.5f);
+                IngameManager.Instance.ingameUI.IsSelected(PanelType.Move, true);
             }
             else
             {
-                IngameManager.Instance.controlPanel.Move.GetComponent<Image>().color = new Color(255, 0, 0, 0.5f);
+                IngameManager.Instance.ingameUI.IsSelected(PanelType.Move, false);
             }
             if (clickedGridCell.playerInThisGrid.GetComponent<PlayerState>().canAttack > 0)
             {
-                IngameManager.Instance.controlPanel.Attack.GetComponent<Image>().color = new Color(255, 255, 255, 0.5f);
+                IngameManager.Instance.ingameUI.IsSelected(PanelType.Attack, true);
             }
             else
             {
-                IngameManager.Instance.controlPanel.Attack.GetComponent<Image>().color = new Color(255, 0, 0, 0.5f);
+                IngameManager.Instance.ingameUI.IsSelected(PanelType.Attack, false);
             }
         }
         else if (clickedGridCell.enemyInThisGrid != null)
         {
+            IngameManager.Instance.ingameUI.DisplayName(null);
             ShowEnemyInfo(clickedGridCell.enemyInThisGrid);
         }
         else if (clickedGridCell.objectInThisGrid != null)
         {
+            IngameManager.Instance.ingameUI.DisplayName(null);
             ShowObjectInfo(clickedGridCell.objectInThisGrid);
         }
         else // 아무것도 없을 때
         {
+            IngameManager.Instance.ingameUI.DisplayName(null);
             selected = false;
-            GameManager.Instance._ui.DeleteRange();
+            IngameManager.Instance.ingameUI.range.Delete(new Vector2Int(-1, -1));
         }
     }
 

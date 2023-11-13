@@ -197,8 +197,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Current Money: 0$'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5ff0fc09b3dbdbc4e99e5c0d69b53a25, type: 2}
+  m_sharedMaterial: {fileID: -2194308295495093937, guid: 5ff0fc09b3dbdbc4e99e5c0d69b53a25, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -908,8 +908,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Objective: Get 20000$'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5ff0fc09b3dbdbc4e99e5c0d69b53a25, type: 2}
+  m_sharedMaterial: {fileID: -2194308295495093937, guid: 5ff0fc09b3dbdbc4e99e5c0d69b53a25, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1134,8 +1134,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Interact
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
-  m_sharedMaterial: {fileID: 3643465130414686926, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1269,8 +1269,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Name: \uC5C4\uC900\uC2DD"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
-  m_sharedMaterial: {fileID: 3643465130414686926, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5ff0fc09b3dbdbc4e99e5c0d69b53a25, type: 2}
+  m_sharedMaterial: {fileID: -2194308295495093937, guid: 5ff0fc09b3dbdbc4e99e5c0d69b53a25, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1404,8 +1404,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: EX
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
-  m_sharedMaterial: {fileID: 3643465130414686926, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1995,8 +1995,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Attack
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
-  m_sharedMaterial: {fileID: 3643465130414686926, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2263,8 +2263,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Move
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
-  m_sharedMaterial: {fileID: 3643465130414686926, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2600,10 +2600,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1116164770}
-  - component: {fileID: 1116164769}
-  - component: {fileID: 1116164773}
   - component: {fileID: 1116164774}
-  - component: {fileID: 1116164775}
+  - component: {fileID: 1116164773}
+  - component: {fileID: 1116164772}
+  - component: {fileID: 1116164771}
   m_Layer: 0
   m_Name: InGameManager
   m_TagString: GameController
@@ -2611,7 +2611,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1116164769
+--- !u!4 &1116164770
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1116164768}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 56.164276, y: -78.845314, z: 85.131714}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1116164771
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2628,52 +2643,7 @@ MonoBehaviour:
     m_Bits: 64
   AllowInput: 1
   selected: 0
---- !u!4 &1116164770
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1116164768}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 56.164276, y: -78.845314, z: 85.131714}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1116164773
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1116164768}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68bf799ae79a27843bef762a8e9582f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mapCreator: {fileID: 1116164774}
-  mainCamera: {fileID: 963194228}
-  controlPanel: {fileID: 1889408357}
-  InputManager: {fileID: 1116164769}
-  Prefabs:
-  - {fileID: 9148712873458090975, guid: 6bc18b05d2bdc9346ae60c6951e2f16c, type: 3}
-  - {fileID: 437634645707936897, guid: 25d8d5fbe97be684cb8c5fa8ce3831f9, type: 3}
-  ObjectiveCleared: 0
-  TotalMoney: 0
-  Deployed: 0
-  deployedplayers: 0
-  extractedplayers: 0
-  extractionPoint: {fileID: 0}
-  turn: 0
-  phase: 0
-  players: []
-  enemies: []
-  tags: []
---- !u!114 &1116164774
+--- !u!114 &1116164772
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2688,7 +2658,7 @@ MonoBehaviour:
   width: 50
   height: 50
   gridCellPrefab: {fileID: 876893223412440108, guid: 49e829fd04afba742a2426ec54e837c6, type: 3}
---- !u!114 &1116164775
+--- !u!114 &1116164773
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2697,10 +2667,46 @@ MonoBehaviour:
   m_GameObject: {fileID: 1116164768}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a4952d160a7e5b4b83f9249ba3d691d, type: 3}
+  m_Script: {fileID: 11500000, guid: cfadbc8b69914454a9ef0a06f2be927c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slider: {fileID: 0}
+  playerName: {fileID: 403905709}
+  Move: {fileID: 2102358414}
+  Attack: {fileID: 151240313}
+  Interact: {fileID: 337854449}
+  EX: {fileID: 595516245}
+  panelList: []
+  speed: 50
+--- !u!114 &1116164774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1116164768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bf799ae79a27843bef762a8e9582f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapCreator: {fileID: 1116164772}
+  mainCamera: {fileID: 963194228}
+  InputManager: {fileID: 1116164771}
+  Prefabs:
+  - {fileID: 9148712873458090975, guid: 6bc18b05d2bdc9346ae60c6951e2f16c, type: 3}
+  - {fileID: 437634645707936897, guid: 25d8d5fbe97be684cb8c5fa8ce3831f9, type: 3}
+  ingameUI: {fileID: 1116164773}
+  ObjectiveCleared: 0
+  TotalMoney: 0
+  Deployed: 0
+  deployedplayers: 0
+  extractedplayers: 0
+  extractionPoint: {fileID: 0}
+  turn: 1
+  phase: 0
+  players: []
+  enemies: []
+  tags: []
 --- !u!1001 &1205799182
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3330,7 +3336,7 @@ MonoBehaviour:
     playerNumbers: 
     weaponNumbers: 
     masterName: 
-  _ingame: {fileID: 1116164773}
+  _ingame: {fileID: 0}
   playerIndex: 
   weaponIndex: 
 --- !u!4 &1860529408
@@ -3420,7 +3426,6 @@ GameObject:
   - component: {fileID: 1889408354}
   - component: {fileID: 1889408356}
   - component: {fileID: 1889408355}
-  - component: {fileID: 1889408357}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -3492,24 +3497,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1889408353}
   m_CullTransparentMesh: 1
---- !u!114 &1889408357
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1889408353}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d513ea8e814abd149a4401c984c20cc4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerName: {fileID: 403905709}
-  Move: {fileID: 2102358414}
-  Attack: {fileID: 151240313}
-  Interact: {fileID: 337854449}
-  EX: {fileID: 0}
-  speed: 10
 --- !u!1 &1981406239
 GameObject:
   m_ObjectHideFlags: 0
@@ -3660,8 +3647,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Current Turn: 0'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5ff0fc09b3dbdbc4e99e5c0d69b53a25, type: 2}
+  m_sharedMaterial: {fileID: -2194308295495093937, guid: 5ff0fc09b3dbdbc4e99e5c0d69b53a25, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

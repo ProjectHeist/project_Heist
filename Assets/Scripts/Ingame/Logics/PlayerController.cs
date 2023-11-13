@@ -31,6 +31,7 @@ public class PlayerController
             case ControlState.PlayerMove: // 해당 그리드로 플레이어가 갈지
                 playerMove = currentPlayer.GetComponent<PlayerMove>();
                 decideMove(GridPos);
+                IngameManager.Instance.ingameUI.DeselectPanel(PanelType.Move);
                 break;
             case ControlState.PlayerAttack: // 해당 그리드에 있는 적을 공격할지
                 Vector2Int playerPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(currentPlayer.transform.position);
@@ -41,6 +42,7 @@ public class PlayerController
                 GameObject enemy = gridcell.enemyInThisGrid;
 
                 decideAttack(enemy, dist);
+                IngameManager.Instance.ingameUI.DeselectPanel(PanelType.Attack);
                 break;
             case ControlState.PlayerInteract: // 해당 그리드에 있는 물체와 상호작용할지
                 Vector2Int _playerPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(currentPlayer.transform.position);
@@ -51,6 +53,7 @@ public class PlayerController
                 GameObject _object = _gridcell.objectInThisGrid;
 
                 decideInteract(_object, distance);
+                IngameManager.Instance.ingameUI.DeselectPanel(PanelType.Interact);
                 break;
             case ControlState.PlayerEX:
                 //PlayerEX ex = currentPlayer.GetComponent<PlayerEX>();
@@ -77,8 +80,8 @@ public class PlayerController
                 PlayerInteract playerInteract = currentPlayer.GetComponent<PlayerInteract>();
                 playerInteract.Interact(interactObject, dist);
                 currentState = ControlState.Default;
-                GameManager.Instance._ui.DeleteRange();
-                IngameManager.Instance.controlPanel.DisplayInteract(false);
+                IngameManager.Instance.ingameUI.range.Delete(new Vector2Int(-1, -1));
+
             }
             else
             {
@@ -101,11 +104,11 @@ public class PlayerController
                 playerAttack.AttackTarget(enemy, dist);
                 currentPlayer.GetComponent<PlayerState>().canAttack--;
                 currentState = ControlState.Default;
-                GameManager.Instance._ui.DeleteRange();
-                IngameManager.Instance.controlPanel.DisplayAttack(true, false);
+                IngameManager.Instance.ingameUI.range.Delete(new Vector2Int(-1, -1));
+                IngameManager.Instance.ingameUI.DeselectPanel(PanelType.Attack);
                 if (currentPlayer.GetComponent<PlayerState>().canAttack == 0)
                 {
-                    IngameManager.Instance.controlPanel.DisplayAttack(false, false);
+                    IngameManager.Instance.ingameUI.IsSelected(PanelType.Attack, false);
                 }
             }
             else

@@ -31,8 +31,6 @@ public class PlayerInteract : MonoBehaviour
             ps.InteractionTime = d.requiredTime;
             ps.canAttack = 0;
             ps.canMove = 0;
-            IngameManager.Instance.controlPanel.Move.GetComponent<Image>().color = new Color(255, 0, 0, 0.5f);
-            IngameManager.Instance.controlPanel.Attack.GetComponent<Image>().color = new Color(255, 0, 0, 0.5f);
         }
         else if (ps.InteractionTime == 0)
         {

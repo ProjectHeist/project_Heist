@@ -15,9 +15,10 @@ public class IngameManager : MonoBehaviour
     public MapManager mapManager = new MapManager();
     public PlayerController playerController = new PlayerController();
     public Transform mainCamera;
-    public ControlPanel controlPanel;
+    public ControlUI controlPanel;
     public InputManager InputManager;
     public List<GameObject> Prefabs;
+    public IngameUIManager ingameUI;
     public bool ObjectiveCleared = false;
     public int TotalMoney = 0;
     public bool Deployed = false;
@@ -46,11 +47,18 @@ public class IngameManager : MonoBehaviour
     public List<string> tags;
     //-------------------------------------------------------------//
 
-    void OnEnable()
+    void Start() // 테스트용
+    {
+        //GameManager.Instance._ingame = this;
+        init();
+    }
+
+    /*void OnEnable() //실제 사용
     {
         GameManager.Instance._ingame = this;
         init();
-    }
+    }*/
+
 
     public void init()
     {
@@ -64,6 +72,8 @@ public class IngameManager : MonoBehaviour
         turn = 1;
         CreatePlayerList();
         CreateEnemy();
+        ingameUI.Init();
+        StartPlayerPhase();
     }
 
     public void EnemyPhase() // 페이즈 종료 버튼 눌렀을 때 
@@ -93,14 +103,14 @@ public class IngameManager : MonoBehaviour
             {
                 ps.canMove = 1;
                 ps.canAttack = 1;
-                controlPanel.Move.GetComponent<Image>().color = new Color(255, 255, 255, 0.5f);
-                controlPanel.Attack.GetComponent<Image>().color = new Color(255, 255, 255, 0.5f);
+                ingameUI.IsSelected(PanelType.Attack, true);
+                ingameUI.IsSelected(PanelType.Move, true);
             }
 
             if (ps.EXcooldown != 0)
             {
                 ps.EXcooldown--;
-                controlPanel.EX.GetComponent<Image>().color = new Color(255, 255, 255, 0.5f);
+                ingameUI.IsSelected(PanelType.EX, true);
             }
         }
     }

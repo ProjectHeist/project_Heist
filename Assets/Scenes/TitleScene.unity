@@ -599,8 +599,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Name: '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
-  m_sharedMaterial: {fileID: 3643465130414686926, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5ff0fc09b3dbdbc4e99e5c0d69b53a25, type: 2}
+  m_sharedMaterial: {fileID: -2194308295495093937, guid: 5ff0fc09b3dbdbc4e99e5c0d69b53a25, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1056,7 +1056,7 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_RichText: 1
-  m_GlobalFontAsset: {fileID: 11400000, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
+  m_GlobalFontAsset: {fileID: 11400000, guid: 5ff0fc09b3dbdbc4e99e5c0d69b53a25, type: 2}
   m_OnFocusSelectAll: 1
   m_ResetOnDeActivation: 1
   m_RestoreOriginalTextOnEscape: 1
@@ -2419,7 +2419,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: LOAD GAME
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5ff0fc09b3dbdbc4e99e5c0d69b53a25, type: 2}
   m_sharedMaterial: {fileID: 3643465130414686926, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -2483,7 +2483,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1270633536
@@ -4372,8 +4372,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u200B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
-  m_sharedMaterial: {fileID: 3643465130414686926, guid: 6e0e41037c6e2ff43a4c8cbc89f0d75b, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5ff0fc09b3dbdbc4e99e5c0d69b53a25, type: 2}
+  m_sharedMaterial: {fileID: -2194308295495093937, guid: 5ff0fc09b3dbdbc4e99e5c0d69b53a25, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

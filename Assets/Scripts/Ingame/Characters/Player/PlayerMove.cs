@@ -24,8 +24,17 @@ public class PlayerMove : MonoBehaviour
         currentPathIndex = 0;
         Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
         path = astar.CreatePath(IngameManager.Instance.mapManager.spots, currentPos, targetPosition, 1000);
-        path.Reverse();
-        StartCoroutine(Move());
+        if (path != null)
+        {
+            path.Reverse();
+            StartCoroutine(Move());
+        }
+        else
+        {
+            Debug.Log("Cannot go to Position");
+            IngameManager.Instance.ingameUI.range.Delete(new Vector2Int(-1, -1));
+            IngameManager.Instance.ingameUI.range.SelectedState(currentPos);
+        }
     }
 
     IEnumerator Move()
@@ -34,10 +43,10 @@ public class PlayerMove : MonoBehaviour
         {
             IngameManager.Instance.mapManager.spots[currentPos.x, currentPos.y].z = 0;
             gameObject.GetComponent<PlayerState>().canMove--;
-            IngameManager.Instance.controlPanel.DisplayMove(true, false);
+
             if (gameObject.GetComponent<PlayerState>().canMove == 0)
             {
-                IngameManager.Instance.controlPanel.DisplayMove(false, false);
+                IngameManager.Instance.ingameUI.IsSelected(PanelType.Move, false);
             }
             while (!arrived)
             {
@@ -67,8 +76,8 @@ public class PlayerMove : MonoBehaviour
         else
         {
             Debug.Log("Cannot go to Position");
-            GameManager.Instance._ui.DeleteRange();
-            GameManager.Instance._ui.SelectedState(currentPos);
+            IngameManager.Instance.ingameUI.range.Delete(new Vector2Int(-1, -1));
+            IngameManager.Instance.ingameUI.range.SelectedState(currentPos);
         }
 
     }
@@ -77,8 +86,8 @@ public class PlayerMove : MonoBehaviour
         path = null;
         currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(transform.position);
         IngameManager.Instance.mapManager.spots[currentPos.x, currentPos.y].z = 1;
-        GameManager.Instance._ui.DeleteRange();
-        GameManager.Instance._ui.SelectedState(currentPos);
+        IngameManager.Instance.ingameUI.range.Delete(new Vector2Int(-1, -1));
+        IngameManager.Instance.ingameUI.range.SelectedState(currentPos);
         arrived = true;
     }
 
