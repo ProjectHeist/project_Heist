@@ -2,17 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EXDatabase : MonoBehaviour
+public class EXDatabase
 {
     public List<PlayerEX> playerEXs;
-    public Object[] EXs;
+    public PlayerEX[] EXs;
     public void Load()
     {
-        EXs = Resources.LoadAll("Data/PlayerEX");
-        foreach (PlayerEX ex in EXs)
+        EXs = Resources.LoadAll<PlayerEX>("Data/PlayerEX");
+        for (int i = 0; i < EXs.Length; i++)
         {
-            playerEXs.Add(ex);
-            Debug.Log(ex.name);
+            playerEXs.Add(EXs[i]);
         }
 
     }

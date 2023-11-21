@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class PlayerState : CharacterState
 {
+    public int EXIndex;
     public int EXcooldown; // 현재 남아있는 쿨타임
     private int EXcooltime; // 쿨타임
     public PlayerState()
@@ -25,6 +26,7 @@ public class PlayerState : CharacterState
         maxAttackRange = weaponStat.weaponMaxAttackRange;
         minAttackRange = weaponStat.weaponMinAttackRange;
         critRate = weaponStat.weaponCritRate;
+        EXIndex = playerStat.PlayerEX;
     }
 
     private int Number; // 도감에 존재하는 플레이어 넘버

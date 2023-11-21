@@ -3336,6 +3336,11 @@ MonoBehaviour:
     playerNumbers: 
     weaponNumbers: 
     masterName: 
+  playerEXes:
+  - {fileID: 11400000, guid: df90e94430d210f43a1975134295ffd4, type: 2}
+  - {fileID: 11400000, guid: 1b728604a090b0d48bae5a8ca0cdd427, type: 2}
+  - {fileID: 11400000, guid: 4ff6308a81e76ea45baf5bf746b05d07, type: 2}
+  - {fileID: 11400000, guid: 8f7388cd8c610f94aa3884573f8c0b57, type: 2}
   _ingame: {fileID: 0}
   playerIndex: 
   weaponIndex: 

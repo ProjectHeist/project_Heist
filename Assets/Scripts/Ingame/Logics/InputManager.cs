@@ -96,31 +96,33 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
                 Escape();
             }
         }
-        /*else if (Input.GetKeyDown(KeyCode.R) && AllowInput)
+        else if (Input.GetKeyDown(KeyCode.R) && AllowInput)
         {
             if (IngameManager.Instance.playerController.currentState == ControlState.Default && selected)
             {
                 GameObject player = IngameManager.Instance.playerController.currentPlayer;
                 PlayerState state = player.GetComponent<PlayerState>();
-                //PlayerEX ex = player.GetComponent<PlayerEX>();
-                Color Range = new Color(0, 100, 200);
+                PlayerEX ex = GameManager.Instance.playerEXes[state.EXIndex];
+                Color Range = Color.cyan;
                 if (state.EXcooldown == 0)
                 {
-                    IngameManager.Instance.controlPanel.DisplayEX(true, true);
-                    /*if (ex.range != -1)
+                    IngameManager.Instance.ingameUI.SelectPanel(PanelType.EX);
+                    IngameManager.Instance.playerController.currentState = ControlState.PlayerEX;
+                    if (ex.range != -1)
                     {
                         GetRange getRange = new GetRange(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height); // 범위 구하기 
                         List<Vector2Int> skillRange = getRange.getrg(IngameManager.Instance.mapManager.GetGridPositionFromWorld(player.transform.position), ex.range - 1); // 최대 공격 범위 담는 리스트 
-                        GameManager.Instance._ui.DisplayRange(skillRange, Range);
+                        IngameManager.Instance.ingameUI.range.Display(skillRange, Range);
                         Debug.Log("State Changed to EX");
                     }
                 }
             }
             else if (IngameManager.Instance.playerController.currentState == ControlState.PlayerEX && selected)
             {
-                IngameManager.Instance.controlPanel.DisplayEX(true, false);
+                IngameManager.Instance.ingameUI.DeselectPanel(PanelType.EX);
+                Escape();
             }
-        }*/
+        }
         else if (Input.GetKeyDown(KeyCode.F) && AllowInput)
         {
             if (IngameManager.Instance.playerController.currentState == ControlState.Default && selected)
@@ -232,6 +234,14 @@ public class InputManager : MonoBehaviour //그리드에 들어가는 입력을 
             else
             {
                 IngameManager.Instance.ingameUI.IsSelected(PanelType.Attack, false);
+            }
+            if (clickedGridCell.playerInThisGrid.GetComponent<PlayerState>().EXcooldown == 0)
+            {
+                IngameManager.Instance.ingameUI.IsSelected(PanelType.EX, true);
+            }
+            else
+            {
+                IngameManager.Instance.ingameUI.IsSelected(PanelType.EX, false);
             }
         }
         else if (clickedGridCell.enemyInThisGrid != null)

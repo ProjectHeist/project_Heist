@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public MasterData currentMaster;
     public DataManager _data = new DataManager();
     public DisplayRange _ui = new DisplayRange();
+    public List<PlayerEX> playerEXes;
     public IngameManager _ingame;
     public int[] playerIndex;
     public int[] weaponIndex;
@@ -44,7 +45,6 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
     }
 
     void init()
