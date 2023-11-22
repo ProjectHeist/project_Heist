@@ -179,6 +179,7 @@ public class IngameManager : MonoBehaviour
     {
         //int[] playerlist = GameManager.Instance.playerIndex; //테스트 시 이 부분은 주석 처리 
         //int[] weaponlist = GameManager.Instance.weaponIndex; //테스트 시 이 부분은 주석 처리 
+
         for (int i = 0; i < 3; i++) //테스트용 리스트 
         {
             PlayerStat ps = GameManager.Instance._data.playerDatabase.totalPlayerStat.playerStats[i];

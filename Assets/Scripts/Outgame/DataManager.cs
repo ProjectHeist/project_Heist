@@ -9,7 +9,7 @@ public class DataManager
     public MapDatabase mapDatabase = new MapDatabase();
     public WeaponDatabase weaponDatabase = new WeaponDatabase();
     public MasterDatabase masterDatabase = new MasterDatabase();
-    public EXDatabase exDatabase = new EXDatabase();
+    //public EXDatabase exDatabase = new EXDatabase();
     public SaveDataInfo saveDataInfo;
     public TagList tagList;
     private static string SavePath => Application.persistentDataPath + "/saveInfo/";
@@ -25,7 +25,7 @@ public class DataManager
         mapDatabase.Load();
         playerDatabase.Load();
         weaponDatabase.Load();
-        // exDatabase.Load();
+        //exDatabase.Load();
         var LoadedJson = Resources.Load<TextAsset>("Data/Map/TagList");
         tagList = JsonUtility.FromJson<TagList>(LoadedJson.text);
     }

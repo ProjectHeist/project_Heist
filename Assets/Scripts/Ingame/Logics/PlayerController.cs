@@ -56,8 +56,9 @@ public class PlayerController
                 IngameManager.Instance.ingameUI.DeselectPanel(PanelType.Interact);
                 break;
             case ControlState.PlayerEX:
-                //PlayerEX ex = currentPlayer.GetComponent<PlayerEX>();
-                //decideEX(GridPos, ex);
+                PlayerState ps = currentPlayer.GetComponent<PlayerState>();
+                PlayerEX ex = GameManager.Instance.playerEXes[ps.EXIndex];
+                decideEX(GridPos, ex);
                 break;
         }
     }
@@ -127,12 +128,76 @@ public class PlayerController
     {
         if (ex.range != -1) // 특수 스킬
         {
-
+            Vector2Int playerPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(currentPlayer.transform.position);
+            int dist = Math.Abs(gridpos.x - playerPos.x) + Math.Abs(gridpos.y - playerPos.y);
+            if (ex.subject == 1 && dist <= ex.range) //적 대상이고, 범위 내 그리드를 클릭했을 때
+            {
+                GridCell gridcell = IngameManager.Instance.mapManager.GetGridCellFromPosition(gridpos).GetComponent<GridCell>();
+                gridcell.CheckEnemy();
+                if (gridcell.enemyInThisGrid != null) //그리드 내 실제로 적이 있을 때
+                {
+                    ex.target = gridcell.enemyInThisGrid;
+                    ex.UseEX(currentPlayer.GetComponent<PlayerState>());
+                    currentPlayer.GetComponent<PlayerState>().EXcooldown = ex.coolTime;
+                    currentState = ControlState.Default;
+                    if (currentPlayer.GetComponent<PlayerState>().EXcooldown > 0)
+                    {
+                        IngameManager.Instance.ingameUI.IsSelected(PanelType.EX, false);
+                    }
+                    IngameManager.Instance.ingameUI.DeselectPanel(PanelType.EX);
+                }
+                else
+                {
+                    Debug.Log("Please Select enemy to EX");
+                }
+            }
+            else if (ex.subject == 0 && dist <= ex.range) //플레이어 대상이고, 범위 내 그리드를 클릭했을 때
+            {
+                GridCell gridcell = IngameManager.Instance.mapManager.GetGridCellFromPosition(gridpos).GetComponent<GridCell>();
+                gridcell.CheckPlayer();
+                if (gridcell.playerInThisGrid != null) //그리드 내 실제로 플레이어가 있을 때
+                {
+                    ex.target = gridcell.playerInThisGrid;
+                    ex.UseEX(currentPlayer.GetComponent<PlayerState>());
+                    currentPlayer.GetComponent<PlayerState>().EXcooldown = ex.coolTime;
+                    currentState = ControlState.Default;
+                    if (currentPlayer.GetComponent<PlayerState>().EXcooldown > 0)
+                    {
+                        IngameManager.Instance.ingameUI.IsSelected(PanelType.EX, false);
+                    }
+                    IngameManager.Instance.ingameUI.DeselectPanel(PanelType.EX);
+                }
+                else
+                {
+                    Debug.Log("Please Select player to EX");
+                }
+            }
+            else if (ex.subject == -1 && dist <= ex.range)
+            {
+                ex.targetPosition = gridpos;
+                ex.UseEX(currentPlayer.GetComponent<PlayerState>());
+                currentPlayer.GetComponent<PlayerState>().EXcooldown = ex.coolTime;
+                currentState = ControlState.Default;
+                if (currentPlayer.GetComponent<PlayerState>().EXcooldown > 0)
+                {
+                    IngameManager.Instance.ingameUI.IsSelected(PanelType.EX, false);
+                }
+                IngameManager.Instance.ingameUI.DeselectPanel(PanelType.EX);
+            }
+            IngameManager.Instance.ingameUI.range.Delete(new Vector2Int(-1, -1));
         }
         else // 자버프형 스킬
         {
-            ex.UseEX(currentPlayer.GetComponent<PlayerState>());
+            ex.UseEX(currentPlayer.GetComponent<PlayerState>()); //무조건 시전 
+            currentPlayer.GetComponent<PlayerState>().EXcooldown = ex.coolTime;
+            currentState = ControlState.Default;
+            if (currentPlayer.GetComponent<PlayerState>().EXcooldown > 0)
+            {
+                IngameManager.Instance.ingameUI.IsSelected(PanelType.EX, false);
+            }
+            IngameManager.Instance.ingameUI.DeselectPanel(PanelType.EX);
         }
+
     }
 
 }

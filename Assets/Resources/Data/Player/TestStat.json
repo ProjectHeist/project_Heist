@@ -31,7 +31,7 @@
             "playerHP": 50,
             "playerAccuracy": 0.2,
             "playerMoveRange": 20,
-            "PlayerEX": 1
+            "PlayerEX": 3
         },
         {
             "playerCost": 9999,

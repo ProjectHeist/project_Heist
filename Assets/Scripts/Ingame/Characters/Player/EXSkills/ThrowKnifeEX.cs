@@ -6,10 +6,9 @@ using UnityEngine;
 public class ThrowKnifeEX : PlayerEX
 {
     // Start is called before the first frame update
-    public GameObject target;
     public int damage = 50;
     public override void UseEX(PlayerState ps)
     {
-        target.GetComponent<EnemyState>().HP -= damage;
+        target.GetComponent<EnemyState>().OnEnemyHit(damage);
     }
 }
