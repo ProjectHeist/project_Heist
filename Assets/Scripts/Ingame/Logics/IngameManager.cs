@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Unity.VisualScripting;
 using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Linq;
 
 public class IngameManager : MonoBehaviour
 {
@@ -95,11 +97,43 @@ public class IngameManager : MonoBehaviour
         foreach (GameObject player in players)
         {
             PlayerState ps = player.GetComponent<PlayerState>();
+            if (ps.buffs.Count > 0) //플레이어에게 적용된 버프를 확인 및 해제하는 절차
+            {
+                List<BuffInfo> filter = new List<BuffInfo>();
+                foreach (BuffInfo buff in ps.buffs)
+                {
+                    if (buff.duration == 1) //버프 시간이 1턴밖에 남지 않은 경우
+                    {
+                        switch (buff.stat) //버프 종류에 따라 원래대로 돌려놓고 제거
+                        {
+                            case stats.accuracy:
+                                ps.accuracy -= buff.value;
+                                break;
+                            case stats.critRate:
+                                ps.critRate -= buff.value;
+                                break;
+                            case stats.damage:
+                                ps.damage -= Convert.ToInt32(buff.value);
+                                break;
+                            case stats.attackRange:
+                                ps.maxAttackRange -= Convert.ToInt32(buff.value);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        buff.duration--;
+                        filter.Add(buff);
+                    }
+                }
+                ps.buffs = filter;
+            }
+
             if (ps.InteractionTime > 0) // 상호작용 중이면 못움직임
             {
                 ps.InteractionTime--;
             }
-            else
+            else // 다시 이동&공격 가능한 상태로 전환
             {
                 ps.canMove = 1;
                 ps.canAttack = 1;
@@ -107,7 +141,7 @@ public class IngameManager : MonoBehaviour
                 ingameUI.IsSelected(PanelType.Move, true);
             }
 
-            if (ps.EXcooldown != 0)
+            if (ps.EXcooldown != 0) // EX 쿨타임 감소
             {
                 ps.EXcooldown--;
                 ingameUI.IsSelected(PanelType.EX, true);

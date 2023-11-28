@@ -7,13 +7,8 @@ public class ATKUpEX : PlayerEX
 {
     public override void UseEX(PlayerState ps)
     {
-        if (duration != 0)
-        {
-            ps.damage += 30;
-        }
-        else
-        {
-            ps.damage -= 30;
-        }
+        float diff = 30.0f;
+        ps.damage += 30;
+        ps.buffs.Add(new BuffInfo(stats.damage, duration, diff));
     }
 }

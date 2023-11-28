@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CharacterState : MonoBehaviour
 {
+    public int maxHP;
     public int HP;
     public int moveRange;
     public float critRate;

@@ -8,14 +8,8 @@ public class AccUpEX : PlayerEX
     public float originalAcc;
     public override void UseEX(PlayerState ps)
     {
-        if (duration != 0)
-        {
-            originalAcc = ps.accuracy;
-            ps.accuracy = 1.0f;
-        }
-        else
-        {
-            ps.accuracy = originalAcc;
-        }
+        float diff = 1.0f - ps.accuracy;
+        ps.accuracy = 1.0f;
+        ps.buffs.Add(new BuffInfo(stats.accuracy, duration, diff));
     }
 }

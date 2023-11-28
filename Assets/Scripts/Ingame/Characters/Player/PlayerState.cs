@@ -4,11 +4,22 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+public enum stats
+{
+    HP,
+    accuracy,
+    moveRange,
+    damage,
+    attackRange,
+    critRate
+}
+
 public class PlayerState : CharacterState
 {
     public int EXIndex;
     public int EXcooldown; // 현재 남아있는 쿨타임
     private int EXcooltime; // 쿨타임
+    public List<BuffInfo> buffs = new List<BuffInfo>();
     public PlayerState()
     {
         canAttack = 1;
@@ -20,6 +31,7 @@ public class PlayerState : CharacterState
         Number = playerStat.playerNumber;
         Name = playerStat.playerName;
         HP = playerStat.playerHP;
+        maxHP = playerStat.playerHP;
         accuracy = playerStat.playerAccuracy;
         moveRange = playerStat.playerMoveRange;
         damage = weaponStat.weaponDamage;
@@ -60,5 +72,18 @@ public class PlayerState : CharacterState
     public void OnPlayerHit(int damage)
     {
         OnCharacterHit(damage);
+    }
+}
+
+public class BuffInfo
+{
+    public stats stat;
+    public int duration;
+    public float value;
+    public BuffInfo(stats s, int d, float v)
+    {
+        stat = s;
+        duration = d;
+        value = v;
     }
 }
