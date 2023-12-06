@@ -97,10 +97,10 @@ public class IngameManager : MonoBehaviour
         foreach (GameObject player in players)
         {
             PlayerState ps = player.GetComponent<PlayerState>();
-            if (ps.buffs.Count > 0) //플레이어에게 적용된 버프를 확인 및 해제하는 절차
+            if (ps.StateChangeList.Count > 0) //플레이어에게 적용된 버프를 확인 및 해제하는 절차
             {
                 List<BuffInfo> filter = new List<BuffInfo>();
-                foreach (BuffInfo buff in ps.buffs)
+                foreach (BuffInfo buff in ps.StateChangeList)
                 {
                     if (buff.duration == 1) //버프 시간이 1턴밖에 남지 않은 경우
                     {
@@ -126,7 +126,7 @@ public class IngameManager : MonoBehaviour
                         filter.Add(buff);
                     }
                 }
-                ps.buffs = filter;
+                ps.StateChangeList = filter;
             }
 
             if (ps.InteractionTime > 0) // 상호작용 중이면 못움직임

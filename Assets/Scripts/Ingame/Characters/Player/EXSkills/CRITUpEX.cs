@@ -9,6 +9,6 @@ public class CRITUpEX : PlayerEX
     {
         float diff = 1.0f - ps.critRate;
         ps.critRate = 1.0f;
-        ps.buffs.Add(new BuffInfo(stats.critRate, duration, diff));
+        ps.StateChangeList.Add(new BuffInfo(stats.critRate, duration, diff));
     }
 }

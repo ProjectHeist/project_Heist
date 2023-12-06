@@ -10,6 +10,6 @@ public class AccUpEX : PlayerEX
     {
         float diff = 1.0f - ps.accuracy;
         ps.accuracy = 1.0f;
-        ps.buffs.Add(new BuffInfo(stats.accuracy, duration, diff));
+        ps.StateChangeList.Add(new BuffInfo(stats.accuracy, duration, diff));
     }
 }

@@ -9,6 +9,6 @@ public class ATKUpEX : PlayerEX
     {
         float diff = 30.0f;
         ps.damage += 30;
-        ps.buffs.Add(new BuffInfo(stats.damage, duration, diff));
+        ps.StateChangeList.Add(new BuffInfo(stats.damage, duration, diff));
     }
 }

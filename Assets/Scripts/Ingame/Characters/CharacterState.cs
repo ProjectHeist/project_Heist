@@ -2,6 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public enum stats
+{
+    HP,
+    accuracy,
+    moveRange,
+    damage,
+    attackRange,
+    critRate
+}
+
+public class BuffInfo
+{
+    public stats stat;
+    public int duration;
+    public float value;
+    public BuffInfo(stats s, int d, float v)
+    {
+        stat = s;
+        duration = d;
+        value = v;
+    }
+}
 public class CharacterState : MonoBehaviour
 {
     public int maxHP;
@@ -15,6 +38,8 @@ public class CharacterState : MonoBehaviour
     public int canAttack;
     public int canMove;
 
+    public List<BuffInfo> StateChangeList = new();
+    
     public void OnCharacterHit(int damage)
     {
         if (HP - damage <= 0)
