@@ -4,7 +4,6 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine;
 
-
 public class ControlUI
 {
     public GameObject MovePanel;

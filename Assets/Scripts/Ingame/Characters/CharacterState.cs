@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Logics;
 
 public enum stats
 {
@@ -13,53 +13,57 @@ public enum stats
     critRate
 }
 
-public class BuffInfo
+namespace Ingame
 {
-    public stats stat;
-    public int duration;
-    public float value;
-    public BuffInfo(stats s, int d, float v)
+    public class BuffInfo
     {
-        stat = s;
-        duration = d;
-        value = v;
-    }
-}
-public class CharacterState : MonoBehaviour
-{
-    public int maxHP;
-    public int HP;
-    public int moveRange;
-    public float critRate;
-    public float accuracy;
-    public int damage;
-    public int maxAttackRange;
-    public int minAttackRange;
-    public int canAttack;
-    public int canMove;
-
-    public List<BuffInfo> StateChangeList = new();
-    
-    public void OnCharacterHit(int damage)
-    {
-        if (HP - damage <= 0)
+        public stats stat;
+        public int duration;
+        public float value;
+        public BuffInfo(stats s, int d, float v)
         {
-            if (gameObject.tag == "Player")
+            stat = s;
+            duration = d;
+            value = v;
+        }
+    }
+    public class CharacterState : MonoBehaviour
+    {
+        public int maxHP;
+        public int HP;
+        public int moveRange;
+        public float critRate;
+        public float accuracy;
+        public int damage;
+        public int maxAttackRange;
+        public int minAttackRange;
+        public int canAttack;
+        public int canMove;
+
+        public List<BuffInfo> StateChangeList = new();
+
+        public void OnCharacterHit(int damage)
+        {
+            if (HP - damage <= 0)
             {
-                IngameManager.Instance.players.Remove(gameObject);
+                if (gameObject.tag == "Player")
+                {
+                    IngameManager.Instance.players.Remove(gameObject);
+                }
+                else
+                {
+                    IngameManager.Instance.enemies.Remove(gameObject);
+                }
+                Vector2Int pos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
+                IngameManager.Instance.mapManager.spots[pos.x, pos.y].z = 0;
+                Destroy(gameObject, 0.5f);
             }
             else
             {
-                IngameManager.Instance.enemies.Remove(gameObject);
+                HP -= damage;
+                gameObject.GetComponentInChildren<HPBar>().SetValue(HP);
             }
-            Vector2Int pos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
-            IngameManager.Instance.mapManager.spots[pos.x, pos.y].z = 0;
-            Destroy(gameObject, 0.5f);
-        }
-        else
-        {
-            HP -= damage;
-            gameObject.GetComponentInChildren<HPBar>().SetValue(HP);
         }
     }
 }
+

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Ingame;
+using Logics;
 
 public class PrepareManager : MonoBehaviour
 {

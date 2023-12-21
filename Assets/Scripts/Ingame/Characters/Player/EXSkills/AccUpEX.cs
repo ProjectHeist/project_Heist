@@ -2,14 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "AccuracyUp", fileName = "AccUpEX")]
-public class AccUpEX : PlayerEX
+namespace Ingame
 {
-    public float originalAcc;
-    public override void UseEX(PlayerState ps)
+    [CreateAssetMenu(menuName = "AccuracyUp", fileName = "AccUpEX")]
+    public class AccUpEX : PlayerEX
     {
-        float diff = 1.0f - ps.accuracy;
-        ps.accuracy = 1.0f;
-        ps.StateChangeList.Add(new BuffInfo(stats.accuracy, duration, diff));
+        public float originalAcc;
+        public override void UseEX(PlayerState ps)
+        {
+            float diff = 1.0f - ps.accuracy;
+            ps.accuracy = 1.0f;
+            ps.StateChangeList.Add(new BuffInfo(stats.accuracy, duration, diff));
+        }
     }
 }
+

@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEditor;
+using Logics;
 
 public class BuyWeapon : MonoBehaviour
 {

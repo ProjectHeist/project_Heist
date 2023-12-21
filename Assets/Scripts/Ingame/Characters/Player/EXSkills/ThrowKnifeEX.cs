@@ -2,13 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "ThrowKnife", fileName = "ThrowKnifeEX")]
-public class ThrowKnifeEX : PlayerEX
+namespace Ingame
 {
-    // Start is called before the first frame update
-    public int damage = 50;
-    public override void UseEX(PlayerState ps)
+    [CreateAssetMenu(menuName = "ThrowKnife", fileName = "ThrowKnifeEX")]
+    public class ThrowKnifeEX : PlayerEX
     {
-        target.GetComponent<EnemyState>().OnEnemyHit(damage);
+        // Start is called before the first frame update
+        public int damage = 50;
+        public override void UseEX(PlayerState ps)
+        {
+            target.GetComponent<EnemyState>().OnEnemyHit(damage);
+        }
     }
 }
+

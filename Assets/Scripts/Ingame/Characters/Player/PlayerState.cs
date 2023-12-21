@@ -5,66 +5,70 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 
-
-public class PlayerState : CharacterState
+namespace Ingame
 {
-    public int EXIndex;
-    public int EXcooldown; // 현재 남아있는 쿨타임
-    private int EXcooltime; // 쿨타임
-    
-    public PlayerState()
+    public class PlayerState : CharacterState
     {
-        canAttack = 1;
-        canMove = 1;
-        EXcooldown = 0;
-    }
-    public void SetState(PlayerStat playerStat, WeaponStat weaponStat)
-    {
-        Number = playerStat.playerNumber;
-        Name = playerStat.playerName;
-        HP = playerStat.playerHP;
-        maxHP = playerStat.playerHP;
-        accuracy = playerStat.playerAccuracy;
-        moveRange = playerStat.playerMoveRange;
-        damage = weaponStat.weaponDamage;
-        maxAttackRange = weaponStat.weaponMaxAttackRange;
-        minAttackRange = weaponStat.weaponMinAttackRange;
-        critRate = weaponStat.weaponCritRate;
-        EXIndex = playerStat.PlayerEX;
-    }
+        public int EXIndex;
+        public int EXcooldown; // 현재 남아있는 쿨타임
+        private int EXcooltime; // 쿨타임
+        public int remainMoveRange; //이동 가능한 남은 거리
 
-    private int Number; // 도감에 존재하는 플레이어 넘버
-    [SerializeField]
-    private string Name; // 플레이어의 실제 이름 
-    private int Class; // 플레이어의 클래스
-    public int InteractionTime = 0; //상호작용 중인 시간 
-    public bool isInteracting = false;
+        public PlayerState()
+        {
+            canAttack = 1;
+            canMove = 1;
+            EXcooldown = 0;
+        }
+        public void SetState(PlayerStat playerStat, WeaponStat weaponStat)
+        {
+            Number = playerStat.playerNumber;
+            Name = playerStat.playerName;
+            HP = playerStat.playerHP;
+            maxHP = playerStat.playerHP;
+            accuracy = playerStat.playerAccuracy;
+            moveRange = playerStat.playerMoveRange;
+            damage = weaponStat.weaponDamage;
+            maxAttackRange = weaponStat.weaponMaxAttackRange;
+            minAttackRange = weaponStat.weaponMinAttackRange;
+            critRate = weaponStat.weaponCritRate;
+            EXIndex = playerStat.PlayerEX;
+        }
 
-    public int playerNumber
-    {
-        get
+        private int Number; // 도감에 존재하는 플레이어 넘버
+        [SerializeField]
+        private string Name; // 플레이어의 실제 이름 
+        private int Class; // 플레이어의 클래스
+        public int InteractionTime = 0; //상호작용 중인 시간 
+        public bool isInteracting = false;
+
+        public int playerNumber
         {
-            return Number;
+            get
+            {
+                return Number;
+            }
         }
-    }
-    public string playerName
-    {
-        get
+        public string playerName
         {
-            return Name;
+            get
+            {
+                return Name;
+            }
         }
-    }
-    public int playerClass
-    {
-        get
+        public int playerClass
         {
-            return Class;
+            get
+            {
+                return Class;
+            }
         }
-    }
-    public void OnPlayerHit(int damage)
-    {
-        OnCharacterHit(damage);
+        public void OnPlayerHit(int damage)
+        {
+            OnCharacterHit(damage);
+        }
     }
 }
+
 
 

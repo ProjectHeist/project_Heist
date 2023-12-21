@@ -2,13 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "CritUp", fileName = "CRITUpEX")]
-public class CRITUpEX : PlayerEX
+namespace Ingame
 {
-    public override void UseEX(PlayerState ps)
+    [CreateAssetMenu(menuName = "CritUp", fileName = "CRITUpEX")]
+    public class CRITUpEX : PlayerEX
     {
-        float diff = 1.0f - ps.critRate;
-        ps.critRate = 1.0f;
-        ps.StateChangeList.Add(new BuffInfo(stats.critRate, duration, diff));
+        public override void UseEX(PlayerState ps)
+        {
+            float diff = 1.0f - ps.critRate;
+            ps.critRate = 1.0f;
+            ps.StateChangeList.Add(new BuffInfo(stats.critRate, duration, diff));
+        }
     }
 }
+

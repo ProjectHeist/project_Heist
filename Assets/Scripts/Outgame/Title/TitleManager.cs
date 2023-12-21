@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
+using Logics;
 
 public class TitleManager : MonoBehaviour
 {
