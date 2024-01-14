@@ -265,6 +265,7 @@ namespace Logics
                 mapManager.spots[mapdata.enemyPos[i].x, mapdata.enemyPos[i].y].z = 1;
                 GameObject enemy = Instantiate(Prefabs[1], spawnPos, Quaternion.identity);
                 enemy.GetComponent<EnemyState>().GetEnemyInfo();
+                enemy.GetComponent<EnemyState>().routeNum = mapdata.enemyRoute[i];
                 HPBar hp = enemy.GetComponentInChildren<HPBar>();
                 hp.SetMaxHealth(enemy.GetComponent<EnemyState>().HP);
                 enemies.Add(enemy);

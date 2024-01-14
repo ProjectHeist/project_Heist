@@ -20,6 +20,7 @@ public class MapData
     public int maxPlayerNum;
     public int EnemyNum;
     public newVector[] enemyPos;
+    public int[] enemyRoute;
     public int width;
     public int height;
     public Inwalkable[] inwalkable;

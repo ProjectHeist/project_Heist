@@ -23,6 +23,13 @@
             "y": 21
         }
     ],
+    "enemyRoute": [
+        -1,
+        -1,
+        0,
+        1,
+        2
+    ],
     "width": 50,
     "height": 50,
     "inwalkable": [

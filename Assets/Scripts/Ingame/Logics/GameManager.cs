@@ -14,9 +14,11 @@ namespace Logics
         public DataManager _data = new DataManager();
         public DisplayRange _ui = new DisplayRange();
         public List<PlayerEX> playerEXes;
+        public List<PatrolRoute> patrolRoutes;
         public IngameManager _ingame;
         public int[] playerIndex;
         public int[] weaponIndex;
+        public Database totalDatabase;
 
 
         void Awake()

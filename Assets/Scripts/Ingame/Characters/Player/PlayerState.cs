@@ -13,6 +13,7 @@ namespace Ingame
         public int EXcooldown; // 현재 남아있는 쿨타임
         private int EXcooltime; // 쿨타임
         public int remainMoveRange; //이동 가능한 남은 거리
+        public int suspicion = 0; // 적에게 의심받는 정도
 
         public PlayerState()
         {

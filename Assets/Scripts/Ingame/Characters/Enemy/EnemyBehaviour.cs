@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using Logics;
+using JetBrains.Annotations;
 
 enum EnemyPattern
 {
@@ -17,7 +18,8 @@ namespace Ingame
 {
     public class EnemyBehaviour : MonoBehaviour
     {
-        EnemyPattern enemyPattern = EnemyPattern.Guard;
+        EnemyPattern enemyPattern = EnemyPattern.Patrol;
+        public int currentRoute = 0;
         public GameObject target; // 목표로 정한 플레이어
         private EnemyState es;
         private int currentPathIndex;
@@ -31,6 +33,9 @@ namespace Ingame
             {
                 case EnemyPattern.Guard:
                     break;
+                case EnemyPattern.Patrol:
+                    Patrol();
+                    break;
                 case EnemyPattern.Chase:
                     Chase();
                     changeFaceDir();
@@ -41,6 +46,64 @@ namespace Ingame
                     break;
             }
             Debug.Log(enemyPattern);
+        }
+
+        public void Patrol()
+        {
+            if (es.routeNum != -1)
+            {
+                PatrolRoute route = GameManager.Instance.totalDatabase.Routes[es.routeNum]; // 루트 가져오고
+                var currRoute = route.routes[currentRoute];
+                for (int i = 0; i < currRoute.movedist.Count; i++) //현재 루트에 있는 이동 명령을 실행
+                {
+                    Vector2Int target = IngameManager.Instance.mapManager.GetGridPositionFromWorld(transform.position) + GetModifiedDist(currRoute.rotation[i], currRoute.movedist[i]);
+                    StartCoroutine(Move(target));
+                }
+                if (currentRoute == route.routes.Count - 1)
+                {
+                    currentRoute = 0;
+                }
+                else
+                {
+                    currentRoute++;
+                }
+            }
+        }
+
+        public Vector2Int GetModifiedDist(int rot, int dist)
+        {
+            switch (rot)
+            {
+                case 0: //+x
+                    return new Vector2Int(dist, 0);
+                case 1: //-x
+                    return new Vector2Int(-dist, 0);
+                case 2: //+y
+                    return new Vector2Int(0, dist);
+                case 3: //-y
+                    return new Vector2Int(0, -dist);
+            }
+            return new Vector2Int(0, 0);
+        }
+
+        IEnumerator Move(Vector2Int dest)
+        {
+            bool arrived = false;
+            while (!arrived)
+            {
+                Vector3 targetPosition = IngameManager.Instance.mapManager.GetWorldPositionFromGridPosition(dest);
+                if (Vector3.Distance(transform.position, targetPosition) > 0.1f)
+                {
+                    Debug.Log("엄준식");
+                    Vector3 moveDir = (targetPosition - transform.position).normalized;
+                    transform.position = transform.position + moveDir * moveSpeed * Time.deltaTime;
+                }
+                else
+                {
+                    arrived = true;
+                }
+                yield return null;
+            }
         }
 
         public void Detect()
@@ -63,9 +126,13 @@ namespace Ingame
                     changeFaceDir();
                 }
             }
-            if (target == null)
+            if (target == null && es.routeNum == -1)
             {
                 enemyPattern = EnemyPattern.Guard;
+            }
+            else if (target == null)
+            {
+                enemyPattern = EnemyPattern.Patrol;
             }
         }
 
