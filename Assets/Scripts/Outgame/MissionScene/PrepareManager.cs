@@ -51,27 +51,28 @@ public class PrepareManager : MonoBehaviour
         }
     }
 
-    public void prepareMission()
+    public void prepareMission(int mapIndex)
     {
-        totalplayernum = GameManager.Instance._data.mapDatabase.testData.maxPlayerNum;
+        GameManager.Instance.mapIndex = mapIndex;
+        Database DB = GameManager.Instance._data.totalDB;
+        totalplayernum = DB.mapDatabase.MapDataList[mapIndex].maxPlayerNum;
         playerIndexes = new int[totalplayernum];
         weaponIndexes = new int[totalplayernum];
         Array.Fill(playerIndexes, -1);
         Array.Fill(weaponIndexes, -1);
-        GameManager gm = GameManager.Instance;
 
-        PlayerStat[] totalplayer = gm._data.playerDatabase.totalPlayerStat.playerStats;
+        PlayerStat[] totalplayer = DB.playerDatabase.playerStatList;
         currentplayers = new List<PlayerStat>(); // 현재 플레이어가 가지고 있는 캐릭터들
-        for (int i = 0; i < gm.currentMaster.playerNumbers.Count; i++)
+        for (int i = 0; i < GameManager.Instance.currentMaster.playerNumbers.Count; i++)
         {
-            int idx = gm.currentMaster.playerNumbers[i];
+            int idx = GameManager.Instance.currentMaster.playerNumbers[i];
             currentplayers.Add(totalplayer[idx]);
         }
-        WeaponStat[] totalweapons = gm._data.weaponDatabase.weaponStatList.weaponStats;
+        WeaponStat[] totalweapons = DB.weaponDatabase.weaponStatList;
         currentweapons = new List<WeaponStat>(); //현재 플레이어가 가지고 있는 무기들
-        for (int i = 0; i < gm.currentMaster.weaponNumbers.Count; i++)
+        for (int i = 0; i < GameManager.Instance.currentMaster.weaponNumbers.Count; i++)
         {
-            int idx = gm.currentMaster.weaponNumbers[i];
+            int idx = GameManager.Instance.currentMaster.weaponNumbers[i];
             currentweapons.Add(totalweapons[idx]);
         }
 

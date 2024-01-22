@@ -206,9 +206,9 @@ namespace Logics
         public List<string> GetTags()
         {
             List<string> tags = new List<string>();
-            for (int i = 0; i < GameManager.Instance._data.tagList.tag.Length; i++)
+            for (int i = 0; i < GameManager.Instance._data.totalDB.tagDatabase.tags.Length; i++)
             {
-                tags.Add(GameManager.Instance._data.tagList.tag[i]);
+                tags.Add(GameManager.Instance._data.totalDB.tagDatabase.tags[i]);
             }
             return tags;
         }
@@ -220,8 +220,8 @@ namespace Logics
 
             for (int i = 0; i < 3; i++) //테스트용 리스트 
             {
-                PlayerStat ps = GameManager.Instance._data.playerDatabase.totalPlayerStat.playerStats[i];
-                WeaponStat ws = GameManager.Instance._data.weaponDatabase.weaponStatList.weaponStats[i];
+                PlayerStat ps = GameManager.Instance._data.totalDB.playerDatabase.playerStatList[i];
+                WeaponStat ws = GameManager.Instance._data.totalDB.weaponDatabase.weaponStatList[i];
                 GameObject player = Instantiate(Prefabs[0]);
                 player.GetComponent<PlayerState>().SetState(ps, ws);
                 player.GetComponentInChildren<HPBar>().SetMaxHealth(player.GetComponent<PlayerState>().HP);
@@ -258,14 +258,14 @@ namespace Logics
 
         void CreateEnemy()
         {
-            MapData mapdata = GameManager.Instance._data.mapDatabase.testData;
+            MapData mapdata = GameManager.Instance._data.totalDB.mapDatabase.MapDataList[GameManager.Instance.mapIndex];
             for (int i = 0; i < mapdata.EnemyNum; i++)
             {
                 Vector3 spawnPos = mapManager.GetWorldPositionFromGridPosition(new Vector2Int(mapdata.enemyPos[i].x, mapdata.enemyPos[i].y));
                 mapManager.spots[mapdata.enemyPos[i].x, mapdata.enemyPos[i].y].z = 1;
                 GameObject enemy = Instantiate(Prefabs[1], spawnPos, Quaternion.identity);
                 enemy.GetComponent<EnemyState>().GetEnemyInfo();
-                enemy.GetComponent<EnemyState>().routeNum = mapdata.enemyRoute[i];
+                enemy.GetComponent<EnemyState>().routeNum = i;
                 HPBar hp = enemy.GetComponentInChildren<HPBar>();
                 hp.SetMaxHealth(enemy.GetComponent<EnemyState>().HP);
                 enemies.Add(enemy);

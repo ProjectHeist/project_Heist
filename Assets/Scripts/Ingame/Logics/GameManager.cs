@@ -16,9 +16,9 @@ namespace Logics
         public List<PlayerEX> playerEXes;
         public List<PatrolRoute> patrolRoutes;
         public IngameManager _ingame;
+        public int mapIndex;
         public int[] playerIndex;
         public int[] weaponIndex;
-        public Database totalDatabase;
 
 
         void Awake()

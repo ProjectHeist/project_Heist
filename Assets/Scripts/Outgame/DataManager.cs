@@ -6,14 +6,10 @@ using Logics;
 
 public class DataManager
 {
-    public PlayerDatabase playerDatabase = new PlayerDatabase();
-    public MapDatabase mapDatabase = new MapDatabase();
-    public WeaponDatabase weaponDatabase = new WeaponDatabase();
     public MasterDatabase masterDatabase = new MasterDatabase();
-    //public EXDatabase exDatabase = new EXDatabase();
     public SaveDataInfo saveDataInfo;
-    public TagList tagList;
     private static string SavePath => Application.persistentDataPath + "/saveInfo/";
+    public Database totalDB;
 
     public void init()
     {
@@ -23,12 +19,7 @@ public class DataManager
 
     public void Load() // 불변하는 값들을 로드할 때
     {
-        mapDatabase.Load();
-        playerDatabase.Load();
-        weaponDatabase.Load();
-        //exDatabase.Load();
-        var LoadedJson = Resources.Load<TextAsset>("Data/Map/TagList");
-        tagList = JsonUtility.FromJson<TagList>(LoadedJson.text);
+        totalDB = Resources.Load<Database>("Data/TotalDatabase");
     }
     public void LoadData() //변하는 값들을 로드할 때 
     {
@@ -80,9 +71,4 @@ public class SaveDataInfo
         Filenames = new List<string>();
     }
     public List<string> Filenames;
-}
-
-public class TagList
-{
-    public string[] tag;
 }

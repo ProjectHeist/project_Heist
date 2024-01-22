@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 012e0778aaf6bd84d909561b9c261460, type: 3}
   m_Name: TotalDatabase
   m_EditorClassIdentifier: 
-  Routes:
-  - {fileID: 11400000, guid: 06d0b86411e5cb74fa91c14a5ea2c99c, type: 2}
-  - {fileID: 11400000, guid: d2c12f870ed4ce147a94f97d7e28b1f8, type: 2}
-  - {fileID: 11400000, guid: 51472c9078aab5a49bd2cdc5412ab514, type: 2}
+  playerDatabase: {fileID: 11400000, guid: 1dda70835ce1d164d8018bc0eecf2197, type: 2}
+  mapDatabase: {fileID: 11400000, guid: d3ed6fbcdb9893c40815f85e053b5574, type: 2}
+  enemyDatabase: {fileID: 0}
+  eXDatabase: {fileID: 11400000, guid: 6398e93068191504a9d17b3706bf164c, type: 2}
+  weaponDatabase: {fileID: 11400000, guid: 1712b9013809e854f86a7d7de643eca5, type: 2}
+  tagDatabase: {fileID: 11400000, guid: f08d51ee370a9954a8fb4ea0a5207a89, type: 2}

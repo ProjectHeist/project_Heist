@@ -16,7 +16,7 @@ public class BuyPlayer : MonoBehaviour
     public int playeridx = -1;
     public void activatepopup()
     {
-        PlayerStat[] ps = GameManager.Instance._data.playerDatabase.totalPlayerStat.playerStats;
+        PlayerStat[] ps = GameManager.Instance._data.totalDB.playerDatabase.playerStatList;
         playerPopup.SetActive(true);
         float yPosition = 115;
         for (int i = 0; i < ps.Length; i++)
@@ -39,7 +39,7 @@ public class BuyPlayer : MonoBehaviour
     public void onPlayerClicked(int idx)
     {
         playeridx = idx;
-        PlayerStat ps = GameManager.Instance._data.playerDatabase.totalPlayerStat.playerStats[idx];
+        PlayerStat ps = GameManager.Instance._data.totalDB.playerDatabase.playerStatList[idx];
         infoText.text = "이름: " + ps.playerName + "\n계약금: " + ps.playerCost + "$" + "\n분배 비율: " + ps.playerPercent * 100 + "%" + "\n체력: " + ps.playerHP + "\n명중률: " + ps.playerAccuracy * 100 + "%" + "\n이동 범위: " + ps.playerMoveRange;
     }
 
@@ -47,7 +47,7 @@ public class BuyPlayer : MonoBehaviour
     {
         if (playeridx != -1)
         {
-            PlayerStat selected = GameManager.Instance._data.playerDatabase.totalPlayerStat.playerStats[playeridx];
+            PlayerStat selected = GameManager.Instance._data.totalDB.playerDatabase.playerStatList[playeridx];
             if (selected.playerCost <= GameManager.Instance.currentMaster.money)
             {
                 GameManager.Instance.currentMaster.money -= selected.playerCost;

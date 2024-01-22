@@ -32,7 +32,7 @@ public class MapCreator : MonoBehaviour
         IngameManager.Instance.mapManager.spots = new Vector3Int[width, height];
         IngameManager.Instance.mapManager.spots = new Vector3Int[width, height];
 
-        mapdata = GameManager.Instance._data.mapDatabase.testData;
+        mapdata = GameManager.Instance._data.totalDB.mapDatabase.MapDataList[GameManager.Instance.mapIndex];
         List<Vector2Int> inwalkable = mapdata.getInwalkables();
 
         for (int x = 0; x < width; x++)

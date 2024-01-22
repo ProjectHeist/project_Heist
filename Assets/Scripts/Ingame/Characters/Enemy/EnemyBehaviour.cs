@@ -52,11 +52,11 @@ namespace Ingame
         {
             if (es.routeNum != -1)
             {
-                PatrolRoute route = GameManager.Instance.totalDatabase.Routes[es.routeNum]; // 루트 가져오고
+                PatrolRoute route = GameManager.Instance._data.totalDB.mapDatabase.MapDataList[GameManager.Instance.mapIndex].patrolRoutes[es.routeNum]; // 루트 가져오고
                 var currRoute = route.routes[currentRoute];
                 for (int i = 0; i < currRoute.movedist.Count; i++) //현재 루트에 있는 이동 명령을 실행
                 {
-                    Vector2Int target = IngameManager.Instance.mapManager.GetGridPositionFromWorld(transform.position) + GetModifiedDist(currRoute.rotation[i], currRoute.movedist[i]);
+                    Vector2Int target = IngameManager.Instance.mapManager.GetGridPositionFromWorld(transform.position) + GetModifiedDist(currRoute.direction[i], currRoute.movedist[i]);
                     StartCoroutine(Move(target));
                 }
                 if (currentRoute == route.routes.Count - 1)
@@ -70,17 +70,17 @@ namespace Ingame
             }
         }
 
-        public Vector2Int GetModifiedDist(int rot, int dist)
+        public Vector2Int GetModifiedDist(string rot, int dist)
         {
             switch (rot)
             {
-                case 0: //+x
+                case "+x": //+x
                     return new Vector2Int(dist, 0);
-                case 1: //-x
+                case "-x": //-x
                     return new Vector2Int(-dist, 0);
-                case 2: //+y
+                case "+y": //+y
                     return new Vector2Int(0, dist);
-                case 3: //-y
+                case "-y": //-y
                     return new Vector2Int(0, -dist);
             }
             return new Vector2Int(0, 0);

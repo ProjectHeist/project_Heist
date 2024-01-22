@@ -16,7 +16,7 @@ public class BuyWeapon : MonoBehaviour
     public int weaponidx = -1;
     public void activatepopup()
     {
-        WeaponStat[] ws = GameManager.Instance._data.weaponDatabase.weaponStatList.weaponStats;
+        WeaponStat[] ws = GameManager.Instance._data.totalDB.weaponDatabase.weaponStatList;
         Debug.Log(ws.Length);
         weaponPopup.SetActive(true);
         float yPosition = 115;
@@ -39,7 +39,7 @@ public class BuyWeapon : MonoBehaviour
     public void onWeaponClicked(int idx)
     {
         weaponidx = idx;
-        WeaponStat ws = GameManager.Instance._data.weaponDatabase.weaponStatList.weaponStats[idx];
+        WeaponStat ws = GameManager.Instance._data.totalDB.weaponDatabase.weaponStatList[idx];
         infoText.text = "이름: " + ws.weaponName + "\n가격: " + ws.weaponCost + "$" + "\n치명타 확률: " + ws.weaponCritRate * 100 + "%" + "\n사거리: " + ws.weaponMaxAttackRange + "\n명중 보장 사거리: " + ws.weaponMinAttackRange + "\n피해량: " + ws.weaponDamage;
     }
 
@@ -47,7 +47,7 @@ public class BuyWeapon : MonoBehaviour
     {
         if (weaponidx != -1)
         {
-            WeaponStat selected = GameManager.Instance._data.weaponDatabase.weaponStatList.weaponStats[weaponidx];
+            WeaponStat selected = GameManager.Instance._data.totalDB.weaponDatabase.weaponStatList[weaponidx];
             if (selected.weaponCost <= GameManager.Instance.currentMaster.money)
             {
                 GameManager.Instance.currentMaster.money -= selected.weaponCost;

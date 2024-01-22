@@ -5,9 +5,10 @@ using UnityEngine;
 public class MissionSelectButton : MonoBehaviour
 {
     public GameObject popup;
+    public int mapIndex = 0;
     public void SelectMission()
     {
         popup.SetActive(true);
-        PrepareManager.Instance.prepareMission();
+        PrepareManager.Instance.prepareMission(mapIndex);
     }
 }
