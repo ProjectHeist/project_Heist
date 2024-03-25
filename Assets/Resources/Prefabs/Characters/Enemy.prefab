@@ -171,6 +171,7 @@ GameObject:
   - component: {fileID: 437634645707936899}
   - component: {fileID: 437634645707936896}
   - component: {fileID: 819595006787478055}
+  - component: {fileID: 1279617464671084345}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -207,6 +208,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a1a4d08c45bdf4ca79e2b499c02f33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentRoute: 0
+  suspect: {fileID: 0}
+  detectedplayers: []
 --- !u!114 &437634645707936896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,6 +223,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42e162ad0799134408acb338f9cc68f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHP: 0
   HP: 0
   moveRange: 0
   critRate: 0
@@ -229,6 +234,8 @@ MonoBehaviour:
   canAttack: 0
   canMove: 0
   detectRange: 10
+  routeNum: 0
+  faceDir: 0
 --- !u!65 &819595006787478055
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -242,6 +249,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.6, y: 1, z: 0.6}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &1279617464671084345
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 437634645707936897}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &437634646283616260
 GameObject:
   m_ObjectHideFlags: 0

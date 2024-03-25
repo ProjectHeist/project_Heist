@@ -12,7 +12,20 @@ public class MapManager
     public GameObject[,] tile;
     public int[,] map;
 
-
+    public int GetSuspicion(Vector2Int pos)
+    {
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if (i == pos.x && j == pos.y)
+                {
+                    return map[i, j];
+                }
+            }
+        }
+        return 0;
+    }
     // 실제 좌표를 격자 내 좌표로 표현
     public Vector2Int GetGridPositionFromWorld(Vector3 worldPosition)
     {

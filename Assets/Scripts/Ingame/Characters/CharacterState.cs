@@ -56,7 +56,7 @@ namespace Ingame
                 }
                 Vector2Int pos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
                 IngameManager.Instance.mapManager.spots[pos.x, pos.y].z = 0;
-                Destroy(gameObject, 0.5f);
+                gameObject.SetActive(false);
             }
             else
             {

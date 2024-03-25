@@ -34,6 +34,9 @@ public class MapCreator : MonoBehaviour
 
         mapdata = GameManager.Instance._data.totalDB.mapDatabase.MapDataList[GameManager.Instance.mapIndex];
         List<Vector2Int> inwalkable = mapdata.getInwalkables();
+        List<Vector2Int> forbiddens = mapdata.getForbiddens();
+
+        IngameManager.Instance.mapManager.map = new int[width, height];
 
         for (int x = 0; x < width; x++)
         {
@@ -49,6 +52,14 @@ public class MapCreator : MonoBehaviour
                 {
                     CreateTile(x, y);
                     IngameManager.Instance.mapManager.spots[x, y] = new Vector3Int(x, y, 1);
+                }
+                if (forbiddens.Contains(currentCell))
+                {
+                    IngameManager.Instance.mapManager.map[x, y] = 50;
+                }
+                else
+                {
+                    IngameManager.Instance.mapManager.map[x, y] = 0;
                 }
             }
         }

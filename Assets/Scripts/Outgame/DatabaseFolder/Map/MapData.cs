@@ -14,6 +14,7 @@ public class MapData : ScriptableObject
     public int height;
     public Inwalkable[] inwalkable;
     public PatrolRoute[] patrolRoutes; // 적의 순찰 경로 
+    public Forbidden[] forbiddenSpots;
 
     public List<Vector2Int> getInwalkables()
     {
@@ -72,6 +73,64 @@ public class MapData : ScriptableObject
         }
         return inwalkables;
     }
+
+    public List<Vector2Int> getForbiddens()
+    {
+        List<Vector2Int> forbidden = new List<Vector2Int>();
+        for (int i = 0; i < forbiddenSpots.Length; i++)
+        {
+            Vector2Int startpoint = new Vector2Int(forbiddenSpots[i].x, forbiddenSpots[i].y);
+            if (!forbidden.Contains(startpoint))
+            {
+                forbidden.Add(startpoint);
+            }
+            if (forbiddenSpots[i].direction == "+x")
+            {
+                for (int j = 1; j < forbiddenSpots[i].length; j++)
+                {
+                    Vector2Int newPoint = new Vector2Int(startpoint.x + j, startpoint.y);
+                    if (!forbidden.Contains(newPoint))
+                    {
+                        forbidden.Add(newPoint);
+                    }
+                }
+            }
+            else if (forbiddenSpots[i].direction == "-x")
+            {
+                for (int j = 1; j < forbiddenSpots[i].length; j++)
+                {
+                    Vector2Int newPoint = new Vector2Int(startpoint.x - j, startpoint.y);
+                    if (!forbidden.Contains(newPoint))
+                    {
+                        forbidden.Add(newPoint);
+                    }
+                }
+            }
+            else if (forbiddenSpots[i].direction == "+y")
+            {
+                for (int j = 1; j < forbiddenSpots[i].length; j++)
+                {
+                    Vector2Int newPoint = new Vector2Int(startpoint.x, startpoint.y + j);
+                    if (!forbidden.Contains(newPoint))
+                    {
+                        forbidden.Add(newPoint);
+                    }
+                }
+            }
+            else if (forbiddenSpots[i].direction == "-y")
+            {
+                for (int j = 1; j < forbiddenSpots[i].length; j++)
+                {
+                    Vector2Int newPoint = new Vector2Int(startpoint.x, startpoint.y - j);
+                    if (!forbidden.Contains(newPoint))
+                    {
+                        forbidden.Add(newPoint);
+                    }
+                }
+            }
+        }
+        return forbidden;
+    }
 }
 
 [System.Serializable]
@@ -82,10 +141,12 @@ public class Inwalkable
     public int length;
     public string direction;
 }
-
 [System.Serializable]
-public class newVector
+public class Forbidden
 {
     public int x;
     public int y;
+    public int length;
+    public string direction;
+    public int suspicion;
 }

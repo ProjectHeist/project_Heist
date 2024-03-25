@@ -48,6 +48,17 @@ MonoBehaviour:
     length: 5
     direction: +y
   patrolRoutes:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: e5231892aa85bfe4680b53c6e3587932, type: 2}
+  - {fileID: 11400000, guid: e563fd5fd5b9ced47b8cb488b113bbdf, type: 2}
+  - {fileID: 11400000, guid: 96ec45a58049d6448a46aa4d07acad1d, type: 2}
+  forbiddenSpots:
+  - x: 0
+    y: 0
+    length: 10
+    direction: +y
+    suspicion: 0
+  - x: 1
+    y: 0
+    length: 10
+    direction: +y
+    suspicion: 0

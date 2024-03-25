@@ -4841,9 +4841,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8f7388cd8c610f94aa3884573f8c0b57, type: 2}
   patrolRoutes: []
   _ingame: {fileID: 0}
+  mapIndex: 0
   playerIndex: 
   weaponIndex: 
-  totalDatabase: {fileID: 11400000, guid: 6669c2b276feed5428d1e4b476c0cc8d, type: 2}
 --- !u!4 &1860529408
 Transform:
   m_ObjectHideFlags: 0

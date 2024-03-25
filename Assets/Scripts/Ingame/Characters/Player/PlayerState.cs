@@ -14,6 +14,8 @@ namespace Ingame
         private int EXcooltime; // 쿨타임
         public int remainMoveRange; //이동 가능한 남은 거리
         public int suspicion = 0; // 적에게 의심받는 정도
+        public GameObject playerModel;
+        public int faceDir; //0 is +x, 1 is +y, 2 is -x, 3 is -y
 
         public PlayerState()
         {

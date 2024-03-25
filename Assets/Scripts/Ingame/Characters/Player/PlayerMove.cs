@@ -18,6 +18,11 @@ namespace Ingame
 
         // Update is called once per frame
 
+        public void SetDir()
+        {
+
+        }
+
         public void MoveToDest(Vector2Int targetPosition)
         {
             arrived = false;

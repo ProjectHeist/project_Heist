@@ -178,14 +178,14 @@ namespace Logics
                         newRange.Add(range[i]);
                     }
                 }
-                else if (es.faceDir == 1) // -x
+                else if (es.faceDir == 2) // -x
                 {
                     if (range[i].x < map.GetGridPositionFromWorld(enemy.transform.position).x)
                     {
                         newRange.Add(range[i]);
                     }
                 }
-                else if (es.faceDir == 2) //+y
+                else if (es.faceDir == 1) //+y
                 {
                     if (range[i].y > map.GetGridPositionFromWorld(enemy.transform.position).y)
                     {

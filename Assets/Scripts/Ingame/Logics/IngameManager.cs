@@ -19,6 +19,7 @@ namespace Logics
         public MapCreator mapCreator;
         public MapManager mapManager = new MapManager();
         public PlayerController playerController = new PlayerController();
+        public Walldetection walldetection = new Walldetection();
         public Transform mainCamera;
         public ControlUI controlPanel;
         public InputManager InputManager;
@@ -158,14 +159,36 @@ namespace Logics
             Vector3 deploy = mapManager.GetWorldPositionFromGridPosition(deployPos);
             if (mapManager.spots[deployPos.x, deployPos.y].z == 0) // 벽 소환 방지
             {
+                PlayerState ps = players[deployedplayers].GetComponent<PlayerState>();
                 players[deployedplayers].transform.position = deploy;
                 players[deployedplayers].SetActive(true);
                 mapManager.spots[deployPos.x, deployPos.y].z = 1;
+
+                SetDir(ps.faceDir, ps);
+
                 deployedplayers++;
                 if (deployedplayers >= players.Count)
                 {
                     Deployed = true;
                 }
+            }
+        }
+
+        public void SetDir(int dir, PlayerState playerState)
+        {
+            switch (dir)
+            {
+                case 0:
+                    playerState.playerModel.transform.eulerAngles = new Vector3(0, -90, 0);
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    playerState.playerModel.transform.eulerAngles = new Vector3(0, 90, 0);
+                    break;
+                case 3:
+                    playerState.playerModel.transform.eulerAngles = new Vector3(0, 180, 0);
+                    break;
             }
         }
 
@@ -265,11 +288,64 @@ namespace Logics
                 mapManager.spots[mapdata.enemyPos[i].x, mapdata.enemyPos[i].y].z = 1;
                 GameObject enemy = Instantiate(Prefabs[1], spawnPos, Quaternion.identity);
                 enemy.GetComponent<EnemyState>().GetEnemyInfo();
-                enemy.GetComponent<EnemyState>().routeNum = i;
+                if (i < 2)
+                    enemy.GetComponent<EnemyState>().routeNum = i;
+                else
+                    enemy.GetComponent<EnemyState>().routeNum = 2;
                 HPBar hp = enemy.GetComponentInChildren<HPBar>();
                 hp.SetMaxHealth(enemy.GetComponent<EnemyState>().HP);
+                CreateEnemyVision(enemy.GetComponent<EnemyState>().detectRange, enemy);
                 enemies.Add(enemy);
             }
+        }
+
+        void CreateEnemyVision(int range, GameObject enemy)
+        {
+            int facedir = enemy.GetComponent<EnemyState>().faceDir;
+            switch (facedir)
+            {
+                case 0:
+                    for (int i = 0; i < range; i++) //세로
+                    {
+                        for (int j = -i; j < i + 1; j++) //가로
+                        {
+                            BoxCollider box = enemy.AddComponent<BoxCollider>();
+                            box.center = new Vector3(range - i, 0, j);
+                        }
+                    }
+                    break;
+                case 1:
+                    for (int i = 0; i < range; i++) //세로
+                    {
+                        for (int j = -i; j < i + 1; j++) //가로
+                        {
+                            BoxCollider box = enemy.AddComponent<BoxCollider>();
+                            box.center = new Vector3(j, 0, range - i);
+                        }
+                    }
+                    break;
+                case 2:
+                    for (int i = 0; i < range; i++) //세로
+                    {
+                        for (int j = -i; j < i + 1; j++) //가로
+                        {
+                            BoxCollider box = enemy.AddComponent<BoxCollider>();
+                            box.center = new Vector3(-(range - i), 0, j);
+                        }
+                    }
+                    break;
+                case 3:
+                    for (int i = 0; i < range; i++) //세로
+                    {
+                        for (int j = -i; j < i + 1; j++) //가로
+                        {
+                            BoxCollider box = enemy.AddComponent<BoxCollider>();
+                            box.center = new Vector3(-(range - i), 0, j);
+                        }
+                    }
+                    break;
+            }
+
         }
 
     }
