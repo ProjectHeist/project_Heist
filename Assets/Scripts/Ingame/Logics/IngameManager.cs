@@ -101,6 +101,7 @@ namespace Logics
             foreach (GameObject player in players)
             {
                 PlayerState ps = player.GetComponent<PlayerState>();
+                ps.detected = false;
                 if (ps.StateChangeList.Count > 0) //플레이어에게 적용된 버프를 확인 및 해제하는 절차
                 {
                     List<BuffInfo> filter = new List<BuffInfo>();
@@ -179,15 +180,15 @@ namespace Logics
             switch (dir)
             {
                 case 0:
-                    playerState.playerModel.transform.eulerAngles = new Vector3(0, -90, 0);
+                    playerState.playerModel.transform.eulerAngles = new Vector3(0, 90, 0);
                     break;
                 case 1:
                     break;
                 case 2:
-                    playerState.playerModel.transform.eulerAngles = new Vector3(0, 90, 0);
+                    playerState.playerModel.transform.eulerAngles = new Vector3(0, -90, 0);
                     break;
                 case 3:
-                    playerState.playerModel.transform.eulerAngles = new Vector3(0, 180, 0);
+                    playerState.playerModel.transform.eulerAngles = new Vector3(0, -180, 0);
                     break;
             }
         }
@@ -246,7 +247,7 @@ namespace Logics
                 PlayerStat ps = GameManager.Instance._data.totalDB.playerDatabase.playerStatList[i];
                 WeaponStat ws = GameManager.Instance._data.totalDB.weaponDatabase.weaponStatList[i];
                 GameObject player = Instantiate(Prefabs[0]);
-                player.GetComponent<PlayerState>().SetState(ps, ws);
+                player.GetComponent<PlayerState>().SetState(ps, ws, 0);
                 player.GetComponentInChildren<HPBar>().SetMaxHealth(player.GetComponent<PlayerState>().HP);
 
                 players.Add(player);

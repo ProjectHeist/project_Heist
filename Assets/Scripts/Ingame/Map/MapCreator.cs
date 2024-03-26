@@ -37,6 +37,7 @@ public class MapCreator : MonoBehaviour
         List<Vector2Int> forbiddens = mapdata.getForbiddens();
 
         IngameManager.Instance.mapManager.map = new int[width, height];
+        IngameManager.Instance.mapManager.forbiddens = new List<Vector2Int>();
 
         for (int x = 0; x < width; x++)
         {
@@ -56,6 +57,7 @@ public class MapCreator : MonoBehaviour
                 if (forbiddens.Contains(currentCell))
                 {
                     IngameManager.Instance.mapManager.map[x, y] = 50;
+                    IngameManager.Instance.mapManager.forbiddens.Add(currentCell);
                 }
                 else
                 {

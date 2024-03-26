@@ -26,7 +26,6 @@ namespace Ingame
         private int currentPathIndex;
         private float moveSpeed = 30.0f;
         private bool patrolling = false;
-        private bool detected = false; // 아군을 이미 감지하고 의심도를 올렸음을 나타내는 bool
         Coroutine patrol;
 
         public GameObject suspect; // 시야 내에 들어온 용의자
@@ -35,10 +34,10 @@ namespace Ingame
 
         public void CheckAndChangeState()
         {
-            detected = false;
             if (suspect != null && !suspect.activeSelf) // 중간에 죽었을 경우
             {
                 enemyPattern = EnemyPattern.Guard;
+                detectedplayers.Remove(suspect);
                 suspect = null;
             }
             else if (enemyPattern == EnemyPattern.Chase && memoryturn <= 0) // 오랫동안 시야에 보이지 않았을 경우
@@ -48,7 +47,7 @@ namespace Ingame
             }
             else // 그 이외의 경우
             {
-                if (detectedplayers != null) //감지해서 금지구역에 있는지 확인, 있다면 의심도 증가
+                if (detectedplayers.Count > 0) //감지해서 금지구역에 있는지 확인, 있다면 의심도 증가
                 {
                     for (int i = 0; i < detectedplayers.Count; i++)
                     {
@@ -60,6 +59,26 @@ namespace Ingame
                         }
                     }
                     GameObject max = GetMaxSuspicion();
+                    if (max.GetComponent<PlayerState>().suspicion >= 50)
+                    {
+                        suspect = max;
+                    }
+                    if (suspect != null)
+                    {
+                        if (suspect.GetComponent<PlayerState>().suspicion >= 100)
+                        {
+                            memoryturn = 2;
+                            enemyPattern = EnemyPattern.Alert;
+                        }
+                        else if (suspect.GetComponent<PlayerState>().suspicion >= 50)
+                        {
+                            memoryturn = 2;
+                            if (enemyPattern == EnemyPattern.Patrol || enemyPattern == EnemyPattern.Guard)
+                            {
+                                enemyPattern = EnemyPattern.Chase;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -91,10 +110,12 @@ namespace Ingame
                 case EnemyPattern.Chase:
                     Chase();
                     changeFaceDir();
+                    Debug.Log("Chase");
                     break;
                 case EnemyPattern.Alert:
                     Chase();
                     changeFaceDir();
+                    Debug.Log("Alert");
                     break;
             }
             memoryturn--;
@@ -295,14 +316,14 @@ namespace Ingame
             map.spots[currentpos.x, currentpos.y].z = 0;
             if (path.Count < es.moveRange)
             {
-                for (int i = 0; i < path.Count - 3; i++)
+                for (int i = 0; i < path.Count - 4; i++)
                 {
                     newPath.Add(path[i]);
                 }
             }
             else
             {
-                for (int i = 0; i < es.moveRange - 2; i++)
+                for (int i = 0; i < es.moveRange - 3; i++)
                 {
                     newPath.Add(path[i]);
                 }
@@ -355,47 +376,52 @@ namespace Ingame
         {
             if (collision.gameObject.CompareTag("Player"))
             {
-                Debug.Log("엄준식");
-                detectedplayers.Add(collision.gameObject);
-                Vector2Int currPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(collision.gameObject.transform.position);
-                int sus = IngameManager.Instance.mapManager.GetSuspicion(currPos); //의심도 체크
-                if (!detected)
+                if (!IngameManager.Instance.walldetection.IsWallBetween(transform.position, collision.gameObject.transform.position)) // 사이에 벽이 없을 경우
                 {
-                    if (sus != 0) // 금지구역에 있을 때
+                    Debug.Log("엄준식");
+                    detectedplayers.Add(collision.gameObject);
+                    Vector2Int currPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(collision.gameObject.transform.position);
+                    PlayerState ps = collision.gameObject.GetComponent<PlayerState>();
+                    int sus = IngameManager.Instance.mapManager.GetSuspicion(currPos); //의심도 체크
+                    if (!ps.detected)
                     {
-                        collision.gameObject.GetComponent<PlayerState>().suspicion += sus;
-                    }
-                    detected = true;
-                }
-                if (collision.gameObject.GetComponent<PlayerState>().suspicion >= 100) // 의심가는 인물이 포착될 경우
-                {
-                    GameObject max = GetMaxSuspicion();
-                    if (collision.gameObject == max)
-                    {
-                        suspect = collision.gameObject;
-                        memoryturn = 2;
-                        if (enemyPattern == EnemyPattern.Patrol)
+                        if (sus != 0) // 금지구역에 있을 때
                         {
+                            collision.gameObject.GetComponent<PlayerState>().suspicion += sus;
+                            ps.detected = true;
+                        }
+                    }
+                    if (collision.gameObject.GetComponent<PlayerState>().suspicion >= 100) // 의심가는 인물이 포착될 경우
+                    {
+                        GameObject max = GetMaxSuspicion();
+                        if (collision.gameObject == max)
+                        {
+                            suspect = collision.gameObject;
+                            memoryturn = 2;
                             if (patrolling)
                                 StopPatrol();
                             enemyPattern = EnemyPattern.Alert;
                         }
                     }
-                }
-                else if (collision.gameObject.GetComponent<PlayerState>().suspicion >= 50)
-                {
-                    GameObject max = GetMaxSuspicion();
-                    if (collision.gameObject == max)
+                    else if (collision.gameObject.GetComponent<PlayerState>().suspicion >= 50)
                     {
-                        suspect = collision.gameObject;
-                        memoryturn = 2;
-                        if (enemyPattern == EnemyPattern.Patrol)
+                        GameObject max = GetMaxSuspicion();
+                        if (collision.gameObject == max)
                         {
-                            if (patrolling)
-                                StopPatrol();
-                            enemyPattern = EnemyPattern.Chase;
+                            suspect = collision.gameObject;
+                            memoryturn = 2;
+                            if (enemyPattern == EnemyPattern.Patrol || enemyPattern == EnemyPattern.Guard)
+                            {
+                                if (patrolling)
+                                    StopPatrol();
+                                enemyPattern = EnemyPattern.Chase;
+                            }
                         }
                     }
+                }
+                else
+                {
+                    Debug.Log("Wall is between");
                 }
             }
         }

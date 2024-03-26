@@ -17,8 +17,8 @@ MonoBehaviour:
   enemyPos:
   - {x: 31, y: 21}
   - {x: 21, y: 11}
-  - {x: 6, y: 13}
-  - {x: 6, y: 9}
+  - {x: 6, y: 15}
+  - {x: 8, y: 7}
   - {x: 27, y: 21}
   width: 50
   height: 50
@@ -58,7 +58,7 @@ MonoBehaviour:
     direction: +y
     suspicion: 0
   - x: 1
-    y: 0
+    y: 10
     length: 10
     direction: +y
     suspicion: 0

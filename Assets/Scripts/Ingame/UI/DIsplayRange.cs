@@ -30,4 +30,12 @@ public class DisplayRange
             }
         }
     }
+    public void Delete(List<Vector2Int> deletelist, Vector2Int except)
+    {
+        for (int i = 0; i < deletelist.Count; i++)
+        {
+            if (IngameManager.Instance.mapManager.tile[deletelist[i].x, deletelist[i].y] != null && !deletelist[i].Equals(except))
+                IngameManager.Instance.mapManager.tile[deletelist[i].x, deletelist[i].y].GetComponentInChildren<Renderer>().material.color = new Color(256, 256, 256);
+        }
+    }
 }

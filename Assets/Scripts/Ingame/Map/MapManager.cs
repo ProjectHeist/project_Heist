@@ -11,6 +11,7 @@ public class MapManager
     // 실제 타일들의 리스트
     public GameObject[,] tile;
     public int[,] map;
+    public List<Vector2Int> forbiddens;
 
     public int GetSuspicion(Vector2Int pos)
     {

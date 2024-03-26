@@ -16,6 +16,7 @@ namespace Ingame
         public int suspicion = 0; // 적에게 의심받는 정도
         public GameObject playerModel;
         public int faceDir; //0 is +x, 1 is +y, 2 is -x, 3 is -y
+        public bool detected = false; //적에게 감지되었는가?
 
         public PlayerState()
         {
@@ -23,7 +24,7 @@ namespace Ingame
             canMove = 1;
             EXcooldown = 0;
         }
-        public void SetState(PlayerStat playerStat, WeaponStat weaponStat)
+        public void SetState(PlayerStat playerStat, WeaponStat weaponStat, int Dir)
         {
             Number = playerStat.playerNumber;
             Name = playerStat.playerName;
@@ -36,6 +37,7 @@ namespace Ingame
             minAttackRange = weaponStat.weaponMinAttackRange;
             critRate = weaponStat.weaponCritRate;
             EXIndex = playerStat.PlayerEX;
+            faceDir = Dir;
         }
 
         private int Number; // 도감에 존재하는 플레이어 넘버

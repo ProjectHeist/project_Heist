@@ -17,6 +17,8 @@ namespace Logics
         // 플레이어 선택과 관련된 변수
         public bool selected = false; // 플레이어가 선택되었는가? 
 
+        bool tabclicked = false; // 금지구역 확인용
+
         // Update is called once per frame
         void Update()
         {
@@ -145,6 +147,26 @@ namespace Logics
                 {
                     IngameManager.Instance.ingameUI.DeselectPanel(PanelType.Interact);
                     Escape();
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.Tab) && AllowInput)
+            {
+                if (!tabclicked)
+                {
+                    List<Vector2Int> f = IngameManager.Instance.mapManager.forbiddens;
+                    IngameManager.Instance.ingameUI.range.Display(f, Color.black);
+                    tabclicked = true;
+                }
+                else
+                {
+                    List<Vector2Int> f = IngameManager.Instance.mapManager.forbiddens;
+                    Vector2Int currentPos;
+                    if (IngameManager.Instance.playerController.currentPlayer != null)
+                        currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(IngameManager.Instance.playerController.currentPlayer.transform.position);
+                    else
+                        currentPos = new Vector2Int(-1, -1);
+                    IngameManager.Instance.ingameUI.range.Delete(f, currentPos);
+                    tabclicked = false;
                 }
             }
 
