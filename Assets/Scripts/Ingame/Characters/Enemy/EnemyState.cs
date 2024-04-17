@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Logics;
 using UnityEngine;
 
 namespace Ingame
@@ -10,11 +11,12 @@ namespace Ingame
         public int detectRange = 8;
         public int routeNum; // 순찰 경로를 나타냄
         public int faceDir; //0 is +x, 1 is +y, 2 is -x, 3 is -y
+        public int alertRange = 6;
         public void GetEnemyInfo()
         {
             HP = 100;
             accuracy = 0.5f;
-            moveRange = 5;
+            moveRange = 8;
             damage = 20;
             maxAttackRange = 6;
             minAttackRange = 3;

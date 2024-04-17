@@ -69,6 +69,7 @@ namespace Ingame
                         {
                             memoryturn = 2;
                             enemyPattern = EnemyPattern.Alert;
+                            AlertOthers();
                         }
                         else if (suspect.GetComponent<PlayerState>().suspicion >= 50)
                         {
@@ -77,7 +78,30 @@ namespace Ingame
                             {
                                 enemyPattern = EnemyPattern.Chase;
                             }
+                            AlertOthers();
                         }
+                    }
+                }
+            }
+        }
+
+        public void AlertOthers()
+        {
+            List<GameObject> enemies = IngameManager.Instance.enemies;
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                Vector2Int currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
+                Vector2Int targetPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(enemies[i].transform.position);
+                if (InRange(currentPos, targetPos, gameObject.GetComponent<EnemyState>().alertRange))
+                {
+                    enemies[i].GetComponent<EnemyBehaviour>().suspect = suspect;
+                    if (suspect.GetComponent<PlayerState>().suspicion >= 100)
+                    {
+                        enemies[i].GetComponent<EnemyBehaviour>().enemyPattern = EnemyPattern.Alert;
+                    }
+                    else if (suspect.GetComponent<PlayerState>().suspicion >= 50)
+                    {
+                        enemies[i].GetComponent<EnemyBehaviour>().enemyPattern = EnemyPattern.Chase;
                     }
                 }
             }
@@ -228,33 +252,9 @@ namespace Ingame
             int xdist = targetPos.x - startPos.x;
             int ydist = targetPos.y - startPos.y;
             int dist = Math.Abs(xdist) + Math.Abs(ydist);
-            if (es.faceDir == 0)
+            if (dist < range)
             {
-                if (xdist > 0 && dist < range) // in face direction
-                {
-                    return true;
-                }
-            }
-            else if (es.faceDir == 1)
-            {
-                if (ydist > 0 && dist < range)
-                {
-                    return true;
-                }
-            }
-            else if (es.faceDir == 2)
-            {
-                if (xdist < 0 && dist < range)
-                {
-                    return true;
-                }
-            }
-            else if (es.faceDir == 3)
-            {
-                if (ydist < 0 && dist < range)
-                {
-                    return true;
-                }
+                return true;
             }
             return false;
         }
@@ -401,6 +401,7 @@ namespace Ingame
                             if (patrolling)
                                 StopPatrol();
                             enemyPattern = EnemyPattern.Alert;
+                            AlertOthers();
                         }
                     }
                     else if (collision.gameObject.GetComponent<PlayerState>().suspicion >= 50)
@@ -415,6 +416,7 @@ namespace Ingame
                                 if (patrolling)
                                     StopPatrol();
                                 enemyPattern = EnemyPattern.Chase;
+                                AlertOthers();
                             }
                         }
                     }
