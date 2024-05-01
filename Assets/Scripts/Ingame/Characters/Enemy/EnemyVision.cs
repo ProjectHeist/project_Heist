@@ -10,6 +10,7 @@ public class EnemyVision : MonoBehaviour
     private void OnCollisionEnter(Collision collision) // 시야에 들어왔을 때
     {
         EnemyBehaviour enemyBehaviour = gameObject.GetComponentInParent<EnemyBehaviour>();
+        int idx = enemyBehaviour.enemyIndex;
         if (collision.gameObject.CompareTag("Player"))
         {
             if (!IngameManager.Instance.walldetection.IsWallBetween(transform.position, collision.gameObject.transform.position)) // 사이에 벽이 없을 경우
@@ -23,16 +24,16 @@ public class EnemyVision : MonoBehaviour
                 {
                     if (sus != 0) // 금지구역에 있을 때
                     {
-                        collision.gameObject.GetComponent<PlayerState>().suspicion += sus;
+                        collision.gameObject.GetComponent<PlayerState>().suspicion[idx] += sus;
                         ps.detected = true;
                     }
                     else if (enemyBehaviour.enemyPattern == EnemyPattern.Lured)
                     {
-                        collision.gameObject.GetComponent<PlayerState>().suspicion += 50;
+                        collision.gameObject.GetComponent<PlayerState>().suspicion[idx] += 50;
                         ps.detected = true;
                     }
                 }
-                if (collision.gameObject.GetComponent<PlayerState>().suspicion >= 100) // 의심가는 인물이 포착될 경우
+                if (collision.gameObject.GetComponent<PlayerState>().suspicion[idx] >= 100) // 의심가는 인물이 포착될 경우
                 {
                     GameObject max = enemyBehaviour.GetMaxSuspicion();
                     if (collision.gameObject == max)
@@ -45,7 +46,7 @@ public class EnemyVision : MonoBehaviour
                         enemyBehaviour.AlertOthers();
                     }
                 }
-                else if (collision.gameObject.GetComponent<PlayerState>().suspicion >= 50)
+                else if (collision.gameObject.GetComponent<PlayerState>().suspicion[idx] >= 50)
                 {
                     GameObject max = enemyBehaviour.GetMaxSuspicion();
                     if (collision.gameObject == max)

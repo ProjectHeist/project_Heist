@@ -27,6 +27,7 @@ namespace Ingame
         private int currentPathIndex;
         private float moveSpeed = 5.0f;
         public bool patrolling = false;
+        public int enemyIndex;
         Coroutine patrol;
 
         public GameObject suspect; // 시야 내에 들어온 용의자
@@ -42,9 +43,10 @@ namespace Ingame
                 detectedplayers.Remove(suspect);
                 suspect = null;
             }
-            else if (enemyPattern == EnemyPattern.Chase && memoryturn <= 0) // 오랫동안 시야에 보이지 않았을 경우
+            else if ((enemyPattern == EnemyPattern.Chase || enemyPattern == EnemyPattern.Alert) && memoryturn <= 0) // 추격 상태에서 오랫동안 시야에 보이지 않았을 경우
             {
                 enemyPattern = EnemyPattern.Guard;
+                suspect.GetComponent<PlayerState>().isSuspect[enemyIndex] = false;
                 suspect = null;
             }
             else if (enemyPattern == EnemyPattern.Lured && memoryturn <= 0) // 어그로가 끌렸지만 보이지 않을 때
@@ -61,27 +63,27 @@ namespace Ingame
                         int sus = IngameManager.Instance.mapManager.GetSuspicion(currPos); //의심도 체크
                         if (sus != 0) // 금지구역에 있을 때
                         {
-                            detectedplayers[i].GetComponent<PlayerState>().suspicion += sus;
+                            detectedplayers[i].GetComponent<PlayerState>().suspicion[enemyIndex] += sus;
                         }
                         else if (enemyPattern == EnemyPattern.Lured) // 어그로가 끌린 상태에서 플레이어를 발견했을 때
                         {
-                            detectedplayers[i].GetComponent<PlayerState>().suspicion += 50;
+                            detectedplayers[i].GetComponent<PlayerState>().suspicion[enemyIndex] += 50;
                         }
                     }
                     GameObject max = GetMaxSuspicion();
-                    if (max.GetComponent<PlayerState>().suspicion >= 50)
+                    if (max.GetComponent<PlayerState>().suspicion[enemyIndex] >= 50)
                     {
                         suspect = max;
                     }
                     if (suspect != null)
                     {
-                        if (suspect.GetComponent<PlayerState>().suspicion >= 100)
+                        if (suspect.GetComponent<PlayerState>().suspicion[enemyIndex] >= 100)
                         {
                             memoryturn = 2;
                             enemyPattern = EnemyPattern.Alert;
                             AlertOthers();
                         }
-                        else if (suspect.GetComponent<PlayerState>().suspicion >= 50)
+                        else if (suspect.GetComponent<PlayerState>().suspicion[enemyIndex] >= 50)
                         {
                             memoryturn = 2;
                             if (enemyPattern == EnemyPattern.Patrol || enemyPattern == EnemyPattern.Guard)
@@ -100,18 +102,22 @@ namespace Ingame
             List<GameObject> enemies = IngameManager.Instance.enemies;
             for (int i = 0; i < enemies.Count; i++)
             {
+                EnemyBehaviour eb = enemies[i].GetComponent<EnemyBehaviour>();
                 Vector2Int currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
                 Vector2Int targetPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(enemies[i].transform.position);
                 if (InRange(currentPos, targetPos, gameObject.GetComponent<EnemyState>().alertRange))
                 {
-                    enemies[i].GetComponent<EnemyBehaviour>().suspect = suspect;
-                    if (suspect.GetComponent<PlayerState>().suspicion >= 100)
+                    eb.suspect = suspect;
+                    int currentsuspicion = suspect.GetComponent<PlayerState>().suspicion[enemyIndex];
+                    if (currentsuspicion >= 100) // Alert
                     {
                         enemies[i].GetComponent<EnemyBehaviour>().enemyPattern = EnemyPattern.Alert;
+                        suspect.GetComponent<PlayerState>().SetSuspicion(eb.enemyIndex, currentsuspicion);
                     }
-                    else if (suspect.GetComponent<PlayerState>().suspicion >= 50)
+                    else if (currentsuspicion >= 50) // Chase
                     {
                         enemies[i].GetComponent<EnemyBehaviour>().enemyPattern = EnemyPattern.Chase;
+                        suspect.GetComponent<PlayerState>().SetSuspicion(eb.enemyIndex, currentsuspicion);
                     }
                 }
             }
@@ -158,7 +164,6 @@ namespace Ingame
                     Debug.Log("Lured");
                     break;
             }
-            memoryturn--;
             Debug.Log(enemyPattern);
         }
 
@@ -396,7 +401,7 @@ namespace Ingame
             int maxIdx = -1;
             for (int i = 0; i < detectedplayers.Count; i++)
             {
-                int sus = detectedplayers[i].GetComponent<PlayerState>().suspicion;
+                int sus = detectedplayers[i].GetComponent<PlayerState>().suspicion[enemyIndex];
                 if (sus > maxVal)
                 {
                     maxVal = sus;
@@ -410,15 +415,6 @@ namespace Ingame
             else
             {
                 return null;
-            }
-        }
-
-        private void OnCollisionExit(Collision collision)
-        {
-            if (collision.gameObject.CompareTag("Player"))
-            {
-                Debug.Log("김찬호");
-                detectedplayers.Remove(collision.gameObject);
             }
         }
     }

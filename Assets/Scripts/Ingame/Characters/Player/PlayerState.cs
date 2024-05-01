@@ -1,6 +1,7 @@
 using System.Buffers.Text;
 using System.Collections;
 using System.Collections.Generic;
+using Logics;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -13,7 +14,8 @@ namespace Ingame
         public int EXcooldown; // 현재 남아있는 쿨타임
         private int EXcooltime; // 쿨타임
         public int remainMoveRange; //이동 가능한 남은 거리
-        public int suspicion = 0; // 적에게 의심받는 정도
+        public List<int> suspicion = new List<int>(); // 적별 의심도
+        public List<bool> isSuspect = new List<bool>(); // 적별 의심되는 상태 
         public GameObject playerModel;
         public int faceDir; //0 is +x, 1 is +y, 2 is -x, 3 is -y
         public bool detected = false; //적에게 감지되었는가?
@@ -40,6 +42,11 @@ namespace Ingame
             EXIndex = playerStat.PlayerEX;
             faceDir = Dir;
             soundRange = weaponStat.soundRange;
+            for (int i = 0; i < IngameManager.Instance.enemies.Count; i++)
+            {
+                suspicion.Add(0);
+                isSuspect.Add(false);
+            }
         }
 
         private int Number; // 도감에 존재하는 플레이어 넘버
@@ -73,6 +80,20 @@ namespace Ingame
         public void OnPlayerHit(int damage)
         {
             OnCharacterHit(damage);
+        }
+
+        public void SetSuspicion(int index, int sus)
+        {
+            suspicion[index] = sus;
+        }
+
+        public void DecreaseSuspicion()
+        {
+            for (int i = 0; i < suspicion.Count; i++)
+            {
+                if (!isSuspect[i] && suspicion[i] <= 50)
+                    suspicion[i] -= 20;
+            }
         }
     }
 }

@@ -76,8 +76,8 @@ namespace Logics
             tags = GetTags();
             extractionPoint = mapManager.GetGridCellFromPosition(new Vector2Int(0, 0)).GetComponent<GridCell>();
             turn = 1;
-            CreatePlayerList();
             CreateEnemy();
+            CreatePlayerList();
             ingameUI.Init();
             StartPlayerPhase();
         }
@@ -102,6 +102,7 @@ namespace Logics
             {
                 PlayerState ps = player.GetComponent<PlayerState>();
                 ps.detected = false;
+                ps.DecreaseSuspicion(); // 의심도 50 이하에서 용의자가 아닐 시 의심도가 떨어짐
                 if (ps.StateChangeList.Count > 0) //플레이어에게 적용된 버프를 확인 및 해제하는 절차
                 {
                     List<BuffInfo> filter = new List<BuffInfo>();
@@ -298,6 +299,7 @@ namespace Logics
                 mapManager.spots[mapdata.enemyPos[i].x, mapdata.enemyPos[i].y].z = 1;
                 GameObject enemy = Instantiate(Prefabs[1], spawnPos, Quaternion.identity);
                 enemy.GetComponent<EnemyState>().GetEnemyInfo();
+                enemy.GetComponent<EnemyBehaviour>().enemyIndex = i;
                 if (i < 2)
                     enemy.GetComponent<EnemyState>().routeNum = i;
                 else
