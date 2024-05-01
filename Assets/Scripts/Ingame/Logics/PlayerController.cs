@@ -44,7 +44,7 @@ namespace Logics
                     gridcell.CheckEnemy();
                     GameObject enemy = gridcell.enemyInThisGrid;
 
-                    decideAttack(enemy, dist);
+                    decideAttack(enemy, dist, playerPos);
                     IngameManager.Instance.ingameUI.DeselectPanel(PanelType.Attack);
                     break;
                 case ControlState.PlayerInteract: // 해당 그리드에 있는 물체와 상호작용할지
@@ -91,6 +91,7 @@ namespace Logics
                 {
                     Debug.Log("Please Select object to interact");
                 }
+
             }
             else
             {
@@ -98,7 +99,7 @@ namespace Logics
             }
         }
 
-        public void decideAttack(GameObject enemy, int dist)
+        public void decideAttack(GameObject enemy, int dist, Vector2Int playerPos)
         {
             if (dist <= currentPlayer.GetComponent<PlayerState>().maxAttackRange)
             {
@@ -119,6 +120,7 @@ namespace Logics
                 {
                     Debug.Log("Please Select enemy to attack");
                 }
+                currentPlayer.GetComponent<PlayerSound>().Notify(playerPos, currentPlayer.GetComponent<PlayerState>().soundRange);
             }
             else
             {

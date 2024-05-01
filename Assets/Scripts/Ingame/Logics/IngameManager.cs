@@ -196,6 +196,10 @@ namespace Logics
         public void CheckObjective()
         {
             //check objective and decide ending game
+            if (players.Count == 0)
+            {
+                EndGameDefeat();
+            }
             if (TotalMoney >= 20000)
             {
                 ObjectiveCleared = true;
@@ -224,6 +228,11 @@ namespace Logics
         {
             // end game and change scene if all players are extracted
             GameManager.Instance.currentMaster.money += TotalMoney;
+            SceneManager.LoadScene("LobbyScene");
+        }
+
+        public void EndGameDefeat()
+        {
             SceneManager.LoadScene("LobbyScene");
         }
 
@@ -295,14 +304,14 @@ namespace Logics
                     enemy.GetComponent<EnemyState>().routeNum = 2;
                 HPBar hp = enemy.GetComponentInChildren<HPBar>();
                 hp.SetMaxHealth(enemy.GetComponent<EnemyState>().HP);
-                CreateEnemyVision(enemy.GetComponent<EnemyState>().detectRange, enemy);
+                CreateEnemyVision(enemy.GetComponent<EnemyState>().detectRange, enemy.transform.GetChild(2).gameObject);
                 enemies.Add(enemy);
             }
         }
 
-        void CreateEnemyVision(int range, GameObject enemy)
+        void CreateEnemyVision(int range, GameObject vision)
         {
-            int facedir = enemy.GetComponent<EnemyState>().faceDir;
+            int facedir = vision.GetComponentInParent<EnemyState>().faceDir;
             switch (facedir)
             {
                 case 0:
@@ -310,7 +319,7 @@ namespace Logics
                     {
                         for (int j = -i; j < i + 1; j++) //가로
                         {
-                            BoxCollider box = enemy.AddComponent<BoxCollider>();
+                            BoxCollider box = vision.AddComponent<BoxCollider>();
                             box.center = new Vector3(range - i, 0, j);
                         }
                     }
@@ -320,7 +329,7 @@ namespace Logics
                     {
                         for (int j = -i; j < i + 1; j++) //가로
                         {
-                            BoxCollider box = enemy.AddComponent<BoxCollider>();
+                            BoxCollider box = vision.AddComponent<BoxCollider>();
                             box.center = new Vector3(j, 0, range - i);
                         }
                     }
@@ -330,7 +339,7 @@ namespace Logics
                     {
                         for (int j = -i; j < i + 1; j++) //가로
                         {
-                            BoxCollider box = enemy.AddComponent<BoxCollider>();
+                            BoxCollider box = vision.AddComponent<BoxCollider>();
                             box.center = new Vector3(-(range - i), 0, j);
                         }
                     }
@@ -340,7 +349,7 @@ namespace Logics
                     {
                         for (int j = -i; j < i + 1; j++) //가로
                         {
-                            BoxCollider box = enemy.AddComponent<BoxCollider>();
+                            BoxCollider box = vision.AddComponent<BoxCollider>();
                             box.center = new Vector3(-(range - i), 0, j);
                         }
                     }

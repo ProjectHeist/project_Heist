@@ -16,4 +16,5 @@ public class WeaponStat : ScriptableObject
     public int weaponDamage;
 
     public float weaponCritRate;
+    public int soundRange;
 }

@@ -19,3 +19,4 @@ MonoBehaviour:
   weaponMaxAttackRange: 20
   weaponDamage: 100
   weaponCritRate: 0.5
+  soundRange: 8

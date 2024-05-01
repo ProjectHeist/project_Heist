@@ -17,6 +17,7 @@ namespace Ingame
         public GameObject playerModel;
         public int faceDir; //0 is +x, 1 is +y, 2 is -x, 3 is -y
         public bool detected = false; //적에게 감지되었는가?
+        public int soundRange;
 
         public PlayerState()
         {
@@ -38,6 +39,7 @@ namespace Ingame
             critRate = weaponStat.weaponCritRate;
             EXIndex = playerStat.PlayerEX;
             faceDir = Dir;
+            soundRange = weaponStat.soundRange;
         }
 
         private int Number; // 도감에 존재하는 플레이어 넘버

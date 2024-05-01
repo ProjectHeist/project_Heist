@@ -7,30 +7,32 @@ using Logics;
 using JetBrains.Annotations;
 using Unity.VisualScripting;
 
-enum EnemyPattern
+public enum EnemyPattern
 {
     Guard,
     Patrol,
     Chase,
-    Alert
+    Alert,
+    Lured
 }
 
 namespace Ingame
 {
     public class EnemyBehaviour : MonoBehaviour
     {
-        EnemyPattern enemyPattern = EnemyPattern.Patrol;
+        public EnemyPattern enemyPattern = EnemyPattern.Patrol;
         public int currentRoute = 0;
 
         private EnemyState es;
         private int currentPathIndex;
-        private float moveSpeed = 30.0f;
-        private bool patrolling = false;
+        private float moveSpeed = 5.0f;
+        public bool patrolling = false;
         Coroutine patrol;
 
         public GameObject suspect; // 시야 내에 들어온 용의자
         public List<GameObject> detectedplayers = new List<GameObject>();
-        int memoryturn = 0; // 적의 기억력. 해당 턴 동안 적은 용의자를 지속해서 추격한다
+        public int memoryturn = 0; // 적의 기억력. 해당 턴 동안 적은 용의자를 지속해서 추격한다
+        public Vector2Int lurePos;
 
         public void CheckAndChangeState()
         {
@@ -45,6 +47,10 @@ namespace Ingame
                 enemyPattern = EnemyPattern.Guard;
                 suspect = null;
             }
+            else if (enemyPattern == EnemyPattern.Lured && memoryturn <= 0) // 어그로가 끌렸지만 보이지 않을 때
+            {
+                enemyPattern = EnemyPattern.Guard;
+            }
             else // 그 이외의 경우
             {
                 if (detectedplayers.Count > 0) //감지해서 금지구역에 있는지 확인, 있다면 의심도 증가
@@ -56,6 +62,10 @@ namespace Ingame
                         if (sus != 0) // 금지구역에 있을 때
                         {
                             detectedplayers[i].GetComponent<PlayerState>().suspicion += sus;
+                        }
+                        else if (enemyPattern == EnemyPattern.Lured) // 어그로가 끌린 상태에서 플레이어를 발견했을 때
+                        {
+                            detectedplayers[i].GetComponent<PlayerState>().suspicion += 50;
                         }
                     }
                     GameObject max = GetMaxSuspicion();
@@ -124,6 +134,7 @@ namespace Ingame
             CheckAndChangeState();
             memoryCount();
             Debug.Log(enemyPattern);
+            MapManager map = IngameManager.Instance.mapManager;
             switch (enemyPattern)
             {
                 case EnemyPattern.Guard:
@@ -132,14 +143,19 @@ namespace Ingame
                     Patrol();
                     break;
                 case EnemyPattern.Chase:
-                    Chase();
-                    changeFaceDir();
+                    Chase(map.GetGridPositionFromWorld(suspect.transform.position));
+                    changeFaceDir(map.GetGridPositionFromWorld(suspect.transform.position));
                     Debug.Log("Chase");
                     break;
                 case EnemyPattern.Alert:
-                    Chase();
-                    changeFaceDir();
+                    Chase(map.GetGridPositionFromWorld(suspect.transform.position));
+                    changeFaceDir(map.GetGridPositionFromWorld(suspect.transform.position));
                     Debug.Log("Alert");
+                    break;
+                case EnemyPattern.Lured:
+                    Chase(lurePos);
+                    changeFaceDir(lurePos);
+                    Debug.Log("Lured");
                     break;
             }
             memoryturn--;
@@ -259,9 +275,8 @@ namespace Ingame
             return false;
         }
 
-        public void changeFaceDir()
+        public void changeFaceDir(Vector2Int targetPos)
         {
-            Vector2Int targetPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(suspect.transform.position);
             Vector2Int startPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
             int xdist = targetPos.x - startPos.x;
             int ydist = targetPos.y - startPos.y;
@@ -303,14 +318,14 @@ namespace Ingame
             transform.eulerAngles = angle;
         }
 
-        public void Chase()
+        public void Chase(Vector2Int targetPos)
         {
             MapManager map = IngameManager.Instance.mapManager;
             Vector2Int currentpos = map.GetGridPositionFromWorld(gameObject.transform.position);
-            map.spots[map.GetGridPositionFromWorld(suspect.transform.position).x, map.GetGridPositionFromWorld(suspect.transform.position).y].z = 0;
+            map.spots[targetPos.x, targetPos.y].z = 0;
             Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
-            List<Spot> path = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(gameObject.transform.position), map.GetGridPositionFromWorld(suspect.transform.position), 1000);
-            map.spots[map.GetGridPositionFromWorld(suspect.transform.position).x, map.GetGridPositionFromWorld(suspect.transform.position).y].z = 1;
+            List<Spot> path = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(gameObject.transform.position), targetPos, 1000);
+            map.spots[targetPos.x, targetPos.y].z = 1;
             List<Spot> newPath = new List<Spot>();
             path.Reverse();
             map.spots[currentpos.x, currentpos.y].z = 0;
@@ -354,9 +369,12 @@ namespace Ingame
             Vector2Int currentpos = map.GetGridPositionFromWorld(gameObject.transform.position);
             map.spots[currentpos.x, currentpos.y].z = 1;
 
-            if (InRange(map.GetGridPositionFromWorld(gameObject.transform.position), map.GetGridPositionFromWorld(suspect.transform.position), es.maxAttackRange) && enemyPattern == EnemyPattern.Alert)
+            if (suspect != null)
             {
-                Attack();
+                if (InRange(map.GetGridPositionFromWorld(gameObject.transform.position), map.GetGridPositionFromWorld(suspect.transform.position), es.maxAttackRange) && enemyPattern == EnemyPattern.Alert)
+                {
+                    Attack();
+                }
             }
         }
 
@@ -370,62 +388,6 @@ namespace Ingame
         {
             StopCoroutine(patrol);
             patrolling = false;
-        }
-
-        private void OnCollisionEnter(Collision collision) // 시야에 들어왔을 때
-        {
-            if (collision.gameObject.CompareTag("Player"))
-            {
-                if (!IngameManager.Instance.walldetection.IsWallBetween(transform.position, collision.gameObject.transform.position)) // 사이에 벽이 없을 경우
-                {
-                    Debug.Log("엄준식");
-                    detectedplayers.Add(collision.gameObject);
-                    Vector2Int currPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(collision.gameObject.transform.position);
-                    PlayerState ps = collision.gameObject.GetComponent<PlayerState>();
-                    int sus = IngameManager.Instance.mapManager.GetSuspicion(currPos); //의심도 체크
-                    if (!ps.detected)
-                    {
-                        if (sus != 0) // 금지구역에 있을 때
-                        {
-                            collision.gameObject.GetComponent<PlayerState>().suspicion += sus;
-                            ps.detected = true;
-                        }
-                    }
-                    if (collision.gameObject.GetComponent<PlayerState>().suspicion >= 100) // 의심가는 인물이 포착될 경우
-                    {
-                        GameObject max = GetMaxSuspicion();
-                        if (collision.gameObject == max)
-                        {
-                            suspect = collision.gameObject;
-                            memoryturn = 2;
-                            if (patrolling)
-                                StopPatrol();
-                            enemyPattern = EnemyPattern.Alert;
-                            AlertOthers();
-                        }
-                    }
-                    else if (collision.gameObject.GetComponent<PlayerState>().suspicion >= 50)
-                    {
-                        GameObject max = GetMaxSuspicion();
-                        if (collision.gameObject == max)
-                        {
-                            suspect = collision.gameObject;
-                            memoryturn = 2;
-                            if (enemyPattern == EnemyPattern.Patrol || enemyPattern == EnemyPattern.Guard)
-                            {
-                                if (patrolling)
-                                    StopPatrol();
-                                enemyPattern = EnemyPattern.Chase;
-                                AlertOthers();
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    Debug.Log("Wall is between");
-                }
-            }
         }
 
         public GameObject GetMaxSuspicion()

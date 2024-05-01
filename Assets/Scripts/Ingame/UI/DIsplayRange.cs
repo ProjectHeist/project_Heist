@@ -8,14 +8,14 @@ public class DisplayRange
 {
     public void SelectedState(Vector2Int position)
     {
-        IngameManager.Instance.mapManager.tile[position.x, position.y].GetComponentInChildren<Renderer>().material.color = new Color(100, 0, 0);
+        IngameManager.Instance.mapManager.tile[position.x, position.y].GetComponentInChildren<SetTileColor>().SetColor(new Color(100, 0, 0));
     }
 
     public void Display(List<Vector2Int> range, Color color)
     {
         for (int i = 0; i < range.Count; i++)
         {
-            IngameManager.Instance.mapManager.tile[range[i].x, range[i].y].GetComponentInChildren<Renderer>().material.color = color;
+            IngameManager.Instance.mapManager.tile[range[i].x, range[i].y].GetComponentInChildren<SetTileColor>().SetColor(color);
         }
     }
 
@@ -26,7 +26,7 @@ public class DisplayRange
             for (int j = 0; j < IngameManager.Instance.mapManager.height; j++)
             {
                 if (IngameManager.Instance.mapManager.tile[i, j] != null || (i != except.x && i != except.y))
-                    IngameManager.Instance.mapManager.tile[i, j].GetComponentInChildren<Renderer>().material.color = new Color(256, 256, 256);
+                    IngameManager.Instance.mapManager.tile[i, j].GetComponentInChildren<SetTileColor>().SetColor(new Color(256, 256, 256));
             }
         }
     }
@@ -35,7 +35,7 @@ public class DisplayRange
         for (int i = 0; i < deletelist.Count; i++)
         {
             if (IngameManager.Instance.mapManager.tile[deletelist[i].x, deletelist[i].y] != null && !deletelist[i].Equals(except))
-                IngameManager.Instance.mapManager.tile[deletelist[i].x, deletelist[i].y].GetComponentInChildren<Renderer>().material.color = new Color(256, 256, 256);
+                IngameManager.Instance.mapManager.tile[deletelist[i].x, deletelist[i].y].GetComponentInChildren<SetTileColor>().SetColor(new Color(256, 256, 256));
         }
     }
 }
