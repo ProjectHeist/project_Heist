@@ -1,16 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using Ingame;
+using Logics;
 using TMPro;
 using UnityEngine;
 
 public class SuspicionUI : MonoBehaviour
 {
     // Update is called once per frame
-    public PlayerState ps;
     public TextMeshProUGUI sus;
     void Update()
     {
-        sus.text = ps.suspicion.ToString();
+        if (IngameManager.Instance.playerController.currentPlayer != null)
+        {
+            int idx = gameObject.GetComponentInParent<EnemyBehaviour>().enemyIndex;
+            Debug.Log(IngameManager.Instance.playerController.currentPlayer.GetComponent<PlayerState>().suspicion[idx]);
+            sus.text = IngameManager.Instance.playerController.currentPlayer.GetComponent<PlayerState>().suspicion[idx].ToString();
+        }
+        else
+            sus.text = "";
     }
 }

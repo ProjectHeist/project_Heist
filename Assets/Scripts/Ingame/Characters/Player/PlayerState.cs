@@ -16,9 +16,9 @@ namespace Ingame
         public int remainMoveRange; //이동 가능한 남은 거리
         public List<int> suspicion = new List<int>(); // 적별 의심도
         public List<bool> isSuspect = new List<bool>(); // 적별 의심되는 상태 
+        public List<bool> isDetected = new List<bool>(); // 적 턴 동안 이미 감지된 적이 있는가?
         public GameObject playerModel;
         public int faceDir; //0 is +x, 1 is +y, 2 is -x, 3 is -y
-        public bool detected = false; //적에게 감지되었는가?
         public int soundRange;
 
         public PlayerState()
@@ -46,6 +46,7 @@ namespace Ingame
             {
                 suspicion.Add(0);
                 isSuspect.Add(false);
+                isDetected.Add(false);
             }
         }
 
@@ -91,8 +92,14 @@ namespace Ingame
         {
             for (int i = 0; i < suspicion.Count; i++)
             {
-                if (!isSuspect[i] && suspicion[i] <= 50)
+                if (!isSuspect[i] && suspicion[i] < 50)
+                {
                     suspicion[i] -= 20;
+                    if (suspicion[i] <= 0)
+                    {
+                        suspicion[i] = 0;
+                    }
+                }
             }
         }
     }

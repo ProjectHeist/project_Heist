@@ -12,6 +12,7 @@ namespace Ingame
         public int routeNum; // 순찰 경로를 나타냄
         public int faceDir; //0 is +x, 1 is +y, 2 is -x, 3 is -y
         public int alertRange = 6;
+        public float moveSpeed = 6.0f;
         public void GetEnemyInfo()
         {
             HP = 100;

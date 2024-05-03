@@ -272,16 +272,19 @@ namespace Logics
             else if (clickedGridCell.enemyInThisGrid != null)
             {
                 IngameManager.Instance.ingameUI.DisplayName(null);
+                IngameManager.Instance.playerController.currentPlayer = null;
                 ShowEnemyInfo(clickedGridCell.enemyInThisGrid);
             }
             else if (clickedGridCell.objectInThisGrid != null)
             {
                 IngameManager.Instance.ingameUI.DisplayName(null);
+                IngameManager.Instance.playerController.currentPlayer = null;
                 ShowObjectInfo(clickedGridCell.objectInThisGrid);
             }
             else // 아무것도 없을 때
             {
                 IngameManager.Instance.ingameUI.DisplayName(null);
+                IngameManager.Instance.playerController.currentPlayer = null;
                 selected = false;
                 IngameManager.Instance.ingameUI.range.Delete(new Vector2Int(-1, -1));
             }

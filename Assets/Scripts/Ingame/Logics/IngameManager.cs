@@ -101,7 +101,10 @@ namespace Logics
             foreach (GameObject player in players)
             {
                 PlayerState ps = player.GetComponent<PlayerState>();
-                ps.detected = false;
+                for (int i = 0; i < ps.isDetected.Count; i++)
+                {
+                    ps.isDetected[i] = false;
+                }
                 ps.DecreaseSuspicion(); // 의심도 50 이하에서 용의자가 아닐 시 의심도가 떨어짐
                 if (ps.StateChangeList.Count > 0) //플레이어에게 적용된 버프를 확인 및 해제하는 절차
                 {
