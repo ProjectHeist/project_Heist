@@ -191,12 +191,12 @@ namespace Ingame
                     if (sus != 0) // 금지구역에 있을 때 TODO: 다른 조건들도 추가
                     {
                         detectedplayers[i].GetComponent<PlayerState>().suspicion[enemyIndex] += sus;
-                        detectedplayers[i].GetComponent<PlayerState>().isDetected[enemyIndex] = true;
+                        detectedplayers[i].GetComponent<PlayerState>().wasDetected[enemyIndex] = true;
                     }
                     else if (enemyPattern == EnemyPattern.Lured) // 어그로가 끌린 상태에서 플레이어를 발견했을 때
                     {
                         detectedplayers[i].GetComponent<PlayerState>().suspicion[enemyIndex] += 30;
-                        detectedplayers[i].GetComponent<PlayerState>().isDetected[enemyIndex] = true;
+                        detectedplayers[i].GetComponent<PlayerState>().wasDetected[enemyIndex] = true;
                     }
                 }
 

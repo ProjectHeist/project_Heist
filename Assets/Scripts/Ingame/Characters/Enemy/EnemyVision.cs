@@ -17,21 +17,23 @@ public class EnemyVision : MonoBehaviour
             if (!IngameManager.Instance.walldetection.IsWallBetween(transform.position, collision.gameObject.transform.position)) // 사이에 벽이 없을 경우
             {
                 enemyBehaviour.detectedplayers.Add(collision.gameObject);
+                collision.gameObject.GetComponent<PlayerState>().enemyDetectedPlayer.Add(gameObject.transform.parent.gameObject);
+
                 Vector2Int currPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(collision.gameObject.transform.position);
                 PlayerState ps = collision.gameObject.GetComponent<PlayerState>();
                 int sus = IngameManager.Instance.mapManager.GetSuspicion(currPos); //의심도 체크
 
-                if (!ps.isDetected[idx])
+                if (!ps.wasDetected[idx])
                 {
                     if (sus != 0) // 금지구역에 있을 때
                     {
                         collision.gameObject.GetComponent<PlayerState>().suspicion[idx] += sus;
-                        ps.isDetected[idx] = true;
+                        ps.wasDetected[idx] = true;
                     }
                     else if (enemyBehaviour.enemyPattern == EnemyPattern.Lured)
                     {
                         collision.gameObject.GetComponent<PlayerState>().suspicion[idx] += 30;
-                        ps.isDetected[idx] = true;
+                        ps.wasDetected[idx] = true;
                     }
                 }
 
@@ -77,6 +79,7 @@ public class EnemyVision : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             enemyBehaviour.detectedplayers.Remove(collision.gameObject);
+            collision.gameObject.GetComponent<PlayerState>().enemyDetectedPlayer.Remove(gameObject);
         }
     }
 }
