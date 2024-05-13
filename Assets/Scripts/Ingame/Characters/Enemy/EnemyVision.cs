@@ -28,11 +28,13 @@ public class EnemyVision : MonoBehaviour
                     if (sus != 0) // 금지구역에 있을 때
                     {
                         collision.gameObject.GetComponent<PlayerState>().suspicion[idx] += sus;
+                        collision.gameObject.GetComponent<PlayerState>().susIncreased[idx] = true;
                         ps.wasDetected[idx] = true;
                     }
                     else if (enemyBehaviour.enemyPattern == EnemyPattern.Lured)
                     {
-                        collision.gameObject.GetComponent<PlayerState>().suspicion[idx] += 30;
+                        collision.gameObject.GetComponent<PlayerState>().suspicion[idx] += 10;
+                        collision.gameObject.GetComponent<PlayerState>().susIncreased[idx] = true;
                         ps.wasDetected[idx] = true;
                     }
                 }

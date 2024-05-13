@@ -15,6 +15,7 @@ namespace Ingame
         private int EXcooltime; // 쿨타임
         public int remainMoveRange; //이동 가능한 남은 거리
         public List<int> suspicion = new List<int>(); // 적별 의심도
+        public List<bool> susIncreased = new List<bool>();
         public List<bool> isSuspect = new List<bool>(); // 적별 의심되는 상태 
         public List<bool> wasDetected = new List<bool>(); // 적 턴 동안 이미 감지된 적이 있는가?
         public List<GameObject> enemyDetectedPlayer = new List<GameObject>(); // 현재 캐릭터를 감지한 적
@@ -48,6 +49,7 @@ namespace Ingame
                 suspicion.Add(0);
                 isSuspect.Add(false);
                 wasDetected.Add(false);
+                susIncreased.Add(false);
             }
         }
 
@@ -93,7 +95,7 @@ namespace Ingame
         {
             for (int i = 0; i < suspicion.Count; i++)
             {
-                if (!isSuspect[i] && suspicion[i] < 50)
+                if (!isSuspect[i] && suspicion[i] < 50 && !susIncreased[i])
                 {
                     suspicion[i] -= 20;
                     if (suspicion[i] <= 0)

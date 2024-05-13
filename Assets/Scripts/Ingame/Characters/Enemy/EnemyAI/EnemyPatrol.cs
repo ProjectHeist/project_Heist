@@ -6,12 +6,18 @@ using Ingame;
 
 public class EnemyPatrol : MonoBehaviour
 {
+    public bool rotated = false;
+    public EnemyAnim enemyAnim;
+    public EnemyState es;
+    public EnemyBehaviour eb;
     public int currentRoute = 0;
     public bool patrolling = false;
     Coroutine patrol;
     public void Patrol()
     {
-        EnemyState es = gameObject.GetComponent<EnemyState>();
+        es = gameObject.GetComponent<EnemyState>();
+        enemyAnim = gameObject.GetComponent<EnemyAnim>();
+        eb = gameObject.GetComponent<EnemyBehaviour>();
         if (es.routeNum != -1)
         {
             PatrolRoute route = GameManager.Instance._data.totalDB.mapDatabase.MapDataList[GameManager.Instance.mapIndex].patrolRoutes[es.routeNum]; // 루트 가져오고
@@ -45,11 +51,18 @@ public class EnemyPatrol : MonoBehaviour
         patrolling = true;
         while (!arrived)
         {
-            Vector2Int targetPos = path[currentPathIndex];
-            Vector3 targetPosition = IngameManager.Instance.mapManager.GetWorldPositionFromGridPosition(targetPos);
+            rotated = false;
+            Vector2Int target = path[currentPathIndex];
+            Vector3 targetPosition = IngameManager.Instance.mapManager.GetWorldPositionFromGridPosition(target);
+            Vector3 moveDir = (targetPosition - transform.position).normalized; // 타겟을 설정하고
+            Vector2Int mD = eb.em.amplify(moveDir);
+
+            SetDir(es.faceDir, mD); // 먼저 회전하고
+            yield return new WaitUntil(() => rotated); // 회전할 때까지 기다린다
+
+            enemyAnim.SetRunning(true);
             if (Vector3.Distance(transform.position, targetPosition) > 0.1f)
             {
-                Vector3 moveDir = (targetPosition - transform.position).normalized;
                 transform.position = transform.position + moveDir * speed * Time.deltaTime;
             }
             else
@@ -58,17 +71,21 @@ public class EnemyPatrol : MonoBehaviour
                 if (currentPathIndex >= path.Count)
                 {
                     patrolling = false;
+                    enemyAnim.SetRunning(false);
                     break;
                 }
             }
             yield return null;
         }
+        gameObject.GetComponent<EnemyBehaviour>().actFinished = true;
     }
 
     public void StopPatrol() //즉시 행동을 멈추는 함수. 상태 전환에 주로 사용
     {
         StopCoroutine(patrol);
+        enemyAnim.SetRunning(false);
         patrolling = false;
+        gameObject.GetComponent<EnemyBehaviour>().actFinished = true;
     }
 
     public void ReturnToPatrol()
@@ -100,6 +117,116 @@ public class EnemyPatrol : MonoBehaviour
         StartCoroutine(Move(newPath, returnPos));
     }
 
+    public void SetDir(int currdir, Vector2Int pathdir)
+    {
+        if (pathdir.Equals(new Vector2Int(1, 0)))
+        {
+            switch (currdir)
+            {
+                case 0:  // +x to +x
+                    rotated = true;
+                    break;
+                case 1:  // +y to +x
+                    es.faceDir = 0;
+                    StartCoroutine(Rotate(90.0f));
+                    break;
+                case 2: // -x to +x
+                    es.faceDir = 0;
+                    StartCoroutine(Rotate(180.0f));
+                    break;
+                case 3: // -y to +x
+                    es.faceDir = 0;
+                    StartCoroutine(Rotate(-90.0f));
+                    break;
+            }
+        }
+        else if (pathdir.Equals(new Vector2Int(-1, 0)))
+        {
+            switch (currdir)
+            {
+                case 0: // +x to -x
+                    es.faceDir = 2;
+                    StartCoroutine(Rotate(180.0f));
+                    break;
+                case 1: // +y to -x
+                    es.faceDir = 2;
+                    StartCoroutine(Rotate(-90.0f));
+                    break;
+                case 2: // -x to -x
+                    rotated = true;
+                    break;
+                case 3: // -y to -x
+                    es.faceDir = 2;
+                    StartCoroutine(Rotate(90.0f));
+                    break;
+            }
+        }
+        else if (pathdir.Equals(new Vector2Int(0, 1)))
+        {
+            switch (currdir)
+            {
+                case 0: // +x to +y
+                    es.faceDir = 1;
+                    StartCoroutine(Rotate(-90.0f));
+                    break;
+                case 1: // +y to +y
+                    rotated = true;
+                    break;
+                case 2: // -x to +y
+                    es.faceDir = 1;
+                    StartCoroutine(Rotate(90.0f));
+                    break;
+                case 3: // -y to +y
+                    es.faceDir = 1;
+                    StartCoroutine(Rotate(180.0f));
+                    break;
+            }
+        }
+        else if (pathdir.Equals(new Vector2Int(0, -1)))
+        {
+            switch (currdir)
+            {
+                case 0: // +x to -y
+                    es.faceDir = 3;
+                    StartCoroutine(Rotate(90.0f));
+                    break;
+                case 1: // +y to -y
+                    es.faceDir = 3;
+                    StartCoroutine(Rotate(180.0f));
+                    break;
+                case 2: // -x to -y
+                    es.faceDir = 3;
+                    StartCoroutine(Rotate(-90.0f));
+                    break;
+                case 3: // -y to -y
+                    rotated = true;
+                    break;
+            }
+        }
+        else
+        {
+            rotated = true;
+        }
+    }
+
+    IEnumerator Rotate(float endRotation)
+    {
+        enemyAnim.SetRunning(false);
+        GameObject model = eb.enemyModel;
+        float startRotation = model.transform.eulerAngles.y;
+        float t = 0.0f;
+        while (t < 0.5f)
+        {
+            t += Time.deltaTime;
+            float yRotation = Mathf.Lerp(startRotation, startRotation + endRotation, t / 0.5f) % 360.0f;
+            model.transform.eulerAngles = new Vector3(model.transform.eulerAngles.x, yRotation, model.transform.eulerAngles.z);
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.5f);
+        rotated = true;
+    }
+
+
     IEnumerator Move(List<Spot> path, Vector2Int dest)
     {
         MapManager map = IngameManager.Instance.mapManager;
@@ -107,17 +234,29 @@ public class EnemyPatrol : MonoBehaviour
         float moveSpeed = gameObject.GetComponent<EnemyState>().moveSpeed;
         while (currentPathIndex < path.Count)
         {
+            rotated = false;
             Vector2Int target = path[currentPathIndex].position;
             Vector3 targetPosition = IngameManager.Instance.mapManager.GetWorldPositionFromGridPosition(target);
+            Vector3 moveDir = (targetPosition - transform.position).normalized; // 타겟을 설정하고
+            Vector2Int mD = eb.em.amplify(moveDir);
+
+            SetDir(es.faceDir, mD); // 먼저 회전하고
+            yield return new WaitUntil(() => rotated); // 회전할 때까지 기다린다
+
+            enemyAnim.SetRunning(true);
             if (Vector3.Distance(transform.position, targetPosition) > 0.1f)
             {
-                Vector3 moveDir = (targetPosition - transform.position).normalized;
+                //Vector3 moveDir = (targetPosition - transform.position).normalized;
                 float distanceBefore = Vector3.Distance(transform.position, targetPosition);
                 transform.position = transform.position + moveDir * moveSpeed * Time.deltaTime;
             }
             else
             {
                 currentPathIndex++;
+                if (currentPathIndex >= path.Count)
+                {
+                    enemyAnim.SetRunning(false);
+                }
             }
             yield return null;
         }
@@ -130,5 +269,7 @@ public class EnemyPatrol : MonoBehaviour
             gameObject.GetComponent<EnemyBehaviour>().enemyPattern = EnemyPattern.Patrol;
             Debug.Log("엄준식은 살아있다");
         }
+
+        gameObject.GetComponent<EnemyBehaviour>().actFinished = true;
     }
 }

@@ -7,6 +7,7 @@ public class PhaseEndButton : MonoBehaviour
 {
     public void EndPhase()
     {
-        IngameManager.Instance.EnemyPhase();
+        if (!IngameManager.Instance.isEnemyPhase)
+            IngameManager.Instance.StartCoroutine(IngameManager.Instance.EnemyPhase());
     }
 }

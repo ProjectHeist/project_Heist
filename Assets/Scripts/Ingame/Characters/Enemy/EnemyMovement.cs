@@ -79,4 +79,28 @@ public class EnemyMovement : MonoBehaviour
         Vector3 angle = new Vector3(0, 90, 0) * (prev - curr);
         transform.eulerAngles = angle;
     }
+
+    public Vector2Int amplify(Vector3 dir)
+    {
+        if (dir.x > 0.5f)
+        {
+            return new Vector2Int(1, 0);
+        }
+        else if (dir.z > 0.5f)
+        {
+            return new Vector2Int(0, 1);
+        }
+        else if (dir.x < -0.5f)
+        {
+            return new Vector2Int(-1, 0);
+        }
+        else if (dir.z < -0.5f)
+        {
+            return new Vector2Int(0, -1);
+        }
+        else
+        {
+            return new Vector2Int(0, 0);
+        }
+    }
 }

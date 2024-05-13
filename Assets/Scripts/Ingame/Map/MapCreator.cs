@@ -56,7 +56,7 @@ public class MapCreator : MonoBehaviour
                 }
                 if (forbiddens.Contains(currentCell))
                 {
-                    IngameManager.Instance.mapManager.map[x, y] = 50;
+                    IngameManager.Instance.mapManager.map[x, y] = 10;
                     IngameManager.Instance.mapManager.forbiddens.Add(currentCell);
                 }
                 else

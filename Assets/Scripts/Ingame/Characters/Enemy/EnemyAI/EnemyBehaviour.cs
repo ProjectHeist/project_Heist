@@ -23,7 +23,7 @@ namespace Ingame
     {
         public EnemyPattern enemyPattern = EnemyPattern.Patrol;
         private EnemyState es;
-        private EnemyMovement em;
+        public EnemyMovement em;
         private int currentPathIndex;
         public int enemyIndex;
 
@@ -31,6 +31,8 @@ namespace Ingame
         public List<GameObject> detectedplayers = new List<GameObject>();
         public int memoryturn = 0; // 적의 기억력. 해당 턴 동안 적은 용의자를 지속해서 추격한다
         public Vector2Int lurePos;
+        public GameObject enemyModel;
+        public bool actFinished;
 
         public void CheckAndChangeState() //행동 전에 상태를 보고 현재 상황을 전환 
         {
@@ -188,16 +190,22 @@ namespace Ingame
                 {
                     Vector2Int currPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(detectedplayers[i].transform.position);
                     int sus = IngameManager.Instance.mapManager.GetSuspicion(currPos); //의심도 체크
-                    if (sus != 0) // 금지구역에 있을 때 TODO: 다른 조건들도 추가
+                    if (!detectedplayers[i].GetComponent<PlayerState>().wasDetected[enemyIndex])
                     {
-                        detectedplayers[i].GetComponent<PlayerState>().suspicion[enemyIndex] += sus;
-                        detectedplayers[i].GetComponent<PlayerState>().wasDetected[enemyIndex] = true;
+                        if (sus != 0) // 금지구역에 있을 때 TODO: 다른 조건들도 추가
+                        {
+                            detectedplayers[i].GetComponent<PlayerState>().suspicion[enemyIndex] += sus;
+                            detectedplayers[i].GetComponent<PlayerState>().wasDetected[enemyIndex] = true;
+                            detectedplayers[i].GetComponent<PlayerState>().susIncreased[enemyIndex] = true;
+                        }
+                        else if (enemyPattern == EnemyPattern.Lured) // 어그로가 끌린 상태에서 플레이어를 발견했을 때
+                        {
+                            detectedplayers[i].GetComponent<PlayerState>().suspicion[enemyIndex] += 10;
+                            detectedplayers[i].GetComponent<PlayerState>().wasDetected[enemyIndex] = true;
+                            detectedplayers[i].GetComponent<PlayerState>().susIncreased[enemyIndex] = true;
+                        }
                     }
-                    else if (enemyPattern == EnemyPattern.Lured) // 어그로가 끌린 상태에서 플레이어를 발견했을 때
-                    {
-                        detectedplayers[i].GetComponent<PlayerState>().suspicion[enemyIndex] += 30;
-                        detectedplayers[i].GetComponent<PlayerState>().wasDetected[enemyIndex] = true;
-                    }
+
                 }
 
                 GameObject max = GetMaxSuspicion(); // 현재 감지된 플레이어 중 가장 큰 의심도를 가진 플레이어를 찾는다
@@ -259,6 +267,7 @@ namespace Ingame
 
         public void EnemyAct() //적의 실제 행동
         {
+            actFinished = false;
             es = gameObject.GetComponent<EnemyState>();
             em = gameObject.GetComponent<EnemyMovement>();
             MapManager map = IngameManager.Instance.mapManager;

@@ -14,7 +14,6 @@ public class SuspicionUI : MonoBehaviour
         if (IngameManager.Instance.playerController.currentPlayer != null)
         {
             int idx = gameObject.GetComponentInParent<EnemyBehaviour>().enemyIndex;
-            Debug.Log(IngameManager.Instance.playerController.currentPlayer.GetComponent<PlayerState>().suspicion[idx]);
             sus.text = IngameManager.Instance.playerController.currentPlayer.GetComponent<PlayerState>().suspicion[idx].ToString();
         }
         else

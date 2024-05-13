@@ -15,7 +15,7 @@ MonoBehaviour:
   routes:
   - movedist: 02000000
     direction:
-    - +x
+    - -x
   - movedist: 02000000
     direction:
-    - -x
+    - +x

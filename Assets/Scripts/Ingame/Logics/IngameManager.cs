@@ -31,6 +31,7 @@ namespace Logics
         public int deployedplayers = 0;
         public int extractedplayers = 0;
         public GridCell extractionPoint;
+        public bool isEnemyPhase;
 
         public static IngameManager Instance
         {
@@ -82,15 +83,16 @@ namespace Logics
             StartPlayerPhase();
         }
 
-        public void EnemyPhase() // 페이즈 종료 버튼 눌렀을 때 
+        public IEnumerator EnemyPhase() // 페이즈 종료 버튼 눌렀을 때 
         {
+            isEnemyPhase = true;
             CheckObjective();
             phase = 1;
             for (int i = 0; i < enemies.Count; i++)
             {
                 enemies[i].GetComponent<EnemyBehaviour>().EnemyAct();
+                yield return new WaitUntil(() => enemies[i].GetComponent<EnemyBehaviour>().actFinished);
             }
-
             phase = 0;
             turn++;
             StartPlayerPhase();
@@ -98,14 +100,17 @@ namespace Logics
 
         public void StartPlayerPhase() //플레이어의 페이즈일 때 모든 플레이어에 대해 돌면서 작용함
         {
+            isEnemyPhase = false;
             foreach (GameObject player in players)
             {
-                PlayerState ps = player.GetComponent<PlayerState>();
+                PlayerState ps = player.GetComponent<PlayerState>(); // 의심도 50 이하에서 용의자가 아닐 시 의심도가 떨어짐
+                ps.DecreaseSuspicion();
                 for (int i = 0; i < ps.wasDetected.Count; i++)
                 {
                     ps.wasDetected[i] = false;
+                    ps.susIncreased[i] = false;
                 }
-                ps.DecreaseSuspicion(); // 의심도 50 이하에서 용의자가 아닐 시 의심도가 떨어짐
+
                 if (ps.StateChangeList.Count > 0) //플레이어에게 적용된 버프를 확인 및 해제하는 절차
                 {
                     List<BuffInfo> filter = new List<BuffInfo>();
@@ -317,9 +322,11 @@ namespace Logics
         void CreateEnemyVision(int range, GameObject vision)
         {
             int facedir = vision.GetComponentInParent<EnemyState>().faceDir;
+            GameObject enemyModel = vision.transform.parent.gameObject.GetComponent<EnemyBehaviour>().enemyModel;
             switch (facedir)
             {
                 case 0:
+                    enemyModel.transform.eulerAngles = new Vector3(0, 90, 0);
                     for (int i = 0; i < range; i++) //세로
                     {
                         for (int j = -i; j < i + 1; j++) //가로
@@ -340,6 +347,7 @@ namespace Logics
                     }
                     break;
                 case 2:
+                    enemyModel.transform.eulerAngles = new Vector3(0, -90, 0);
                     for (int i = 0; i < range; i++) //세로
                     {
                         for (int j = -i; j < i + 1; j++) //가로
@@ -350,6 +358,7 @@ namespace Logics
                     }
                     break;
                 case 3:
+                    enemyModel.transform.eulerAngles = new Vector3(0, 180, 0);
                     for (int i = 0; i < range; i++) //세로
                     {
                         for (int j = -i; j < i + 1; j++) //가로
