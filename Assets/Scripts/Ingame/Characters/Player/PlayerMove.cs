@@ -28,7 +28,7 @@ namespace Ingame
             currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
             currentPathIndex = 0;
             Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
-            path = astar.CreatePath(IngameManager.Instance.mapManager.spots, currentPos, targetPosition, 1000);
+            path = astar.CreatePath(IngameManager.Instance.mapManager.spots, currentPos, targetPosition, 1000, true);
             if (path != null)
             {
                 path.Reverse();
@@ -179,7 +179,7 @@ namespace Ingame
                         yield return new WaitUntil(() => rotated); // 회전할 때까지 기다린다
 
                         playerAnim.SetRunning(true);
-                        if (Vector3.Distance(transform.position, targetPosition) > 0.1f) // 타일 1개당 이동하는 알고리즘
+                        if (Vector3.Distance(transform.position, targetPosition) > 0.05f) // 타일 1개당 이동하는 알고리즘
                         {
                             float distanceBefore = Vector3.Distance(transform.position, targetPosition);
                             transform.position = transform.position + moveDir * moveSpeed * Time.deltaTime;

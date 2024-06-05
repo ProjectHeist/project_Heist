@@ -49,6 +49,7 @@ namespace Ingame
                 if (gameObject.tag == "Player")
                 {
                     IngameManager.Instance.players.Remove(gameObject);
+                    gameObject.GetComponent<PlayerState>().OnPlayerDeath();
                 }
                 else
                 {

@@ -20,7 +20,7 @@ public class EnemyChase : MonoBehaviour
         map.spots[targetPos.x, targetPos.y].z = 0;
 
         Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
-        List<Spot> path = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(gameObject.transform.position), targetPos, 1000);
+        List<Spot> path = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(gameObject.transform.position), targetPos, 1000, false);
         map.spots[targetPos.x, targetPos.y].z = 1;
 
         List<Spot> newPath = new List<Spot>();
@@ -171,7 +171,7 @@ public class EnemyChase : MonoBehaviour
             yield return new WaitUntil(() => rotated); // 회전할 때까지 기다린다
 
             enemyAnim.SetRunning(true);
-            if (Vector3.Distance(transform.position, targetPosition) > 0.1f)
+            if (Vector3.Distance(transform.position, targetPosition) > 0.05f)
             {
                 //Vector3 moveDir = (targetPosition - transform.position).normalized;
                 float distanceBefore = Vector3.Distance(transform.position, targetPosition);

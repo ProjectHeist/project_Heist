@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Logics;
 using Ingame;
+using Unity.VisualScripting;
 
 public class EnemyAlert : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class EnemyAlert : MonoBehaviour
         map.spots[targetPos.x, targetPos.y].z = 0;
 
         Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
-        List<Spot> path = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(gameObject.transform.position), targetPos, 1000);
+        List<Spot> path = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(gameObject.transform.position), targetPos, 10000, false);
         map.spots[targetPos.x, targetPos.y].z = 1;
         List<Spot> newPath = new List<Spot>();
 
@@ -141,14 +142,14 @@ public class EnemyAlert : MonoBehaviour
         GameObject model = eb.enemyModel;
         float startRotation = model.transform.eulerAngles.y;
         float t = 0.0f;
-        while (t < 0.5f)
+        while (t < 0.2f)
         {
             t += Time.deltaTime;
-            float yRotation = Mathf.Lerp(startRotation, startRotation + endRotation, t / 0.5f) % 360.0f;
+            float yRotation = Mathf.Lerp(startRotation, startRotation + endRotation, t / 0.2f) % 360.0f;
             model.transform.eulerAngles = new Vector3(model.transform.eulerAngles.x, yRotation, model.transform.eulerAngles.z);
             yield return null;
         }
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
         rotated = true;
     }
 
@@ -173,7 +174,7 @@ public class EnemyAlert : MonoBehaviour
             yield return new WaitUntil(() => rotated); // 회전할 때까지 기다린다
 
             enemyAnim.SetRunning(true);
-            if (Vector3.Distance(transform.position, targetPosition) > 0.1f)
+            if (Vector3.Distance(transform.position, targetPosition) > 0.05f)
             {
                 //Vector3 moveDir = (targetPosition - transform.position).normalized;
                 float distanceBefore = Vector3.Distance(transform.position, targetPosition);
@@ -185,6 +186,14 @@ public class EnemyAlert : MonoBehaviour
                 if (currentPathIndex >= path.Count)
                 {
                     enemyAnim.SetRunning(false);
+                }
+                else if (path[currentPathIndex].Height == 2) //Door
+                {
+                    GameObject grid = map.GetGridCellFromPosition(new Vector2Int(path[currentPathIndex].X, path[currentPathIndex].Y));
+                    grid.GetComponent<GridCell>().CheckObject();
+                    GameObject door = grid.GetComponent<GridCell>().objectInThisGrid;
+                    StartCoroutine(door.GetComponent<Door>().SlideOpen());
+                    yield return new WaitUntil(() => !door.GetComponent<Door>().DoorIsOpening);
                 }
             }
             yield return null;

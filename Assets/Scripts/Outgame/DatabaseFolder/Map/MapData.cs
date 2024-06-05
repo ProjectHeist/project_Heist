@@ -8,13 +8,27 @@ using UnityEngine;
 public class MapData : ScriptableObject
 {
     public int maxPlayerNum; // 최대 동료 수 
-    public int EnemyNum; //배치할 적의 수 
+    public int EnemyNum; //배치할 적의 수
+    public int spawnEnemyNum; // 증원되는 적의 수
+    public int spawntime; // 도착 시간
     public Vector2Int[] enemyPos; //적의 위치 
+    public Vector2Int[] spawnPos; // 증원되는 적들의 위치
     public int width;
     public int height;
     public Inwalkable[] inwalkable;
     public PatrolRoute[] patrolRoutes; // 적의 순찰 경로 
     public Forbidden[] forbiddenSpots;
+    public Vector2Int[] doorPos; // 문의 위치들
+
+    public List<Vector2Int> getDoorPos()
+    {
+        List<Vector2Int> doors = new List<Vector2Int>();
+        for (int i = 0; i < doorPos.Length; i++)
+        {
+            doors.Add(doorPos[i]);
+        }
+        return doors;
+    }
 
     public List<Vector2Int> getInwalkables()
     {

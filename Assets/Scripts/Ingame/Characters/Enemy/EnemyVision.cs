@@ -11,6 +11,7 @@ public class EnemyVision : MonoBehaviour
     {
         EnemyBehaviour enemyBehaviour = gameObject.GetComponentInParent<EnemyBehaviour>();
         EnemyPatrol enemyPatrol = gameObject.GetComponentInParent<EnemyPatrol>();
+        EnemyState es = gameObject.GetComponentInParent<EnemyState>();
         int idx = enemyBehaviour.enemyIndex;
         if (collision.gameObject.CompareTag("Player"))
         {
@@ -23,23 +24,19 @@ public class EnemyVision : MonoBehaviour
                 PlayerState ps = collision.gameObject.GetComponent<PlayerState>();
                 int sus = IngameManager.Instance.mapManager.GetSuspicion(currPos); //의심도 체크
 
-                if (!ps.wasDetected[idx])
+                if (!es.wasDetected[ps.playerIndex])
                 {
                     if (sus != 0) // 금지구역에 있을 때
                     {
-                        collision.gameObject.GetComponent<PlayerState>().suspicion[idx] += sus;
-                        collision.gameObject.GetComponent<PlayerState>().susIncreased[idx] = true;
-                        ps.wasDetected[idx] = true;
+                        es.AddSuspicion(ps.playerIndex, sus);
                     }
-                    else if (enemyBehaviour.enemyPattern == EnemyPattern.Lured)
+                    else if (enemyBehaviour.enemyPattern == EnemyPatternType.Lured)
                     {
-                        collision.gameObject.GetComponent<PlayerState>().suspicion[idx] += 10;
-                        collision.gameObject.GetComponent<PlayerState>().susIncreased[idx] = true;
-                        ps.wasDetected[idx] = true;
+                        es.AddSuspicion(ps.playerIndex, 10);
                     }
                 }
 
-                if (collision.gameObject.GetComponent<PlayerState>().suspicion[idx] >= 100) // 의심가는 인물이 포착될 경우
+                if (es.suspicion[ps.playerIndex] >= 100) // 의심가는 인물이 포착될 경우
                 {
                     GameObject max = enemyBehaviour.GetMaxSuspicion();
                     if (collision.gameObject == max)
@@ -48,22 +45,26 @@ public class EnemyVision : MonoBehaviour
                         enemyBehaviour.memoryturn = 2;
                         if (enemyPatrol.patrolling)
                             enemyPatrol.StopPatrol();
-                        enemyBehaviour.enemyPattern = EnemyPattern.Alert;
+                        enemyBehaviour.enemyPattern = EnemyPatternType.Alert;
                         enemyBehaviour.AlertOthers();
                     }
+                    if (!IngameManager.Instance.spawner.policeSpawn)
+                    {
+                        IngameManager.Instance.spawner.startspawnTimer(enemyBehaviour.suspect);
+                    }
                 }
-                else if (collision.gameObject.GetComponent<PlayerState>().suspicion[idx] >= 50)
+                else if (es.suspicion[ps.playerIndex] >= 50)
                 {
                     GameObject max = enemyBehaviour.GetMaxSuspicion();
                     if (collision.gameObject == max)
                     {
                         enemyBehaviour.suspect = collision.gameObject;
                         enemyBehaviour.memoryturn = 2;
-                        if (enemyBehaviour.enemyPattern == EnemyPattern.Patrol || enemyBehaviour.enemyPattern == EnemyPattern.Guard)
+                        if (enemyBehaviour.enemyPattern == EnemyPatternType.Patrol || enemyBehaviour.enemyPattern == EnemyPatternType.Guard)
                         {
                             if (enemyPatrol.patrolling)
                                 enemyPatrol.StopPatrol();
-                            enemyBehaviour.enemyPattern = EnemyPattern.Chase;
+                            enemyBehaviour.enemyPattern = EnemyPatternType.Chase;
                         }
                     }
                 }

@@ -14,10 +14,9 @@ namespace Ingame
         public int EXcooldown; // 현재 남아있는 쿨타임
         private int EXcooltime; // 쿨타임
         public int remainMoveRange; //이동 가능한 남은 거리
-        public List<int> suspicion = new List<int>(); // 적별 의심도
-        public List<bool> susIncreased = new List<bool>();
-        public List<bool> isSuspect = new List<bool>(); // 적별 의심되는 상태 
-        public List<bool> wasDetected = new List<bool>(); // 적 턴 동안 이미 감지된 적이 있는가?
+        public int playerIndex;
+        public bool isImmune = false;
+
         public List<GameObject> enemyDetectedPlayer = new List<GameObject>(); // 현재 캐릭터를 감지한 적
         public GameObject playerModel;
         public int faceDir; //0 is +x, 1 is +y, 2 is -x, 3 is -y
@@ -44,14 +43,8 @@ namespace Ingame
             EXIndex = playerStat.PlayerEX;
             faceDir = Dir;
             soundRange = weaponStat.soundRange;
-            for (int i = 0; i < IngameManager.Instance.enemies.Count; i++)
-            {
-                suspicion.Add(0);
-                isSuspect.Add(false);
-                wasDetected.Add(false);
-                susIncreased.Add(false);
-            }
         }
+
 
         private int Number; // 도감에 존재하는 플레이어 넘버
         [SerializeField]
@@ -83,24 +76,26 @@ namespace Ingame
         }
         public void OnPlayerHit(int damage)
         {
-            OnCharacterHit(damage);
+            if (!isImmune)
+                OnCharacterHit(damage);
         }
 
-        public void SetSuspicion(int index, int sus)
+        public void OnPlayerDeath()
         {
-            suspicion[index] = sus;
+            IngameManager.Instance.spawner.stopSpawnTimer();
         }
 
         public void DecreaseSuspicion()
         {
-            for (int i = 0; i < suspicion.Count; i++)
+            for (int i = 0; i < IngameManager.Instance.enemies.Count; i++)
             {
-                if (!isSuspect[i] && suspicion[i] < 50 && !susIncreased[i])
+                EnemyState es = IngameManager.Instance.enemies[i].GetComponent<EnemyState>();
+                if (!es.isSuspect[playerIndex] && es.suspicion[playerIndex] < 50 && !es.susIncreased[playerIndex])
                 {
-                    suspicion[i] -= 20;
-                    if (suspicion[i] <= 0)
+                    es.suspicion[playerIndex] -= 20;
+                    if (es.suspicion[playerIndex] <= 0)
                     {
-                        suspicion[i] = 0;
+                        es.suspicion[playerIndex] = 0;
                     }
                 }
             }

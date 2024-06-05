@@ -12,7 +12,7 @@ public class Astar
     {
         Spots = new Spot[columns, rows];
     }
-    private bool IsValidPath(Vector3Int[,] grid, Spot start, Spot end)
+    private bool IsValidPath(Vector3Int[,] grid, Spot start, Spot end, bool isPlayer)
     {
         if (end == null)
         {
@@ -22,13 +22,17 @@ public class Astar
         {
             return false;
         }
-        if (end.Height >= 1)
+        if (end.Height >= 1 && isPlayer)
+        {
+            return false;
+        }
+        if (end.Height == 1 && !isPlayer)
         {
             return false;
         }
         return true;
     }
-    public List<Spot> CreatePath(Vector3Int[,] grid, Vector2Int start, Vector2Int end, int length)
+    public List<Spot> CreatePath(Vector3Int[,] grid, Vector2Int start, Vector2Int end, int length, bool isPlayer)
     {
         Spot End = null;
         Spot Start = null;
@@ -56,7 +60,7 @@ public class Astar
             }
         }
 
-        if (!IsValidPath(grid, Start, End))
+        if (!IsValidPath(grid, Start, End, isPlayer))
             return null;
         List<Spot> openSet = new List<Spot>();
         List<Spot> closedSet = new List<Spot>();
@@ -96,29 +100,60 @@ public class Astar
             for (int i = 0; i < neighbors.Count; i++)
             {
                 var n = neighbors[i];
-                if (!closedSet.Contains(n) && n.Height < 1)
+                if (isPlayer)
                 {
-                    var tempG = current.G + 1;
-                    bool newPath = false;
-                    if (openSet.Contains(n))
+                    if (!closedSet.Contains(n) && n.Height < 1)
                     {
-                        if (tempG < n.G)
+                        var tempG = current.G + 1;
+                        bool newPath = false;
+                        if (openSet.Contains(n))
+                        {
+                            if (tempG < n.G)
+                            {
+                                n.G = tempG;
+                                newPath = true;
+                            }
+                        }
+                        else
                         {
                             n.G = tempG;
                             newPath = true;
+                            openSet.Add(n);
+                        }
+                        if (newPath)
+                        {
+                            n.H = Heuristic(n, End);
+                            n.F = n.G + n.H;
+                            n.previous = current;
                         }
                     }
-                    else
+                }
+                else
+                {
+                    if (!closedSet.Contains(n) && n.Height != 1)
                     {
-                        n.G = tempG;
-                        newPath = true;
-                        openSet.Add(n);
-                    }
-                    if (newPath)
-                    {
-                        n.H = Heuristic(n, End);
-                        n.F = n.G + n.H;
-                        n.previous = current;
+                        var tempG = current.G + 1;
+                        bool newPath = false;
+                        if (openSet.Contains(n))
+                        {
+                            if (tempG < n.G)
+                            {
+                                n.G = tempG;
+                                newPath = true;
+                            }
+                        }
+                        else
+                        {
+                            n.G = tempG;
+                            newPath = true;
+                            openSet.Add(n);
+                        }
+                        if (newPath)
+                        {
+                            n.H = Heuristic(n, End);
+                            n.F = n.G + n.H;
+                            n.previous = current;
+                        }
                     }
                 }
             }

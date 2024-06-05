@@ -17,9 +17,10 @@ namespace Logics
         // Start is called before the first frame update
         private static IngameManager instance = null;
         public MapCreator mapCreator;
-        public MapManager mapManager = new MapManager();
+        public MapManager mapManager;
         public PlayerController playerController = new PlayerController();
         public Walldetection walldetection = new Walldetection();
+        public Spawner spawner;
         public Transform mainCamera;
         public ControlUI controlPanel;
         public InputManager InputManager;
@@ -32,6 +33,7 @@ namespace Logics
         public int extractedplayers = 0;
         public GridCell extractionPoint;
         public bool isEnemyPhase;
+
 
         public static IngameManager Instance
         {
@@ -69,6 +71,7 @@ namespace Logics
 
         public void init()
         {
+            mapManager = new MapManager(GameManager.Instance._data.totalDB.mapDatabase.MapDataList[GameManager.Instance.mapIndex]);
             if (null == instance)
             {
                 instance = this;
@@ -77,8 +80,10 @@ namespace Logics
             tags = GetTags();
             extractionPoint = mapManager.GetGridCellFromPosition(new Vector2Int(0, 0)).GetComponent<GridCell>();
             turn = 1;
-            CreateEnemy();
+
+            spawner = new Spawner(mapManager, Prefabs[1]);
             CreatePlayerList();
+            EnemyInit();
             ingameUI.Init();
             StartPlayerPhase();
         }
@@ -86,6 +91,7 @@ namespace Logics
         public IEnumerator EnemyPhase() // 페이즈 종료 버튼 눌렀을 때 
         {
             isEnemyPhase = true;
+            spawner.spawnPolice();
             CheckObjective();
             phase = 1;
             for (int i = 0; i < enemies.Count; i++)
@@ -105,12 +111,6 @@ namespace Logics
             {
                 PlayerState ps = player.GetComponent<PlayerState>(); // 의심도 50 이하에서 용의자가 아닐 시 의심도가 떨어짐
                 ps.DecreaseSuspicion();
-                for (int i = 0; i < ps.wasDetected.Count; i++)
-                {
-                    ps.wasDetected[i] = false;
-                    ps.susIncreased[i] = false;
-                }
-
                 if (ps.StateChangeList.Count > 0) //플레이어에게 적용된 버프를 확인 및 해제하는 절차
                 {
                     List<BuffInfo> filter = new List<BuffInfo>();
@@ -160,6 +160,15 @@ namespace Logics
                 {
                     ps.EXcooldown--;
                     ingameUI.IsSelected(PanelType.EX, true);
+                }
+            }
+            foreach (GameObject enemy in enemies)
+            {
+                EnemyState es = enemy.GetComponent<EnemyState>();
+                for (int i = 0; i < es.wasDetected.Count; i++)
+                {
+                    es.wasDetected[i] = false;
+                    es.susIncreased[i] = false;
                 }
             }
         }
@@ -266,6 +275,7 @@ namespace Logics
                 WeaponStat ws = GameManager.Instance._data.totalDB.weaponDatabase.weaponStatList[i];
                 GameObject player = Instantiate(Prefabs[0]);
                 player.GetComponent<PlayerState>().SetState(ps, ws, 0);
+                player.GetComponent<PlayerState>().playerIndex = i;
                 player.GetComponentInChildren<HPBar>().SetMaxHealth(player.GetComponent<PlayerState>().HP);
 
                 players.Add(player);
@@ -298,14 +308,42 @@ namespace Logics
             }*/
         }
 
-        void CreateEnemy()
+        public void EnemyInit() // 시작할 때의 적
         {
             MapData mapdata = GameManager.Instance._data.totalDB.mapDatabase.MapDataList[GameManager.Instance.mapIndex];
             for (int i = 0; i < mapdata.EnemyNum; i++)
             {
-                Vector3 spawnPos = mapManager.GetWorldPositionFromGridPosition(new Vector2Int(mapdata.enemyPos[i].x, mapdata.enemyPos[i].y));
+                Vector2Int startPos = mapdata.enemyPos[i];
+                if (i < 2)
+                    spawner.CreateEnemy(i, i, startPos);
+                else
+                    spawner.CreateEnemy(i, 2, startPos);
+            }
+        }
+
+        public void EnemyAdd()
+        {
+            MapData mapdata = GameManager.Instance._data.totalDB.mapDatabase.MapDataList[GameManager.Instance.mapIndex];
+            for (int i = 0; i < mapdata.spawnEnemyNum; i++)
+            {
+                Vector2Int startPos = mapdata.spawnPos[i];
+                if (i < 2)
+                    spawner.CreateEnemy(i, i, startPos);
+                else
+                    spawner.CreateEnemy(i, 2, startPos);
+            }
+        }
+
+
+
+        /*void CreateEnemy()
+        {
+            MapData mapdata = GameManager.Instance._data.totalDB.mapDatabase.MapDataList[GameManager.Instance.mapIndex];
+            for (int i = 0; i < mapdata.EnemyNum; i++)
+            {
+                Vector3 initPos = mapManager.GetWorldPositionFromGridPosition(new Vector2Int(mapdata.enemyPos[i].x, mapdata.enemyPos[i].y));
                 mapManager.spots[mapdata.enemyPos[i].x, mapdata.enemyPos[i].y].z = 1;
-                GameObject enemy = Instantiate(Prefabs[1], spawnPos, Quaternion.identity);
+                GameObject enemy = Instantiate(Prefabs[1], initPos, Quaternion.identity);
                 enemy.GetComponent<EnemyState>().GetEnemyInfo();
                 enemy.GetComponent<EnemyBehaviour>().enemyIndex = i;
                 if (i < 2)
@@ -370,7 +408,7 @@ namespace Logics
                     break;
             }
 
-        }
+        }*/
 
     }
 }

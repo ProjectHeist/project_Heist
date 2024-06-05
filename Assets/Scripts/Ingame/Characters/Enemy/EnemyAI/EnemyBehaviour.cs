@@ -6,8 +6,9 @@ using UnityEngine;
 using Logics;
 using JetBrains.Annotations;
 using Unity.VisualScripting;
+using System.Data;
 
-public enum EnemyPattern
+public enum EnemyPatternType
 {
     Guard,
     Patrol,
@@ -21,7 +22,7 @@ namespace Ingame
 {
     public class EnemyBehaviour : MonoBehaviour
     {
-        public EnemyPattern enemyPattern = EnemyPattern.Patrol;
+        public EnemyPatternType enemyPattern = EnemyPatternType.Patrol;
         private EnemyState es;
         public EnemyMovement em;
         private int currentPathIndex;
@@ -46,7 +47,7 @@ namespace Ingame
                 else if (detectedplayers[i].gameObject.Equals(suspect)) // 만약 용의자가 사망할 경우, null 처리
                 {
                     suspect = null;
-                    enemyPattern = EnemyPattern.Return;
+                    enemyPattern = EnemyPatternType.Return;
                 }
             }
             detectedplayers = temp;
@@ -54,24 +55,28 @@ namespace Ingame
             Detect();
             switch (enemyPattern)
             {
-                case EnemyPattern.Patrol:
+                case EnemyPatternType.Patrol:
                     patrolTransition();
                     break;
-                case EnemyPattern.Return:
+                case EnemyPatternType.Return:
                     patrolTransition();
                     break;
-                case EnemyPattern.Chase:
+                case EnemyPatternType.Chase:
                     chaseTransition();
                     break;
-                case EnemyPattern.Alert:
+                case EnemyPatternType.Alert:
                     alertTransition();
                     break;
-                case EnemyPattern.Lured:
+                case EnemyPatternType.Lured:
                     luredTransition();
                     break;
-                case EnemyPattern.Guard:
+                case EnemyPatternType.Guard:
                     guardTransition();
                     break;
+            }
+            if (enemyPattern == EnemyPatternType.Alert && !IngameManager.Instance.spawner.policeSpawn)
+            {
+                IngameManager.Instance.spawner.startspawnTimer(suspect);
             }
         }
 
@@ -84,16 +89,16 @@ namespace Ingame
         {
             if (suspect != null)
             {
-                if (suspect.GetComponent<PlayerState>().suspicion[enemyIndex] >= 100)
+                if (es.suspicion[suspect.GetComponent<PlayerState>().playerIndex] >= 100)
                 {
                     memoryturn = 2;
-                    enemyPattern = EnemyPattern.Alert;
+                    enemyPattern = EnemyPatternType.Alert;
                     AlertOthers();
                 }
-                else if (suspect.GetComponent<PlayerState>().suspicion[enemyIndex] >= 50)
+                else if (es.suspicion[suspect.GetComponent<PlayerState>().playerIndex] >= 50)
                 {
                     memoryturn = 2;
-                    enemyPattern = EnemyPattern.Chase;
+                    enemyPattern = EnemyPatternType.Chase;
                     AlertOthers();
                 }
             }
@@ -104,20 +109,20 @@ namespace Ingame
             if (suspect == null) // 용의자가 없어졌을 경우
             {
                 memoryturn = 0;
-                enemyPattern = EnemyPattern.Return;
+                enemyPattern = EnemyPatternType.Return;
             }
             else if (memoryturn <= 0) // 추격하다가 시야에서 일정 시간 이상 사라졌을 경우
             {
-                enemyPattern = EnemyPattern.Return;
-                suspect.GetComponent<PlayerState>().isSuspect[enemyIndex] = false;
+                enemyPattern = EnemyPatternType.Return;
+                es.isSuspect[suspect.GetComponent<PlayerState>().playerIndex] = false;
                 suspect = null;
             }
             else if (detectedplayers.Contains(suspect)) // 시야 내에 용의자가 있는 경우
             {
-                if (suspect.GetComponent<PlayerState>().suspicion[enemyIndex] >= 100)
+                if (es.suspicion[suspect.GetComponent<PlayerState>().playerIndex] >= 100)
                 {
                     memoryturn = 2;
-                    enemyPattern = EnemyPattern.Alert;
+                    enemyPattern = EnemyPatternType.Alert;
                     AlertOthers();
                 }
                 else
@@ -137,12 +142,12 @@ namespace Ingame
             if (suspect == null)
             {
                 memoryturn = 0;
-                enemyPattern = EnemyPattern.Return;
+                enemyPattern = EnemyPatternType.Return;
             }
             else if (memoryturn <= 0)
             {
-                enemyPattern = EnemyPattern.Return;
-                suspect.GetComponent<PlayerState>().isSuspect[enemyIndex] = false;
+                enemyPattern = EnemyPatternType.Return;
+                es.isSuspect[suspect.GetComponent<PlayerState>().playerIndex] = false;
                 suspect = null;
             }
             else if (detectedplayers.Contains(suspect))
@@ -162,21 +167,21 @@ namespace Ingame
             {
                 if (memoryturn <= 0)
                 {
-                    enemyPattern = EnemyPattern.Return;
+                    enemyPattern = EnemyPatternType.Return;
                 }
             }
             else
             {
-                if (suspect.GetComponent<PlayerState>().suspicion[enemyIndex] >= 100)
+                if (es.suspicion[suspect.GetComponent<PlayerState>().playerIndex] >= 100)
                 {
                     memoryturn = 2;
-                    enemyPattern = EnemyPattern.Alert;
+                    enemyPattern = EnemyPatternType.Alert;
                     AlertOthers();
                 }
-                else if (suspect.GetComponent<PlayerState>().suspicion[enemyIndex] >= 50)
+                else if (es.suspicion[suspect.GetComponent<PlayerState>().playerIndex] >= 50)
                 {
                     memoryturn = 2;
-                    enemyPattern = EnemyPattern.Chase;
+                    enemyPattern = EnemyPatternType.Chase;
                     AlertOthers();
                 }
             }
@@ -190,19 +195,21 @@ namespace Ingame
                 {
                     Vector2Int currPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(detectedplayers[i].transform.position);
                     int sus = IngameManager.Instance.mapManager.GetSuspicion(currPos); //의심도 체크
-                    if (!detectedplayers[i].GetComponent<PlayerState>().wasDetected[enemyIndex])
+
+                    if (es.wasDetected[detectedplayers[i].GetComponent<PlayerState>().playerIndex])
                     {
+                        int idx = detectedplayers[i].GetComponent<PlayerState>().playerIndex;
                         if (sus != 0) // 금지구역에 있을 때 TODO: 다른 조건들도 추가
                         {
-                            detectedplayers[i].GetComponent<PlayerState>().suspicion[enemyIndex] += sus;
-                            detectedplayers[i].GetComponent<PlayerState>().wasDetected[enemyIndex] = true;
-                            detectedplayers[i].GetComponent<PlayerState>().susIncreased[enemyIndex] = true;
+                            es.suspicion[idx] += sus;
+                            es.wasDetected[idx] = true;
+                            es.susIncreased[idx] = true;
                         }
-                        else if (enemyPattern == EnemyPattern.Lured) // 어그로가 끌린 상태에서 플레이어를 발견했을 때
+                        else if (enemyPattern == EnemyPatternType.Lured) // 어그로가 끌린 상태에서 플레이어를 발견했을 때
                         {
-                            detectedplayers[i].GetComponent<PlayerState>().suspicion[enemyIndex] += 10;
-                            detectedplayers[i].GetComponent<PlayerState>().wasDetected[enemyIndex] = true;
-                            detectedplayers[i].GetComponent<PlayerState>().susIncreased[enemyIndex] = true;
+                            es.suspicion[idx] += 10;
+                            es.wasDetected[idx] = true;
+                            es.susIncreased[idx] = true;
                         }
                     }
 
@@ -211,18 +218,55 @@ namespace Ingame
                 GameObject max = GetMaxSuspicion(); // 현재 감지된 플레이어 중 가장 큰 의심도를 가진 플레이어를 찾는다
                 if (suspect == null)
                 {
-                    if (max.GetComponent<PlayerState>().suspicion[enemyIndex] >= 50)
+                    if (es.suspicion[max.GetComponent<PlayerState>().playerIndex] >= 50)
                     {
                         suspect = max;
                     }
                 }
                 else
                 {
-                    if (max.GetComponent<PlayerState>().suspicion[enemyIndex] >= suspect.GetComponent<PlayerState>().suspicion[enemyIndex])
+                    if (es.suspicion[max.GetComponent<PlayerState>().playerIndex] >= es.suspicion[suspect.GetComponent<PlayerState>().playerIndex])
                     {
                         suspect = max;
                     }
                 }
+            }
+        }
+
+        public GameObject compareSuspect(GameObject origin, GameObject other) // 두 용의자를 비교, 추적에 최적화된 쪽으로 용의자를 변경
+        {
+            MapManager mm = IngameManager.Instance.mapManager;
+            int origindist = mm.GetDist(origin.transform.position, gameObject.transform.position);
+            int otherdist = mm.GetDist(other.transform.position, gameObject.transform.position);
+            PlayerState psOrigin = origin.GetComponent<PlayerState>();
+            PlayerState psOther = other.GetComponent<PlayerState>();
+            if (es.suspicion[psOrigin.playerIndex] > es.suspicion[psOther.playerIndex])
+            {
+                return origin;
+            }
+            else if (es.suspicion[psOrigin.playerIndex] < es.suspicion[psOther.playerIndex])
+            {
+                return other;
+            }
+            else if (origindist > otherdist)
+            {
+                return other;
+            }
+            else if (origindist < otherdist)
+            {
+                return origin;
+            }
+            else if (origin.GetComponent<PlayerState>().HP > other.GetComponent<PlayerState>().HP)
+            {
+                return other;
+            }
+            else if (origin.GetComponent<PlayerState>().HP < other.GetComponent<PlayerState>().HP)
+            {
+                return origin;
+            }
+            else
+            {
+                return origin;
             }
         }
 
@@ -237,17 +281,21 @@ namespace Ingame
                 Vector2Int targetPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(enemies[i].transform.position);
                 if (em.InRange(currentPos, targetPos, gameObject.GetComponent<EnemyState>().alertRange))
                 {
-                    eb.suspect = suspect;
-                    int currentsuspicion = suspect.GetComponent<PlayerState>().suspicion[enemyIndex];
+                    if (eb.suspect != null)
+                        eb.suspect = compareSuspect(eb.suspect, suspect);
+                    else
+                        eb.suspect = suspect;
+
+                    int currentsuspicion = es.suspicion[suspect.GetComponent<PlayerState>().playerIndex];
                     if (currentsuspicion >= 100) // Alert
                     {
-                        enemies[i].GetComponent<EnemyBehaviour>().enemyPattern = EnemyPattern.Alert;
-                        suspect.GetComponent<PlayerState>().SetSuspicion(eb.enemyIndex, currentsuspicion);
+                        enemies[i].GetComponent<EnemyBehaviour>().enemyPattern = EnemyPatternType.Alert;
+                        es.SetSuspicion(true, eb.suspect.GetComponent<PlayerState>().playerIndex, currentsuspicion);
                     }
                     else if (currentsuspicion >= 50) // Chase
                     {
-                        enemies[i].GetComponent<EnemyBehaviour>().enemyPattern = EnemyPattern.Chase;
-                        suspect.GetComponent<PlayerState>().SetSuspicion(eb.enemyIndex, currentsuspicion);
+                        enemies[i].GetComponent<EnemyBehaviour>().enemyPattern = EnemyPatternType.Chase;
+                        es.SetSuspicion(true, eb.suspect.GetComponent<PlayerState>().playerIndex, currentsuspicion);
                     }
                 }
             }
@@ -278,25 +326,25 @@ namespace Ingame
 
             switch (enemyPattern)
             {
-                case EnemyPattern.Guard:
+                case EnemyPatternType.Guard:
                     break;
-                case EnemyPattern.Patrol:
+                case EnemyPatternType.Patrol:
                     gameObject.GetComponent<EnemyPatrol>().Patrol();
                     break;
-                case EnemyPattern.Return:
+                case EnemyPatternType.Return:
                     gameObject.GetComponent<EnemyPatrol>().ReturnToPatrol();
                     break;
-                case EnemyPattern.Chase:
+                case EnemyPatternType.Chase:
                     gameObject.GetComponent<EnemyChase>().Chase(map.GetGridPositionFromWorld(suspect.transform.position));
                     em.changeFaceDir(map.GetGridPositionFromWorld(suspect.transform.position));
                     Debug.Log("Chase");
                     break;
-                case EnemyPattern.Alert:
+                case EnemyPatternType.Alert:
                     gameObject.GetComponent<EnemyAlert>().AlertAndAttack(map.GetGridPositionFromWorld(suspect.transform.position));
                     em.changeFaceDir(map.GetGridPositionFromWorld(suspect.transform.position));
                     Debug.Log("Alert");
                     break;
-                case EnemyPattern.Lured:
+                case EnemyPatternType.Lured:
                     gameObject.GetComponent<EnemyLured>().Lured(lurePos);
                     em.changeFaceDir(lurePos);
                     Debug.Log("Lured");
@@ -307,25 +355,51 @@ namespace Ingame
 
         public GameObject GetMaxSuspicion()
         {
+            es = gameObject.GetComponent<EnemyState>();
             int maxVal = -1;
             int maxIdx = -1;
-            for (int i = 0; i < detectedplayers.Count; i++)
+            if (suspect != null)
             {
-                int sus = detectedplayers[i].GetComponent<PlayerState>().suspicion[enemyIndex];
-                if (sus > maxVal)
+                maxVal = es.suspicion[suspect.GetComponent<PlayerState>().playerIndex];
+                for (int i = 0; i < detectedplayers.Count; i++)
                 {
-                    maxVal = sus;
-                    maxIdx = i;
+                    int sus = es.suspicion[detectedplayers[i].GetComponent<PlayerState>().playerIndex];
+                    if (sus > maxVal)
+                    {
+                        maxVal = sus;
+                        maxIdx = i;
+                    }
                 }
-            }
-            if (maxIdx != -1)
-            {
-                return detectedplayers[maxIdx];
+                if (maxIdx != -1)
+                {
+                    return detectedplayers[maxIdx];
+                }
+                else
+                {
+                    return suspect;
+                }
             }
             else
             {
-                return null;
+                for (int i = 0; i < detectedplayers.Count; i++)
+                {
+                    int sus = es.suspicion[detectedplayers[i].GetComponent<PlayerState>().playerIndex];
+                    if (sus > maxVal)
+                    {
+                        maxVal = sus;
+                        maxIdx = i;
+                    }
+                }
+                if (maxIdx != -1)
+                {
+                    return detectedplayers[maxIdx];
+                }
+                else
+                {
+                    return null;
+                }
             }
+
         }
     }
 }

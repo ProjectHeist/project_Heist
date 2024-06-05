@@ -14,12 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxPlayerNum: 8
   EnemyNum: 5
+  spawnEnemyNum: 3
+  spawntime: 1
   enemyPos:
   - {x: 31, y: 21}
   - {x: 21, y: 11}
   - {x: 6, y: 15}
   - {x: 8, y: 7}
   - {x: 6, y: 20}
+  spawnPos:
+  - {x: 9, y: 11}
+  - {x: 30, y: 15}
+  - {x: 40, y: 15}
   width: 50
   height: 50
   inwalkable:
@@ -62,3 +68,5 @@ MonoBehaviour:
     length: 10
     direction: +y
     suspicion: 0
+  doorPos:
+  - {x: 7, y: 11}

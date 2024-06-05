@@ -20,7 +20,7 @@ public class EnemyLured : MonoBehaviour
         map.spots[targetPos.x, targetPos.y].z = 0;
 
         Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
-        List<Spot> path = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(gameObject.transform.position), targetPos, 1000);
+        List<Spot> path = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(gameObject.transform.position), targetPos, 1000, false);
         map.spots[targetPos.x, targetPos.y].z = 1;
 
         List<Spot> newPath = new List<Spot>();
@@ -142,14 +142,14 @@ public class EnemyLured : MonoBehaviour
         GameObject model = eb.enemyModel;
         float startRotation = model.transform.eulerAngles.y;
         float t = 0.0f;
-        while (t < 0.5f)
+        while (t < 0.2f)
         {
             t += Time.deltaTime;
-            float yRotation = Mathf.Lerp(startRotation, startRotation + endRotation, t / 0.5f) % 360.0f;
+            float yRotation = Mathf.Lerp(startRotation, startRotation + endRotation, t / 0.2f) % 360.0f;
             model.transform.eulerAngles = new Vector3(model.transform.eulerAngles.x, yRotation, model.transform.eulerAngles.z);
             yield return null;
         }
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
         rotated = true;
     }
 
@@ -172,7 +172,7 @@ public class EnemyLured : MonoBehaviour
             yield return new WaitUntil(() => rotated); // 회전할 때까지 기다린다
 
             enemyAnim.SetRunning(true);
-            if (Vector3.Distance(transform.position, targetPosition) > 0.1f)
+            if (Vector3.Distance(transform.position, targetPosition) > 0.05f)
             {
                 //Vector3 moveDir = (targetPosition - transform.position).normalized;
                 float distanceBefore = Vector3.Distance(transform.position, targetPosition);

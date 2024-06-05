@@ -61,7 +61,7 @@ public class EnemyPatrol : MonoBehaviour
             yield return new WaitUntil(() => rotated); // 회전할 때까지 기다린다
 
             enemyAnim.SetRunning(true);
-            if (Vector3.Distance(transform.position, targetPosition) > 0.1f)
+            if (Vector3.Distance(transform.position, targetPosition) > 0.05f)
             {
                 transform.position = transform.position + moveDir * speed * Time.deltaTime;
             }
@@ -90,13 +90,14 @@ public class EnemyPatrol : MonoBehaviour
 
     public void ReturnToPatrol()
     {
-        EnemyBehaviour eb = gameObject.GetComponent<EnemyBehaviour>();
-        EnemyState es = gameObject.GetComponent<EnemyState>();
+        es = gameObject.GetComponent<EnemyState>();
+        enemyAnim = gameObject.GetComponent<EnemyAnim>();
+        eb = gameObject.GetComponent<EnemyBehaviour>();
         Vector2Int returnPos = GameManager.Instance._data.totalDB.mapDatabase.MapDataList[GameManager.Instance.mapIndex].enemyPos[eb.enemyIndex];
 
         MapManager map = IngameManager.Instance.mapManager;
         Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
-        List<Spot> path = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(gameObject.transform.position), returnPos, 1000);
+        List<Spot> path = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(gameObject.transform.position), returnPos, 1000, false);
 
         List<Spot> newPath = new List<Spot>();
         path.Reverse();
@@ -215,14 +216,14 @@ public class EnemyPatrol : MonoBehaviour
         GameObject model = eb.enemyModel;
         float startRotation = model.transform.eulerAngles.y;
         float t = 0.0f;
-        while (t < 0.5f)
+        while (t < 0.2f)
         {
             t += Time.deltaTime;
-            float yRotation = Mathf.Lerp(startRotation, startRotation + endRotation, t / 0.5f) % 360.0f;
+            float yRotation = Mathf.Lerp(startRotation, startRotation + endRotation, t / 0.2f) % 360.0f;
             model.transform.eulerAngles = new Vector3(model.transform.eulerAngles.x, yRotation, model.transform.eulerAngles.z);
             yield return null;
         }
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
         rotated = true;
     }
 
@@ -232,19 +233,21 @@ public class EnemyPatrol : MonoBehaviour
         MapManager map = IngameManager.Instance.mapManager;
         int currentPathIndex = 0;
         float moveSpeed = gameObject.GetComponent<EnemyState>().moveSpeed;
+        EnemyBehaviour enemyBehaviour = gameObject.GetComponent<EnemyBehaviour>();
         while (currentPathIndex < path.Count)
         {
             rotated = false;
             Vector2Int target = path[currentPathIndex].position;
             Vector3 targetPosition = IngameManager.Instance.mapManager.GetWorldPositionFromGridPosition(target);
             Vector3 moveDir = (targetPosition - transform.position).normalized; // 타겟을 설정하고
-            Vector2Int mD = eb.em.amplify(moveDir);
+            Vector2Int mD = enemyBehaviour.em.amplify(moveDir);
+            Debug.Log("targetPos " + targetPosition + " moveDir" + moveDir + "md" + mD);
 
             SetDir(es.faceDir, mD); // 먼저 회전하고
             yield return new WaitUntil(() => rotated); // 회전할 때까지 기다린다
 
             enemyAnim.SetRunning(true);
-            if (Vector3.Distance(transform.position, targetPosition) > 0.1f)
+            if (Vector3.Distance(transform.position, targetPosition) > 0.05f)
             {
                 //Vector3 moveDir = (targetPosition - transform.position).normalized;
                 float distanceBefore = Vector3.Distance(transform.position, targetPosition);
@@ -266,7 +269,7 @@ public class EnemyPatrol : MonoBehaviour
         if (currentpos.Equals(dest))
         {
             currentRoute = 0;
-            gameObject.GetComponent<EnemyBehaviour>().enemyPattern = EnemyPattern.Patrol;
+            gameObject.GetComponent<EnemyBehaviour>().enemyPattern = EnemyPatternType.Patrol;
             Debug.Log("엄준식은 살아있다");
         }
 
