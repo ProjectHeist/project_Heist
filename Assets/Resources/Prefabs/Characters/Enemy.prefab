@@ -121,12 +121,9 @@ GameObject:
   - component: {fileID: 437634645707936896}
   - component: {fileID: 819595006787478055}
   - component: {fileID: 1279617464671084345}
-  - component: {fileID: 692237946575075675}
-  - component: {fileID: 9055173238542605767}
-  - component: {fileID: 4543476219351186017}
-  - component: {fileID: -6173414147688304839}
   - component: {fileID: 1233529679505255623}
   - component: {fileID: 3783053888611442195}
+  - component: {fileID: 4999862952237126081}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -164,7 +161,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a1a4d08c45bdf4ca79e2b499c02f33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPattern: 1
   em: {fileID: 0}
   enemyIndex: 0
   suspect: {fileID: 0}
@@ -172,6 +168,8 @@ MonoBehaviour:
   memoryturn: 0
   lurePos: {x: 0, y: 0}
   enemyModel: {fileID: 437634644666980724}
+  actFinished: 0
+  enemyMove: {fileID: 0}
 --- !u!114 &437634645707936896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,6 +197,10 @@ MonoBehaviour:
   faceDir: 0
   alertRange: 6
   moveSpeed: 6
+  suspicion: 
+  susIncreased: 
+  isSuspect: 
+  wasDetected: 
 --- !u!65 &819595006787478055
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -228,72 +230,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &692237946575075675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 437634645707936897}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e45e97a42118d54a94fbfcd42cf6da3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotated: 0
-  enemyAnim: {fileID: 0}
-  es: {fileID: 0}
-  eb: {fileID: 0}
---- !u!114 &9055173238542605767
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 437634645707936897}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57abfcb75ceb0d544857a42817a516b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotated: 0
-  enemyAnim: {fileID: 0}
-  es: {fileID: 0}
-  eb: {fileID: 0}
---- !u!114 &4543476219351186017
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 437634645707936897}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d86730723e03cba4c93d9e97490f9052, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotated: 0
-  enemyAnim: {fileID: 0}
-  es: {fileID: 0}
-  eb: {fileID: 0}
---- !u!114 &-6173414147688304839
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 437634645707936897}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b87cd4c08febbec46ba0e4d089cb33d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotated: 0
-  enemyAnim: {fileID: 0}
-  es: {fileID: 0}
-  eb: {fileID: 0}
-  currentRoute: 0
-  patrolling: 0
 --- !u!114 &1233529679505255623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -319,6 +255,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 543595883316258660}
+--- !u!114 &4999862952237126081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 437634645707936897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 419101aaa6d448148a5aed69b9926135, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotated: 0
+  es: {fileID: 0}
+  eb: {fileID: 0}
+  enemyPatternType: 0
+  enemyAnim: {fileID: 0}
+  moving: 0
 --- !u!1 &437634646283616260
 GameObject:
   m_ObjectHideFlags: 0

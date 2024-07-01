@@ -19,7 +19,7 @@ public class PlayerSound : MonoBehaviour
             {
                 EnemyBehaviour eb = ps.enemyDetectedPlayer[i].GetComponent<EnemyBehaviour>();
                 EnemyState es = ps.enemyDetectedPlayer[i].GetComponent<EnemyState>();
-                eb.enemyPattern = EnemyPatternType.Alert;
+                eb.enemyPattern = new EnemyAlert(es, eb);
                 eb.suspect = gameObject;
                 eb.memoryturn = 2;
 
@@ -36,9 +36,10 @@ public class PlayerSound : MonoBehaviour
                 if (x + y <= soundRange)
                 {
                     EnemyBehaviour eb = enemies[i].GetComponent<EnemyBehaviour>();
-                    if (eb.enemyPattern == EnemyPatternType.Guard || eb.enemyPattern == EnemyPatternType.Patrol || eb.enemyPattern == EnemyPatternType.Lured)
+                    EnemyState es = enemies[i].GetComponent<EnemyState>();
+                    if (eb.enemyPattern.PatternType == EnemyPatternType.Guard || eb.enemyPattern.PatternType == EnemyPatternType.Patrol || eb.enemyPattern.PatternType == EnemyPatternType.Lured)
                     {
-                        eb.enemyPattern = EnemyPatternType.Lured;
+                        eb.enemyPattern = new EnemyLured(es, eb);
                         eb.lurePos = soundPos;
                         eb.memoryturn = 2;
                     }

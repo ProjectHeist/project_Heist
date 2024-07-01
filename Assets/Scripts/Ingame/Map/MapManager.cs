@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MapManager
@@ -28,6 +30,70 @@ public class MapManager
         enemyPos = mapData.enemyPos;
         patrolRoutes = mapData.patrolRoutes;
         spawnTime = mapData.spawntime;
+    }
+
+    public List<List<Spot>> getPatrolRoutes(Vector2Int startPos, int patrolIdx)
+    {
+        PatrolRoute patrolRoute = patrolRoutes[patrolIdx];
+        Vector2Int currPos = startPos;
+        List<List<Spot>> patrolroutes = new List<List<Spot>>();
+        for (int i = 0; i < patrolRoute.routes.Count; i++) // 전체 루트
+        {
+            List<Spot> routes = new List<Spot>();
+            for (int j = 0; j < patrolRoute.routes[i].movedist.Count; j++) // 턴마다 루트
+            {
+                List<Spot> p = addSpotbyRoute(patrolRoute.routes[i].movedist[j], patrolRoute.routes[i].direction[j], currPos);
+                Spot Last = p[p.Count - 1];
+                currPos = new Vector2Int(Last.X, Last.Y);
+                for (int k = 0; k < p.Count; k++)
+                {
+                    routes.Add(p[k]);
+                }
+            }
+            patrolroutes.Add(routes);
+        }
+        return patrolroutes;
+    }
+
+    private List<Spot> addSpotbyRoute(int dist, string dir, Vector2Int pos)
+    {
+        List<Spot> path = new List<Spot>();
+        switch (dir)
+        {
+            case "+x":
+                for (int i = 0; i < dist; i++)
+                {
+                    Vector3Int curr = spots[pos.x + 1 + i, pos.y];
+                    Spot sp = new Spot(curr.x, curr.y, curr.z);
+                    path.Add(sp);
+                }
+                break;
+            case "-x":
+                for (int i = 0; i < dist; i++)
+                {
+                    Vector3Int curr = spots[pos.x - 1 - i, pos.y];
+                    Spot sp = new Spot(curr.x, curr.y, curr.z);
+                    path.Add(sp);
+                }
+                break;
+            case "+y":
+                for (int i = 0; i < dist; i++)
+                {
+                    Vector3Int curr = spots[pos.x, pos.y + 1 + i];
+                    Spot sp = new Spot(curr.x, curr.y, curr.z);
+                    path.Add(sp);
+                }
+                break;
+            case "-y":
+                for (int i = 0; i < dist; i++)
+                {
+                    Vector3Int curr = spots[pos.x, pos.y - 1 - i];
+                    Spot sp = new Spot(curr.x, curr.y, curr.z);
+                    path.Add(sp);
+                }
+                break;
+        }
+        return path;
     }
 
     public int GetSuspicion(Vector2Int pos)

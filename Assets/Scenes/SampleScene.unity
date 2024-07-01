@@ -4369,6 +4369,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1458128608}
   m_CullTransparentMesh: 1
+--- !u!1 &1470849251 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1038264763456245847, guid: db1678f2849dde64b8095b19603e9356, type: 3}
+  m_PrefabInstance: {fileID: 4451264997296662423}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1481204709
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5328,7 +5333,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
+  doorModel: {fileID: 0}
   isOpened: 0
+  DoorIsOpening: 1
   requiredTime: 0
   pos: {x: 0, y: 0, z: 0}
 --- !u!65 &1905538824
@@ -6096,6 +6103,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4451264995941047499, guid: db1678f2849dde64b8095b19603e9356, type: 3}
+      propertyPath: doorModel
+      value: 
+      objectReference: {fileID: 1470849251}
     - target: {fileID: 4451264995941047500, guid: db1678f2849dde64b8095b19603e9356, type: 3}
       propertyPath: m_Name
       value: Door

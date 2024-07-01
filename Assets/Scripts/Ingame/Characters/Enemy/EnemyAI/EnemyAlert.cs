@@ -5,212 +5,86 @@ using Logics;
 using Ingame;
 using Unity.VisualScripting;
 
-public class EnemyAlert : MonoBehaviour
+public class EnemyAlert : EnemyPattern
 {
-    public bool rotated = false;
-    public EnemyAnim enemyAnim;
-    public EnemyState es;
-    public EnemyBehaviour eb;
-    public void AlertAndAttack(Vector2Int targetPos)
+    EnemyState es;
+    EnemyBehaviour eb;
+    public override EnemyPatternType PatternType => EnemyPatternType.Alert;
+    public override List<Spot> path { get => base.path; set => base.path = value; }
+
+    public EnemyAlert(EnemyState enemyState, EnemyBehaviour enemyBehaviour)
     {
-        es = gameObject.GetComponent<EnemyState>();
-        enemyAnim = gameObject.GetComponent<EnemyAnim>();
-        eb = gameObject.GetComponent<EnemyBehaviour>();
+        es = enemyState;
+        eb = enemyBehaviour;
+    }
+    public override void UpdateState()
+    {
+        if (eb.suspect == null)
+        {
+            eb.memoryturn = 0;
+            eb.enemyPattern = new EnemyReturn(es, eb);
+        }
+        else if (eb.memoryturn <= 0)
+        {
+            eb.enemyPattern = new EnemyReturn(es, eb);
+            es.isSuspect[eb.suspect.GetComponent<PlayerState>().playerIndex] = false;
+            eb.suspect = null;
+        }
+        else if (eb.detectedplayers.Contains(eb.suspect))
+        {
+            eb.memoryturn = 2;
+            eb.AlertOthers();
+        }
+        else
+        {
+            eb.AlertOthers();
+        }
+    }
+    public override void EnemyAct(Vector2Int targetPos, GameObject current)
+    {
         MapManager map = IngameManager.Instance.mapManager;
-        Vector2Int currentpos = map.GetGridPositionFromWorld(gameObject.transform.position);
+        Vector2Int currentpos = map.GetGridPositionFromWorld(current.transform.position);
         map.spots[targetPos.x, targetPos.y].z = 0;
 
         Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
-        List<Spot> path = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(gameObject.transform.position), targetPos, 10000, false);
+        List<Spot> p = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(current.transform.position), targetPos, 10000, false);
         map.spots[targetPos.x, targetPos.y].z = 1;
         List<Spot> newPath = new List<Spot>();
 
-        path.Reverse();
+        p.Reverse();
         map.spots[currentpos.x, currentpos.y].z = 0;
-        if (path.Count < es.moveRange)
+        if (p.Count < es.moveRange)
         {
-            for (int i = 0; i < path.Count - 4; i++)
+            for (int i = 0; i < p.Count - 4; i++)
             {
-                newPath.Add(path[i]);
+                newPath.Add(p[i]);
             }
         }
         else
         {
             for (int i = 0; i < es.moveRange - 3; i++)
             {
-                newPath.Add(path[i]);
+                newPath.Add(p[i]);
             }
         }
-        StartCoroutine(Move(newPath));
-    }
-
-    public void SetDir(int currdir, Vector2Int pathdir)
-    {
-        if (pathdir.Equals(new Vector2Int(1, 0)))
+        path = newPath;
+        for (int i = 0; i < path.Count; i++)
         {
-            switch (currdir)
-            {
-                case 0:  // +x to +x
-                    rotated = true;
-                    break;
-                case 1:  // +y to +x
-                    es.faceDir = 0;
-                    StartCoroutine(Rotate(90.0f));
-                    break;
-                case 2: // -x to +x
-                    es.faceDir = 0;
-                    StartCoroutine(Rotate(180.0f));
-                    break;
-                case 3: // -y to +x
-                    es.faceDir = 0;
-                    StartCoroutine(Rotate(-90.0f));
-                    break;
-            }
-        }
-        else if (pathdir.Equals(new Vector2Int(-1, 0)))
-        {
-            switch (currdir)
-            {
-                case 0: // +x to -x
-                    es.faceDir = 2;
-                    StartCoroutine(Rotate(180.0f));
-                    break;
-                case 1: // +y to -x
-                    es.faceDir = 2;
-                    StartCoroutine(Rotate(-90.0f));
-                    break;
-                case 2: // -x to -x
-                    rotated = true;
-                    break;
-                case 3: // -y to -x
-                    es.faceDir = 2;
-                    StartCoroutine(Rotate(90.0f));
-                    break;
-            }
-        }
-        else if (pathdir.Equals(new Vector2Int(0, 1)))
-        {
-            switch (currdir)
-            {
-                case 0: // +x to +y
-                    es.faceDir = 1;
-                    StartCoroutine(Rotate(-90.0f));
-                    break;
-                case 1: // +y to +y
-                    rotated = true;
-                    break;
-                case 2: // -x to +y
-                    es.faceDir = 1;
-                    StartCoroutine(Rotate(90.0f));
-                    break;
-                case 3: // -y to +y
-                    es.faceDir = 1;
-                    StartCoroutine(Rotate(180.0f));
-                    break;
-            }
-        }
-        else if (pathdir.Equals(new Vector2Int(0, -1)))
-        {
-            switch (currdir)
-            {
-                case 0: // +x to -y
-                    es.faceDir = 3;
-                    StartCoroutine(Rotate(90.0f));
-                    break;
-                case 1: // +y to -y
-                    es.faceDir = 3;
-                    StartCoroutine(Rotate(180.0f));
-                    break;
-                case 2: // -x to -y
-                    es.faceDir = 3;
-                    StartCoroutine(Rotate(-90.0f));
-                    break;
-                case 3: // -y to -y
-                    rotated = true;
-                    break;
-            }
-        }
-        else
-        {
-            rotated = true;
+            Debug.Log("path: " + path[i].X + " " + path[i].Y);
         }
     }
 
-    IEnumerator Rotate(float endRotation)
+    public override void Attack(GameObject current)
     {
-        enemyAnim.SetRunning(false);
-        GameObject model = eb.enemyModel;
-        float startRotation = model.transform.eulerAngles.y;
-        float t = 0.0f;
-        while (t < 0.2f)
-        {
-            t += Time.deltaTime;
-            float yRotation = Mathf.Lerp(startRotation, startRotation + endRotation, t / 0.2f) % 360.0f;
-            model.transform.eulerAngles = new Vector3(model.transform.eulerAngles.x, yRotation, model.transform.eulerAngles.z);
-            yield return null;
-        }
-        yield return new WaitForSeconds(0.2f);
-        rotated = true;
-    }
-
-
-    IEnumerator Move(List<Spot> path)
-    {
-        EnemyState es = gameObject.GetComponent<EnemyState>();
         MapManager map = IngameManager.Instance.mapManager;
-        int currentPathIndex = 0;
-        float moveSpeed = es.moveSpeed;
-        GameObject suspect = gameObject.GetComponent<EnemyBehaviour>().suspect;
-
-        while (currentPathIndex < path.Count)
+        if (eb.suspect != null)
         {
-            rotated = false;
-            Vector2Int target = path[currentPathIndex].position;
-            Vector3 targetPosition = IngameManager.Instance.mapManager.GetWorldPositionFromGridPosition(target);
-            Vector3 moveDir = (targetPosition - transform.position).normalized; // 타겟을 설정하고
-            Vector2Int mD = eb.em.amplify(moveDir);
-
-            SetDir(es.faceDir, mD); // 먼저 회전하고
-            yield return new WaitUntil(() => rotated); // 회전할 때까지 기다린다
-
-            enemyAnim.SetRunning(true);
-            if (Vector3.Distance(transform.position, targetPosition) > 0.05f)
-            {
-                //Vector3 moveDir = (targetPosition - transform.position).normalized;
-                float distanceBefore = Vector3.Distance(transform.position, targetPosition);
-                transform.position = transform.position + moveDir * moveSpeed * Time.deltaTime;
-            }
-            else
-            {
-                currentPathIndex++;
-                if (currentPathIndex >= path.Count)
-                {
-                    enemyAnim.SetRunning(false);
-                }
-                else if (path[currentPathIndex].Height == 2) //Door
-                {
-                    GameObject grid = map.GetGridCellFromPosition(new Vector2Int(path[currentPathIndex].X, path[currentPathIndex].Y));
-                    grid.GetComponent<GridCell>().CheckObject();
-                    GameObject door = grid.GetComponent<GridCell>().objectInThisGrid;
-                    StartCoroutine(door.GetComponent<Door>().SlideOpen());
-                    yield return new WaitUntil(() => !door.GetComponent<Door>().DoorIsOpening);
-                }
-            }
-            yield return null;
-        }
-        Vector2Int currentpos = map.GetGridPositionFromWorld(gameObject.transform.position);
-        map.spots[currentpos.x, currentpos.y].z = 1;
-
-        if (suspect != null)
-        {
-            bool InRange = gameObject.GetComponent<EnemyMovement>().InRange(map.GetGridPositionFromWorld(gameObject.transform.position), map.GetGridPositionFromWorld(suspect.transform.position), es.maxAttackRange);
+            bool InRange = current.GetComponent<EnemyMovement>().InRange(map.GetGridPositionFromWorld(current.transform.position), map.GetGridPositionFromWorld(eb.suspect.transform.position), es.maxAttackRange);
             if (InRange)
             {
-                suspect.GetComponent<PlayerState>().OnPlayerHit(es.damage); //Attack
+                eb.suspect.GetComponent<PlayerState>().OnPlayerHit(es.damage); //Attack
                 Debug.Log("Attack");
             }
         }
-        gameObject.GetComponent<EnemyBehaviour>().actFinished = true;
     }
-
 }

@@ -22,10 +22,8 @@ namespace Ingame
 {
     public class EnemyBehaviour : MonoBehaviour
     {
-        public EnemyPatternType enemyPattern = EnemyPatternType.Patrol;
         private EnemyState es;
         public EnemyMovement em;
-        private int currentPathIndex;
         public int enemyIndex;
 
         public GameObject suspect; // 시야 내에 들어온 용의자
@@ -34,6 +32,26 @@ namespace Ingame
         public Vector2Int lurePos;
         public GameObject enemyModel;
         public bool actFinished;
+        public EnemyPattern enemyPattern;
+        public EnemyMove enemyMove;
+
+        public void init(EnemyPatternType enemyPatternType)
+        {
+            es = gameObject.GetComponent<EnemyState>();
+            em = gameObject.GetComponent<EnemyMovement>();
+            enemyMove = gameObject.GetComponent<EnemyMove>();
+            switch (enemyPatternType)
+            {
+                case EnemyPatternType.Guard:
+                    break;
+                case EnemyPatternType.Patrol:
+                    enemyPattern = new EnemyPatrol(es, this);
+                    break;
+                case EnemyPatternType.Alert:
+                    enemyPattern = new EnemyAlert(es, this);
+                    break;
+            }
+        }
 
         public void CheckAndChangeState() //행동 전에 상태를 보고 현재 상황을 전환 
         {
@@ -47,143 +65,17 @@ namespace Ingame
                 else if (detectedplayers[i].gameObject.Equals(suspect)) // 만약 용의자가 사망할 경우, null 처리
                 {
                     suspect = null;
-                    enemyPattern = EnemyPatternType.Return;
+                    enemyPattern = new EnemyReturn(es, this);
                 }
             }
             detectedplayers = temp;
 
             Detect();
-            switch (enemyPattern)
-            {
-                case EnemyPatternType.Patrol:
-                    patrolTransition();
-                    break;
-                case EnemyPatternType.Return:
-                    patrolTransition();
-                    break;
-                case EnemyPatternType.Chase:
-                    chaseTransition();
-                    break;
-                case EnemyPatternType.Alert:
-                    alertTransition();
-                    break;
-                case EnemyPatternType.Lured:
-                    luredTransition();
-                    break;
-                case EnemyPatternType.Guard:
-                    guardTransition();
-                    break;
-            }
-            if (enemyPattern == EnemyPatternType.Alert && !IngameManager.Instance.spawner.policeSpawn)
+            enemyPattern.UpdateState();
+
+            if (enemyPattern.PatternType == EnemyPatternType.Alert && !IngameManager.Instance.spawner.policeSpawn)
             {
                 IngameManager.Instance.spawner.startspawnTimer(suspect);
-            }
-        }
-
-        private void guardTransition()
-        {
-
-        }
-
-        private void patrolTransition()
-        {
-            if (suspect != null)
-            {
-                if (es.suspicion[suspect.GetComponent<PlayerState>().playerIndex] >= 100)
-                {
-                    memoryturn = 2;
-                    enemyPattern = EnemyPatternType.Alert;
-                    AlertOthers();
-                }
-                else if (es.suspicion[suspect.GetComponent<PlayerState>().playerIndex] >= 50)
-                {
-                    memoryturn = 2;
-                    enemyPattern = EnemyPatternType.Chase;
-                    AlertOthers();
-                }
-            }
-        }
-
-        private void chaseTransition()
-        {
-            if (suspect == null) // 용의자가 없어졌을 경우
-            {
-                memoryturn = 0;
-                enemyPattern = EnemyPatternType.Return;
-            }
-            else if (memoryturn <= 0) // 추격하다가 시야에서 일정 시간 이상 사라졌을 경우
-            {
-                enemyPattern = EnemyPatternType.Return;
-                es.isSuspect[suspect.GetComponent<PlayerState>().playerIndex] = false;
-                suspect = null;
-            }
-            else if (detectedplayers.Contains(suspect)) // 시야 내에 용의자가 있는 경우
-            {
-                if (es.suspicion[suspect.GetComponent<PlayerState>().playerIndex] >= 100)
-                {
-                    memoryturn = 2;
-                    enemyPattern = EnemyPatternType.Alert;
-                    AlertOthers();
-                }
-                else
-                {
-                    memoryturn = 2;
-                    AlertOthers();
-                }
-            }
-            else
-            {
-                AlertOthers();
-            }
-        }
-
-        private void alertTransition()
-        {
-            if (suspect == null)
-            {
-                memoryturn = 0;
-                enemyPattern = EnemyPatternType.Return;
-            }
-            else if (memoryturn <= 0)
-            {
-                enemyPattern = EnemyPatternType.Return;
-                es.isSuspect[suspect.GetComponent<PlayerState>().playerIndex] = false;
-                suspect = null;
-            }
-            else if (detectedplayers.Contains(suspect))
-            {
-                memoryturn = 2;
-                AlertOthers();
-            }
-            else
-            {
-                AlertOthers();
-            }
-        }
-
-        private void luredTransition()
-        {
-            if (suspect == null)
-            {
-                if (memoryturn <= 0)
-                {
-                    enemyPattern = EnemyPatternType.Return;
-                }
-            }
-            else
-            {
-                if (es.suspicion[suspect.GetComponent<PlayerState>().playerIndex] >= 100)
-                {
-                    memoryturn = 2;
-                    enemyPattern = EnemyPatternType.Alert;
-                    AlertOthers();
-                }
-                else if (es.suspicion[suspect.GetComponent<PlayerState>().playerIndex] >= 50)
-                {
-                    memoryturn = 2;
-                    enemyPattern = EnemyPatternType.Chase;
-                    AlertOthers();
-                }
             }
         }
 
@@ -205,7 +97,7 @@ namespace Ingame
                             es.wasDetected[idx] = true;
                             es.susIncreased[idx] = true;
                         }
-                        else if (enemyPattern == EnemyPatternType.Lured) // 어그로가 끌린 상태에서 플레이어를 발견했을 때
+                        else if (enemyPattern.PatternType == EnemyPatternType.Lured) // 어그로가 끌린 상태에서 플레이어를 발견했을 때
                         {
                             es.suspicion[idx] += 10;
                             es.wasDetected[idx] = true;
@@ -289,12 +181,14 @@ namespace Ingame
                     int currentsuspicion = es.suspicion[suspect.GetComponent<PlayerState>().playerIndex];
                     if (currentsuspicion >= 100) // Alert
                     {
-                        enemies[i].GetComponent<EnemyBehaviour>().enemyPattern = EnemyPatternType.Alert;
+                        enemies[i].GetComponent<EnemyBehaviour>().enemyPattern = new EnemyAlert(enemies[i].GetComponent<EnemyState>(), enemies[i].GetComponent<EnemyBehaviour>());
+                        enemies[i].GetComponent<EnemyBehaviour>().memoryturn = 2;
                         es.SetSuspicion(true, eb.suspect.GetComponent<PlayerState>().playerIndex, currentsuspicion);
                     }
                     else if (currentsuspicion >= 50) // Chase
                     {
-                        enemies[i].GetComponent<EnemyBehaviour>().enemyPattern = EnemyPatternType.Chase;
+                        enemies[i].GetComponent<EnemyBehaviour>().enemyPattern = new EnemyChase(enemies[i].GetComponent<EnemyState>(), enemies[i].GetComponent<EnemyBehaviour>());
+                        enemies[i].GetComponent<EnemyBehaviour>().memoryturn = 2;
                         es.SetSuspicion(true, eb.suspect.GetComponent<PlayerState>().playerIndex, currentsuspicion);
                     }
                 }
@@ -316,46 +210,40 @@ namespace Ingame
         public void EnemyAct() //적의 실제 행동
         {
             actFinished = false;
-            es = gameObject.GetComponent<EnemyState>();
-            em = gameObject.GetComponent<EnemyMovement>();
             MapManager map = IngameManager.Instance.mapManager;
 
+            Debug.Log(enemyPattern.PatternType);
             CheckAndChangeState(); // 상황에 따라 현재 적의 상태를 조절
             memoryCount();
-            Debug.Log(enemyPattern);
 
-            switch (enemyPattern)
+
+            switch (enemyPattern.PatternType)
             {
                 case EnemyPatternType.Guard:
                     break;
                 case EnemyPatternType.Patrol:
-                    gameObject.GetComponent<EnemyPatrol>().Patrol();
-                    break;
                 case EnemyPatternType.Return:
-                    gameObject.GetComponent<EnemyPatrol>().ReturnToPatrol();
+                    enemyMove.MoveTo(enemyPattern, new Vector2Int());
                     break;
                 case EnemyPatternType.Chase:
-                    gameObject.GetComponent<EnemyChase>().Chase(map.GetGridPositionFromWorld(suspect.transform.position));
+                    enemyMove.MoveTo(enemyPattern, map.GetGridPositionFromWorld(suspect.transform.position));
                     em.changeFaceDir(map.GetGridPositionFromWorld(suspect.transform.position));
-                    Debug.Log("Chase");
                     break;
                 case EnemyPatternType.Alert:
-                    gameObject.GetComponent<EnemyAlert>().AlertAndAttack(map.GetGridPositionFromWorld(suspect.transform.position));
+                    enemyMove.MoveTo(enemyPattern, map.GetGridPositionFromWorld(suspect.transform.position));
                     em.changeFaceDir(map.GetGridPositionFromWorld(suspect.transform.position));
-                    Debug.Log("Alert");
+                    enemyPattern.Attack(gameObject);
                     break;
                 case EnemyPatternType.Lured:
-                    gameObject.GetComponent<EnemyLured>().Lured(lurePos);
+                    enemyMove.MoveTo(enemyPattern, lurePos);
                     em.changeFaceDir(lurePos);
-                    Debug.Log("Lured");
                     break;
             }
-            Debug.Log(enemyPattern);
+            Debug.Log(enemyPattern.PatternType);
         }
 
         public GameObject GetMaxSuspicion()
         {
-            es = gameObject.GetComponent<EnemyState>();
             int maxVal = -1;
             int maxIdx = -1;
             if (suspect != null)

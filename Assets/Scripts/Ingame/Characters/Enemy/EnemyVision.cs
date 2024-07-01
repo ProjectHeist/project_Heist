@@ -10,7 +10,7 @@ public class EnemyVision : MonoBehaviour
     private void OnCollisionEnter(Collision collision) // 시야에 들어왔을 때
     {
         EnemyBehaviour enemyBehaviour = gameObject.GetComponentInParent<EnemyBehaviour>();
-        EnemyPatrol enemyPatrol = gameObject.GetComponentInParent<EnemyPatrol>();
+        EnemyMove enemyMove = gameObject.GetComponentInParent<EnemyMove>();
         EnemyState es = gameObject.GetComponentInParent<EnemyState>();
         int idx = enemyBehaviour.enemyIndex;
         if (collision.gameObject.CompareTag("Player"))
@@ -30,7 +30,7 @@ public class EnemyVision : MonoBehaviour
                     {
                         es.AddSuspicion(ps.playerIndex, sus);
                     }
-                    else if (enemyBehaviour.enemyPattern == EnemyPatternType.Lured)
+                    else if (enemyBehaviour.enemyPattern.PatternType == EnemyPatternType.Lured)
                     {
                         es.AddSuspicion(ps.playerIndex, 10);
                     }
@@ -43,9 +43,9 @@ public class EnemyVision : MonoBehaviour
                     {
                         enemyBehaviour.suspect = collision.gameObject;
                         enemyBehaviour.memoryturn = 2;
-                        if (enemyPatrol.patrolling)
-                            enemyPatrol.StopPatrol();
-                        enemyBehaviour.enemyPattern = EnemyPatternType.Alert;
+                        if (enemyMove.moving)
+                            enemyMove.StopMove();
+                        enemyBehaviour.enemyPattern = new EnemyAlert(es, enemyBehaviour);
                         enemyBehaviour.AlertOthers();
                     }
                     if (!IngameManager.Instance.spawner.policeSpawn)
@@ -60,11 +60,11 @@ public class EnemyVision : MonoBehaviour
                     {
                         enemyBehaviour.suspect = collision.gameObject;
                         enemyBehaviour.memoryturn = 2;
-                        if (enemyBehaviour.enemyPattern == EnemyPatternType.Patrol || enemyBehaviour.enemyPattern == EnemyPatternType.Guard)
+                        if (enemyBehaviour.enemyPattern.PatternType == EnemyPatternType.Patrol || enemyBehaviour.enemyPattern.PatternType == EnemyPatternType.Guard)
                         {
-                            if (enemyPatrol.patrolling)
-                                enemyPatrol.StopPatrol();
-                            enemyBehaviour.enemyPattern = EnemyPatternType.Chase;
+                            if (enemyMove.moving)
+                                enemyMove.StopMove();
+                            enemyBehaviour.enemyPattern = new EnemyChase(es, enemyBehaviour);
                         }
                     }
                 }

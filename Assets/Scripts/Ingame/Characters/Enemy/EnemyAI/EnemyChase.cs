@@ -4,27 +4,62 @@ using UnityEngine;
 using Logics;
 using Ingame;
 
-public class EnemyChase : MonoBehaviour
+public class EnemyChase : EnemyPattern
 {
-    public bool rotated = false;
-    public EnemyAnim enemyAnim;
-    public EnemyState es;
-    public EnemyBehaviour eb;
-    public void Chase(Vector2Int targetPos)
+    EnemyState es;
+    EnemyBehaviour eb;
+    public override EnemyPatternType PatternType => EnemyPatternType.Chase;
+    public override List<Spot> path { get => base.path; set => base.path = value; }
+
+    public EnemyChase(EnemyState enemyState, EnemyBehaviour enemyBehaviour)
     {
-        es = gameObject.GetComponent<EnemyState>();
-        enemyAnim = gameObject.GetComponent<EnemyAnim>();
-        eb = gameObject.GetComponent<EnemyBehaviour>();
+        es = enemyState;
+        eb = enemyBehaviour;
+    }
+    public override void UpdateState()
+    {
+        if (eb.suspect == null) // 용의자가 없어졌을 경우
+        {
+            eb.memoryturn = 0;
+            eb.enemyPattern = new EnemyReturn(es, eb);
+        }
+        else if (eb.memoryturn <= 0) // 추격하다가 시야에서 일정 시간 이상 사라졌을 경우
+        {
+            eb.enemyPattern = new EnemyReturn(es, eb);
+            es.isSuspect[eb.suspect.GetComponent<PlayerState>().playerIndex] = false;
+            eb.suspect = null;
+        }
+        else if (eb.detectedplayers.Contains(eb.suspect)) // 시야 내에 용의자가 있는 경우
+        {
+            if (es.suspicion[eb.suspect.GetComponent<PlayerState>().playerIndex] >= 100)
+            {
+                eb.memoryturn = 2;
+                eb.enemyPattern = new EnemyAlert(es, eb);
+                eb.AlertOthers();
+            }
+            else
+            {
+                eb.memoryturn = 2;
+                eb.AlertOthers();
+            }
+        }
+        else
+        {
+            eb.AlertOthers();
+        }
+    }
+    public override void EnemyAct(Vector2Int targetPos, GameObject current)
+    {
         MapManager map = IngameManager.Instance.mapManager;
-        Vector2Int currentpos = map.GetGridPositionFromWorld(gameObject.transform.position);
+        Vector2Int currentpos = map.GetGridPositionFromWorld(current.transform.position);
         map.spots[targetPos.x, targetPos.y].z = 0;
 
         Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
-        List<Spot> path = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(gameObject.transform.position), targetPos, 1000, false);
+        List<Spot> p = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(current.transform.position), targetPos, 1000, false);
         map.spots[targetPos.x, targetPos.y].z = 1;
 
         List<Spot> newPath = new List<Spot>();
-        path.Reverse();
+        p.Reverse();
         map.spots[currentpos.x, currentpos.y].z = 0;
 
         if (path.Count < es.moveRange)
@@ -41,151 +76,6 @@ public class EnemyChase : MonoBehaviour
                 newPath.Add(path[i]);
             }
         }
-        StartCoroutine(Move(newPath));
-    }
-
-    public void SetDir(int currdir, Vector2Int pathdir)
-    {
-        if (pathdir.Equals(new Vector2Int(1, 0)))
-        {
-            switch (currdir)
-            {
-                case 0:  // +x to +x
-                    rotated = true;
-                    break;
-                case 1:  // +y to +x
-                    es.faceDir = 0;
-                    StartCoroutine(Rotate(90.0f));
-                    break;
-                case 2: // -x to +x
-                    es.faceDir = 0;
-                    StartCoroutine(Rotate(180.0f));
-                    break;
-                case 3: // -y to +x
-                    es.faceDir = 0;
-                    StartCoroutine(Rotate(-90.0f));
-                    break;
-            }
-        }
-        else if (pathdir.Equals(new Vector2Int(-1, 0)))
-        {
-            switch (currdir)
-            {
-                case 0: // +x to -x
-                    es.faceDir = 2;
-                    StartCoroutine(Rotate(180.0f));
-                    break;
-                case 1: // +y to -x
-                    es.faceDir = 2;
-                    StartCoroutine(Rotate(-90.0f));
-                    break;
-                case 2: // -x to -x
-                    rotated = true;
-                    break;
-                case 3: // -y to -x
-                    es.faceDir = 2;
-                    StartCoroutine(Rotate(90.0f));
-                    break;
-            }
-        }
-        else if (pathdir.Equals(new Vector2Int(0, 1)))
-        {
-            switch (currdir)
-            {
-                case 0: // +x to +y
-                    es.faceDir = 1;
-                    StartCoroutine(Rotate(-90.0f));
-                    break;
-                case 1: // +y to +y
-                    rotated = true;
-                    break;
-                case 2: // -x to +y
-                    es.faceDir = 1;
-                    StartCoroutine(Rotate(90.0f));
-                    break;
-                case 3: // -y to +y
-                    es.faceDir = 1;
-                    StartCoroutine(Rotate(180.0f));
-                    break;
-            }
-        }
-        else if (pathdir.Equals(new Vector2Int(0, -1)))
-        {
-            switch (currdir)
-            {
-                case 0: // +x to -y
-                    es.faceDir = 3;
-                    StartCoroutine(Rotate(90.0f));
-                    break;
-                case 1: // +y to -y
-                    es.faceDir = 3;
-                    StartCoroutine(Rotate(180.0f));
-                    break;
-                case 2: // -x to -y
-                    es.faceDir = 3;
-                    StartCoroutine(Rotate(-90.0f));
-                    break;
-                case 3: // -y to -y
-                    rotated = true;
-                    break;
-            }
-        }
-        else
-        {
-            rotated = true;
-        }
-    }
-
-    IEnumerator Rotate(float endRotation)
-    {
-        enemyAnim.SetRunning(false);
-        GameObject model = eb.enemyModel;
-        float startRotation = model.transform.eulerAngles.y;
-        float t = 0.0f;
-        while (t < 0.2f)
-        {
-            t += Time.deltaTime;
-            float yRotation = Mathf.Lerp(startRotation, startRotation + endRotation, t / 0.2f) % 360.0f;
-            model.transform.eulerAngles = new Vector3(model.transform.eulerAngles.x, yRotation, model.transform.eulerAngles.z);
-            yield return null;
-        }
-        yield return new WaitForSeconds(0.2f);
-        rotated = true;
-    }
-
-
-    IEnumerator Move(List<Spot> path)
-    {
-        MapManager map = IngameManager.Instance.mapManager;
-        int currentPathIndex = 0;
-        float moveSpeed = gameObject.GetComponent<EnemyState>().moveSpeed;
-        while (currentPathIndex < path.Count)
-        {
-            rotated = false;
-            Vector2Int target = path[currentPathIndex].position;
-            Vector3 targetPosition = IngameManager.Instance.mapManager.GetWorldPositionFromGridPosition(target);
-            Vector3 moveDir = (targetPosition - transform.position).normalized; // 타겟을 설정하고
-            Vector2Int mD = eb.em.amplify(moveDir);
-
-            SetDir(es.faceDir, mD); // 먼저 회전하고
-            yield return new WaitUntil(() => rotated); // 회전할 때까지 기다린다
-
-            enemyAnim.SetRunning(true);
-            if (Vector3.Distance(transform.position, targetPosition) > 0.05f)
-            {
-                //Vector3 moveDir = (targetPosition - transform.position).normalized;
-                float distanceBefore = Vector3.Distance(transform.position, targetPosition);
-                transform.position = transform.position + moveDir * moveSpeed * Time.deltaTime;
-            }
-            else
-            {
-                currentPathIndex++;
-            }
-            yield return null;
-        }
-        enemyAnim.SetRunning(false);
-        Vector2Int currentpos = map.GetGridPositionFromWorld(gameObject.transform.position);
-        map.spots[currentpos.x, currentpos.y].z = 1;
-        gameObject.GetComponent<EnemyBehaviour>().actFinished = true;
+        path = newPath;
     }
 }

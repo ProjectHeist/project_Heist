@@ -40,8 +40,8 @@ public class Spawner
                 GameObject e = CreateEnemy(IngameManager.Instance.enemies.Count, 0, mapManager.spawnPos[i]);
                 e.GetComponent<EnemyState>().suspicion[suspect.GetComponent<PlayerState>().playerIndex] = 100;
                 e.GetComponent<EnemyBehaviour>().suspect = suspect;
-                e.GetComponent<EnemyBehaviour>().enemyPattern = EnemyPatternType.Alert;
                 e.GetComponent<EnemyBehaviour>().memoryturn = 3;
+                e.GetComponent<EnemyBehaviour>().init(EnemyPatternType.Alert);
             }
             spawnTime = mapManager.spawnTime;
         }
@@ -63,6 +63,7 @@ public class Spawner
         HPBar hp = enemyobj.GetComponentInChildren<HPBar>();
         hp.SetMaxHealth(enemyobj.GetComponent<EnemyState>().HP);
         CreateEnemyVision(enemyobj.GetComponent<EnemyState>().detectRange, enemyobj.transform.GetChild(2).gameObject);
+        enemyobj.GetComponent<EnemyBehaviour>().init(EnemyPatternType.Patrol);
         IngameManager.Instance.enemies.Add(enemyobj);
         return enemyobj;
     }
