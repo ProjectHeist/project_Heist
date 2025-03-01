@@ -68,10 +68,6 @@ public class EnemyAlert : EnemyPattern
             }
         }
         path = newPath;
-        for (int i = 0; i < path.Count; i++)
-        {
-            Debug.Log("path: " + path[i].X + " " + path[i].Y);
-        }
     }
 
     public override void Attack(GameObject current)

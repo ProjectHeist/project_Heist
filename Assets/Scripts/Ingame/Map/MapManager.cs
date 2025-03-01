@@ -32,6 +32,18 @@ public class MapManager
         spawnTime = mapData.spawntime;
     }
 
+    public void initGrid()
+    {
+        for (int i = 0; i < tile.GetLength(0); i++)
+        {
+            for (int j = 0; j < tile.GetLength(1); j++)
+            {
+                GridCell gridCell = tile[i, j].GetComponent<GridCell>();
+                gridCell.init();
+            }
+        }
+    }
+
     public List<List<Spot>> getPatrolRoutes(Vector2Int startPos, int patrolIdx)
     {
         PatrolRoute patrolRoute = patrolRoutes[patrolIdx];

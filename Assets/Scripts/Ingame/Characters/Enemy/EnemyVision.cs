@@ -7,6 +7,54 @@ using Logics;
 public class EnemyVision : MonoBehaviour
 {
     // Start is called before the first frame update
+    public List<Vector2Int> visionList = new List<Vector2Int>();  // 시야 타일들을 저장하는 리스트
+
+    public void visionRotate(int angle)
+    {
+        switch (angle)
+        {
+            case -90:
+                for (int i = 0; i < visionList.Count; i++)
+                {
+                    Vector2Int currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
+                    int x = visionList[i].x - currentPos.x;
+                    int y = visionList[i].y - currentPos.y;
+                    Vector2Int newPos = new Vector2Int(currentPos.x - y, currentPos.y + x);
+                    visionList[i] = newPos;
+                }
+                break;
+            case 90:
+                for (int i = 0; i < visionList.Count; i++)
+                {
+                    Vector2Int currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
+                    int x = visionList[i].x - currentPos.x;
+                    int y = visionList[i].y - currentPos.y;
+                    Vector2Int newPos = new Vector2Int(currentPos.x + y, currentPos.y - x);
+                    visionList[i] = newPos;
+                }
+                break;
+            case 180:
+                for (int i = 0; i < visionList.Count; i++)
+                {
+                    Vector2Int currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
+                    int x = visionList[i].x - currentPos.x;
+                    int y = visionList[i].y - currentPos.y;
+                    Vector2Int newPos = new Vector2Int(currentPos.x - x, currentPos.y - y);
+                    visionList[i] = newPos;
+                }
+                break;
+        }
+    }
+
+    public void visionMove(Vector2Int vector2Int)
+    {
+        for (int i = 0; i < visionList.Count; i++)
+        {
+            Vector2Int newPos = new Vector2Int(visionList[i].x + vector2Int.x, visionList[i].y + vector2Int.y);
+            visionList[i] = newPos;
+        }
+    }
+
     private void OnCollisionEnter(Collision collision) // 시야에 들어왔을 때
     {
         EnemyBehaviour enemyBehaviour = gameObject.GetComponentInParent<EnemyBehaviour>();
@@ -43,10 +91,13 @@ public class EnemyVision : MonoBehaviour
                     {
                         enemyBehaviour.suspect = collision.gameObject;
                         enemyBehaviour.memoryturn = 2;
-                        if (enemyMove.moving)
-                            enemyMove.StopMove();
-                        enemyBehaviour.enemyPattern = new EnemyAlert(es, enemyBehaviour);
-                        enemyBehaviour.AlertOthers();
+                        if (enemyBehaviour.enemyPattern.PatternType != EnemyPatternType.Alert)
+                        {
+                            if (enemyMove.moving)
+                                enemyMove.StopMove();
+                            enemyBehaviour.enemyPattern = new EnemyAlert(es, enemyBehaviour);
+                            enemyBehaviour.AlertOthers();
+                        }
                     }
                     if (!IngameManager.Instance.spawner.policeSpawn)
                     {

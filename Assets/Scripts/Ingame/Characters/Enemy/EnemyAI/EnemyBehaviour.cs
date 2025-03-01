@@ -212,7 +212,7 @@ namespace Ingame
             actFinished = false;
             MapManager map = IngameManager.Instance.mapManager;
 
-            Debug.Log(enemyPattern.PatternType);
+            //Debug.Log(enemyPattern.PatternType);
             CheckAndChangeState(); // 상황에 따라 현재 적의 상태를 조절
             memoryCount();
 
@@ -230,9 +230,7 @@ namespace Ingame
                     em.changeFaceDir(map.GetGridPositionFromWorld(suspect.transform.position));
                     break;
                 case EnemyPatternType.Alert:
-                    enemyMove.MoveTo(enemyPattern, map.GetGridPositionFromWorld(suspect.transform.position));
-                    em.changeFaceDir(map.GetGridPositionFromWorld(suspect.transform.position));
-                    enemyPattern.Attack(gameObject);
+                    StartCoroutine(AlertandAttack());
                     break;
                 case EnemyPatternType.Lured:
                     enemyMove.MoveTo(enemyPattern, lurePos);
@@ -240,6 +238,15 @@ namespace Ingame
                     break;
             }
             Debug.Log(enemyPattern.PatternType);
+        }
+
+        IEnumerator AlertandAttack()
+        {
+            MapManager map = IngameManager.Instance.mapManager;
+            enemyMove.MoveTo(enemyPattern, map.GetGridPositionFromWorld(suspect.transform.position));
+            em.changeFaceDir(map.GetGridPositionFromWorld(suspect.transform.position));
+            yield return new WaitUntil(() => actFinished);
+            enemyPattern.Attack(gameObject);
         }
 
         public GameObject GetMaxSuspicion()

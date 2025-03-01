@@ -77,6 +77,7 @@ namespace Logics
                 instance = this;
             }
             mapCreator.init();
+            mapManager.initGrid();
             tags = GetTags();
             extractionPoint = mapManager.GetGridCellFromPosition(new Vector2Int(0, 0)).GetComponent<GridCell>();
             turn = 1;

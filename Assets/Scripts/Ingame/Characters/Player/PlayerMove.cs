@@ -187,6 +187,7 @@ namespace Ingame
                         else
                         {
                             currentPathIndex++;
+
                             if (currentPathIndex >= path.Count)
                             {
                                 StopMoving();

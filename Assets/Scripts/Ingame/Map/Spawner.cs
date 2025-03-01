@@ -62,16 +62,18 @@ public class Spawner
         enemyobj.GetComponent<EnemyState>().routeNum = routeNum;
         HPBar hp = enemyobj.GetComponentInChildren<HPBar>();
         hp.SetMaxHealth(enemyobj.GetComponent<EnemyState>().HP);
-        CreateEnemyVision(enemyobj.GetComponent<EnemyState>().detectRange, enemyobj.transform.GetChild(2).gameObject);
+        CreateEnemyVision(enemyobj.GetComponent<EnemyState>().detectRange, enemyobj);
         enemyobj.GetComponent<EnemyBehaviour>().init(EnemyPatternType.Patrol);
         IngameManager.Instance.enemies.Add(enemyobj);
         return enemyobj;
     }
 
-    private void CreateEnemyVision(int range, GameObject vision)
+    private void CreateEnemyVision(int range, GameObject enemyobj)
     {
-        int facedir = vision.GetComponentInParent<EnemyState>().faceDir;
-        GameObject enemyModel = vision.transform.parent.gameObject.GetComponent<EnemyBehaviour>().enemyModel;
+        int facedir = enemyobj.GetComponent<EnemyState>().faceDir;
+        GameObject enemyModel = enemyobj.GetComponent<EnemyBehaviour>().enemyModel;
+        EnemyVision enemyVision = enemyobj.GetComponent<EnemyVision>();
+        Vector2Int enemyPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(enemyobj.transform.position);
         switch (facedir)
         {
             case 0:
@@ -80,8 +82,8 @@ public class Spawner
                 {
                     for (int j = -i; j < i + 1; j++) //가로
                     {
-                        BoxCollider box = vision.AddComponent<BoxCollider>();
-                        box.center = new Vector3(range - i, 0, j);
+                        Vector2Int visionComp = new Vector2Int(enemyPos.x + range - i, enemyPos.y + j);
+                        enemyVision.visionList.Add(visionComp);
                     }
                 }
                 break;
@@ -90,8 +92,8 @@ public class Spawner
                 {
                     for (int j = -i; j < i + 1; j++) //가로
                     {
-                        BoxCollider box = vision.AddComponent<BoxCollider>();
-                        box.center = new Vector3(j, 0, range - i);
+                        Vector2Int visionComp = new Vector2Int(enemyPos.x + j, enemyPos.y + range - i);
+                        enemyVision.visionList.Add(visionComp);
                     }
                 }
                 break;
@@ -101,8 +103,8 @@ public class Spawner
                 {
                     for (int j = -i; j < i + 1; j++) //가로
                     {
-                        BoxCollider box = vision.AddComponent<BoxCollider>();
-                        box.center = new Vector3(-(range - i), 0, j);
+                        Vector2Int visionComp = new Vector2Int(enemyPos.x - (range - i), enemyPos.y + j);
+                        enemyVision.visionList.Add(visionComp);
                     }
                 }
                 break;
@@ -112,8 +114,8 @@ public class Spawner
                 {
                     for (int j = -i; j < i + 1; j++) //가로
                     {
-                        BoxCollider box = vision.AddComponent<BoxCollider>();
-                        box.center = new Vector3(-(range - i), 0, j);
+                        Vector2Int visionComp = new Vector2Int(enemyPos.x - (range - i), enemyPos.y + j);
+                        enemyVision.visionList.Add(visionComp);
                     }
                 }
                 break;

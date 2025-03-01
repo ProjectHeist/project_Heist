@@ -4,6 +4,7 @@ using Logics;
 using UnityEngine;
 using Ingame;
 using TMPro;
+using Unity.VisualScripting;
 
 public class EnemyMove : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class EnemyMove : MonoBehaviour
 
     public void StopMove()
     {
+        Debug.Log("MoveStop");
         StopCoroutine(move);
         enemyAnim.SetRunning(false);
         moving = false;
@@ -28,6 +30,13 @@ public class EnemyMove : MonoBehaviour
         ep.EnemyAct(targetPos, current);
         List<Spot> path = ep.path;
         enemyPatternType = ep.PatternType;
+        if (enemyPatternType == EnemyPatternType.Alert)
+        {
+            for (int i = 0; i < path.Count; i++)
+            {
+                Debug.Log("path: " + path[i].X + " " + path[i].Y);
+            }
+        }
 
         es = gameObject.GetComponent<EnemyState>();
         eb = gameObject.GetComponent<EnemyBehaviour>();
@@ -146,6 +155,8 @@ public class EnemyMove : MonoBehaviour
 
     IEnumerator Move(List<Spot> path)
     {
+        //if (enemyPatternType == EnemyPatternType.Alert)
+        //Debug.Log("path: " + path.Count);
         EnemyState es = gameObject.GetComponent<EnemyState>();
         MapManager map = IngameManager.Instance.mapManager;
         int currentPathIndex = 0;
@@ -155,6 +166,8 @@ public class EnemyMove : MonoBehaviour
 
         while (currentPathIndex < path.Count)
         {
+            if (enemyPatternType == EnemyPatternType.Alert)
+                Debug.Log("idx: " + currentPathIndex);
             rotated = false;
             Vector2Int target = path[currentPathIndex].position;
             Vector3 targetPosition = IngameManager.Instance.mapManager.GetWorldPositionFromGridPosition(target);
@@ -165,7 +178,7 @@ public class EnemyMove : MonoBehaviour
             yield return new WaitUntil(() => rotated); // 회전할 때까지 기다린다
 
             enemyAnim.SetRunning(true);
-            if (Vector3.Distance(transform.position, targetPosition) > 0.05f)
+            if (Vector3.Distance(transform.position, targetPosition) > 0.1f)
             {
                 //Vector3 moveDir = (targetPosition - transform.position).normalized;
                 float distanceBefore = Vector3.Distance(transform.position, targetPosition);
@@ -173,6 +186,8 @@ public class EnemyMove : MonoBehaviour
             }
             else
             {
+                if (enemyPatternType == EnemyPatternType.Alert)
+                    Debug.Log("엄 준 식");
                 currentPathIndex++;
                 if (currentPathIndex >= path.Count)
                 {

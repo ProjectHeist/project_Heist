@@ -10,16 +10,46 @@ public class GridCell : MonoBehaviour
     public int posX;
     public int posY;
     // 현재 그리드 내에 물체가 존재하는지, 물체의 종류는 무엇인지
+    public List<bool> isPlayerIn = new List<bool>();
+    public List<bool> isEnemyIn = new List<bool>();
+    public List<bool> isInSight = new List<bool>();
     public GameObject playerInThisGrid = null;
     public GameObject enemyInThisGrid = null;
     public GameObject objectInThisGrid = null;
     public bool isOccupied = false;
     // 그리드를 마우스로 선택했는지
     public bool isSelected = false;
+
+    public void init()
+    {
+        for (int i = 0; i < IngameManager.Instance.players.Count; i++)
+        {
+            isPlayerIn.Add(false);
+        }
+        for (int i = 0; i < IngameManager.Instance.enemies.Count; i++)
+        {
+            isEnemyIn.Add(false);
+        }
+        for (int i = 0; i < IngameManager.Instance.enemies.Count; i++)
+        {
+            isInSight.Add(false);
+        }
+    }
+
     public void SetPosition(int x, int y)
     {
         posX = x;
         posY = y;
+    }
+
+    public void SetPlayer(int i, bool exist)
+    {
+        isPlayerIn[i] = exist;
+    }
+
+    public void SetEnemy(int i, bool exist)
+    {
+        isEnemyIn[i] = exist;
     }
 
     public void CheckPlayer()
