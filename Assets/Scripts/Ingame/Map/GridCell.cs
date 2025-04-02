@@ -52,17 +52,37 @@ public class GridCell : MonoBehaviour
         isEnemyIn[i] = exist;
     }
 
+    public void SetSight(int i, bool exist)
+    {
+        isInSight[i] = exist;
+    }
+
+    public void CheckIfPlayerIsDetected()
+    {
+        for (int i = 0; i < isInSight.Count; i++)
+        {
+            if (isInSight[i])
+            {
+                EnemyVision enemyVision = IngameManager.Instance.enemies[i].GetComponent<EnemyVision>();
+                enemyVision.PlayerEnterSight(playerInThisGrid);
+            }
+        }
+    }
+
     public void CheckPlayer()
     {
-        Vector2Int position = new Vector2Int(posX, posY);
-        Vector3 gridpos = IngameManager.Instance.mapManager.GetWorldPositionFromGridPosition(position);
-        Collider[] colliders = Physics.OverlapSphere(gridpos, 0.4f);
-        for (int i = 0; i < colliders.Length; i++)
+        bool playerIn = false;
+        for (int i = 0; i < isPlayerIn.Count; i++)
         {
-            if (colliders[i].gameObject.tag == "Player")
+            if (isPlayerIn[i])
             {
-                playerInThisGrid = colliders[i].gameObject;
+                playerInThisGrid = IngameManager.Instance.players[i];
+                playerIn = true;
             }
+        }
+        if (!playerIn)
+        {
+            playerInThisGrid = null;
         }
     }
     public void CheckEnemy()

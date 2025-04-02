@@ -120,6 +120,7 @@ public class Spawner
                 }
                 break;
         }
+        enemyVision.ApplyVisionToTile();
     }
 
 }

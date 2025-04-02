@@ -188,6 +188,8 @@ public class EnemyMove : MonoBehaviour
             {
                 if (enemyPatternType == EnemyPatternType.Alert)
                     Debug.Log("엄 준 식");
+
+                gameObject.GetComponent<EnemyVision>().visionMove(target);
                 currentPathIndex++;
                 if (currentPathIndex >= path.Count)
                 {

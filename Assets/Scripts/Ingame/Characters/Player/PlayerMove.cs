@@ -186,8 +186,11 @@ namespace Ingame
                         }
                         else
                         {
+                            GridCell gridCell = IngameManager.Instance.mapManager.GetGridCellFromPosition(target).GetComponent<GridCell>();
+                            changeGridStateOnPlayerMove(currentPathIndex);
+                            gridCell.CheckPlayer();
+                            gridCell.CheckIfPlayerIsDetected();
                             currentPathIndex++;
-
                             if (currentPathIndex >= path.Count)
                             {
                                 StopMoving();
@@ -205,6 +208,20 @@ namespace Ingame
                 IngameManager.Instance.ingameUI.range.SelectedState(currentPos);
             }
 
+        }
+
+        void changeGridStateOnPlayerMove(int pathIdx)
+        {
+            if (pathIdx == 0)
+            {
+                IngameManager.Instance.mapManager.GetGridCellFromPosition(currentPos).GetComponent<GridCell>().SetPlayer(playerState.playerIndex, false);
+                IngameManager.Instance.mapManager.GetGridCellFromPosition(path[pathIdx].position).GetComponent<GridCell>().SetPlayer(playerState.playerIndex, true);
+            }
+            else
+            {
+                IngameManager.Instance.mapManager.GetGridCellFromPosition(path[pathIdx - 1].position).GetComponent<GridCell>().SetPlayer(playerState.playerIndex, false);
+                IngameManager.Instance.mapManager.GetGridCellFromPosition(path[pathIdx].position).GetComponent<GridCell>().SetPlayer(playerState.playerIndex, true);
+            }
         }
 
         public Vector2Int amplify(Vector3 dir)
