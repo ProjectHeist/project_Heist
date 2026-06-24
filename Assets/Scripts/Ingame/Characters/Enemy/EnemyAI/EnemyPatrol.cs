@@ -46,7 +46,7 @@ public class EnemyPatrol : EnemyPattern
 
             Vector2Int targetpos = new Vector2Int(p[p.Count - 1].X, p[p.Count - 1].Y);
             map.spots[currentpos.x, currentpos.y].z = 0;
-            map.spots[targetpos.x, targetpos.y].z = 1;
+            map.spots[targetpos.x, targetpos.y].z = 3;
 
             if (currentRoute == routes.Count - 1)
             {

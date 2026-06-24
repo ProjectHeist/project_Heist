@@ -20,6 +20,8 @@ namespace Ingame
 
         // Update is called once per frame
 
+
+
         public void MoveToDest(Vector2Int targetPosition)
         {
             arrived = false;
@@ -37,8 +39,6 @@ namespace Ingame
             else
             {
                 Debug.Log("Cannot go to Position");
-                IngameManager.Instance.ingameUI.range.Delete(new Vector2Int(-1, -1));
-                IngameManager.Instance.ingameUI.range.SelectedState(currentPos);
             }
         }
 
@@ -188,7 +188,6 @@ namespace Ingame
                         {
                             GridCell gridCell = IngameManager.Instance.mapManager.GetGridCellFromPosition(target).GetComponent<GridCell>();
                             changeGridStateOnPlayerMove(currentPathIndex);
-                            gridCell.CheckPlayer();
                             gridCell.CheckIfPlayerIsDetected();
                             currentPathIndex++;
                             if (currentPathIndex >= path.Count)
@@ -203,9 +202,7 @@ namespace Ingame
             }
             else
             {
-                Debug.Log("Cannot go to Position");
-                IngameManager.Instance.ingameUI.range.Delete(new Vector2Int(-1, -1));
-                IngameManager.Instance.ingameUI.range.SelectedState(currentPos);
+                Debug.Log("Cannot go to Position1");
             }
 
         }
@@ -253,9 +250,8 @@ namespace Ingame
         {
             path = null;
             currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(transform.position);
-            IngameManager.Instance.mapManager.spots[currentPos.x, currentPos.y].z = 1;
-            IngameManager.Instance.ingameUI.range.Delete(new Vector2Int(-1, -1));
-            IngameManager.Instance.ingameUI.range.SelectedState(currentPos);
+            IngameManager.Instance.mapManager.spots[currentPos.x, currentPos.y].z = 4;
+            IngameManager.Instance.ingameUI.range.HideRange(DisplayType.MoveRange);
             playerAnim.SetRunning(false);
             arrived = true;
         }

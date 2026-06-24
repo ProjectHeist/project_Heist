@@ -46,24 +46,18 @@ namespace Ingame
         {
             if (HP - damage <= 0)
             {
-                if (gameObject.tag == "Player")
-                {
-                    IngameManager.Instance.players.Remove(gameObject);
-                    gameObject.GetComponent<PlayerState>().OnPlayerDeath();
-                }
-                else
-                {
-                    IngameManager.Instance.enemies.Remove(gameObject);
-                }
-                Vector2Int pos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
-                IngameManager.Instance.mapManager.spots[pos.x, pos.y].z = 0;
-                gameObject.SetActive(false);
+                OnCharacterDeath();
             }
             else
             {
                 HP -= damage;
                 gameObject.GetComponentInChildren<HPBar>().SetValue(HP);
             }
+        }
+
+        public virtual void OnCharacterDeath()
+        {
+            gameObject.SetActive(false);
         }
     }
 }

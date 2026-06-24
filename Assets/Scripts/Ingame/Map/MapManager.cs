@@ -14,6 +14,9 @@ public class MapManager
     public int spawnTime;
     public Vector2Int[] spawnPos;
     public Vector2Int[] enemyPos;
+    /// <summary>
+    ///  0은 이동 가능 1은 벽 2는 닫힌 문 3은 적 현재 위치 4는 플레이어 현재 위치
+    /// </summary>
     public Vector3Int[,] spots;
     public PatrolRoute[] patrolRoutes; // 적의 순찰 경로 
     // 실제 타일들의 리스트
@@ -122,13 +125,25 @@ public class MapManager
         }
         return 0;
     }
+
+    public bool IsInMap(Vector2Int pos)
+    {
+        if (pos.x < 0 || pos.y < 0 || pos.x >= width || pos.y >= height)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
     // 실제 좌표를 격자 내 좌표로 표현
     public Vector2Int GetGridPositionFromWorld(Vector3 worldPosition)
     {
         int x = Mathf.FloorToInt(worldPosition.x / gridSpaceSize);
         int y = Mathf.FloorToInt(worldPosition.z / gridSpaceSize);
-        x = Mathf.Clamp(x, 0, width);
-        y = Mathf.Clamp(y, 0, height);
+        x = Mathf.Clamp(x, 0, width - 1);
+        y = Mathf.Clamp(y, 0, height - 1);
         return new Vector2Int(x, y);
     }
 

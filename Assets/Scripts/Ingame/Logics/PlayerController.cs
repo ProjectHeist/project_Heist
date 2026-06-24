@@ -38,7 +38,7 @@ namespace Logics
                     break;
                 case ControlState.PlayerAttack: // 해당 그리드에 있는 적을 공격할지
                     Vector2Int playerPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(currentPlayer.transform.position);
-                    int dist = Math.Abs(GridPos.x - playerPos.x) + Math.Abs(GridPos.y - playerPos.y);
+                    double dist = Math.Sqrt(Math.Pow(GridPos.x - playerPos.x, 2) + Math.Pow(GridPos.y - playerPos.y, 2));
 
                     GridCell gridcell = IngameManager.Instance.mapManager.GetGridCellFromPosition(GridPos).GetComponent<GridCell>();
                     gridcell.CheckEnemy();
@@ -84,7 +84,7 @@ namespace Logics
                     PlayerInteract playerInteract = currentPlayer.GetComponent<PlayerInteract>();
                     playerInteract.Interact(interactObject, dist);
                     currentState = ControlState.Default;
-                    IngameManager.Instance.ingameUI.range.Delete(new Vector2Int(-1, -1));
+                    IngameManager.Instance.ingameUI.range.HideRange(DisplayType.InteractRange);
 
                 }
                 else
@@ -99,7 +99,7 @@ namespace Logics
             }
         }
 
-        public void decideAttack(GameObject enemy, int dist, Vector2Int playerPos)
+        public void decideAttack(GameObject enemy, double dist, Vector2Int playerPos)
         {
             if (dist <= currentPlayer.GetComponent<PlayerState>().maxAttackRange)
             {
@@ -109,7 +109,8 @@ namespace Logics
                     playerAttack.AttackTarget(enemy, dist);
                     currentPlayer.GetComponent<PlayerState>().canAttack--;
                     currentState = ControlState.Default;
-                    IngameManager.Instance.ingameUI.range.Delete(new Vector2Int(-1, -1));
+                    IngameManager.Instance.ingameUI.range.HideRange(DisplayType.minAttackRange);
+                    IngameManager.Instance.ingameUI.range.HideRange(DisplayType.maxAttackRange);
                     IngameManager.Instance.ingameUI.DeselectPanel(PanelType.Attack);
                     if (currentPlayer.GetComponent<PlayerState>().canAttack == 0)
                     {
@@ -159,7 +160,7 @@ namespace Logics
                 else if (ex.subject == 0 && dist <= ex.range) //플레이어 대상이고, 범위 내 그리드를 클릭했을 때
                 {
                     GridCell gridcell = IngameManager.Instance.mapManager.GetGridCellFromPosition(gridpos).GetComponent<GridCell>();
-                    gridcell.CheckPlayer();
+
                     if (gridcell.playerInThisGrid != null) //그리드 내 실제로 플레이어가 있을 때
                     {
                         ex.target = gridcell.playerInThisGrid;
@@ -189,7 +190,7 @@ namespace Logics
                     }
                     IngameManager.Instance.ingameUI.DeselectPanel(PanelType.EX);
                 }
-                IngameManager.Instance.ingameUI.range.Delete(new Vector2Int(-1, -1));
+                IngameManager.Instance.ingameUI.range.HideRange(DisplayType.EXRange);
             }
             else // 자버프형 스킬
             {

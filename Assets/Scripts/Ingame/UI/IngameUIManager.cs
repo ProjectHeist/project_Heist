@@ -30,6 +30,7 @@ public class IngameUIManager : MonoBehaviour
     public void Init()
     {
         range = new DisplayRange();
+        range.Init();
         control = new ControlUI(Move, Attack, Interact, EX);
         panelList.Add(Move);
         panelList.Add(Attack);

@@ -49,22 +49,36 @@ public class GetRange
 
     public List<Vector2Int> getrg(Vector2Int start, int Range)
     {
-        OpenSet.Clear();
-        reachable.Clear();
-        reachable.Add(start, 0);
-        OpenSet.Enqueue(new Spot(start.x, start.y, 0));
-        while (OpenSet.Count > 0)
+        List<Vector2Int> originalRangeList = new List<Vector2Int>();
+        for (int i = -Range; i <= Range; i++)
         {
-            Spot parent = OpenSet.Dequeue();
-            int childDist = parent.dist + 1;
-            newCheckChild(parent.X - 1, parent.Y, childDist, Range, reachable);
-            newCheckChild(parent.X + 1, parent.Y, childDist, Range, reachable);
-            newCheckChild(parent.X, parent.Y - 1, childDist, Range, reachable);
-            newCheckChild(parent.X, parent.Y + 1, childDist, Range, reachable);
+            for (int j = -Range; j <= Range; j++)
+            {
+                if (!(i == 0 && j == 0) && Range * Range >= (i * i + j * j))
+                {
+                    Vector2Int rangePos = new Vector2Int(start.x + i, start.y + j);
+                    originalRangeList.Add(rangePos);
+                }
+            }
         }
-        List<Vector2Int> walkableSpots = reachable.Keys.ToList();
-
-        return walkableSpots;
+        List<Vector2Int> finalRangeList = new List<Vector2Int>();
+        foreach (Vector2Int rangePos in originalRangeList)
+        {
+            Walldetection walldetection = new Walldetection();
+            if (rangePos.x < 0 || rangePos.x >= currentmap.GetUpperBound(0) || rangePos.y < 0 || rangePos.y >= currentmap.GetUpperBound(1))
+            {
+                continue;
+            }
+            else
+            {
+                bool notblocked = walldetection.HasLineOfSight(start, rangePos);
+                if (notblocked)
+                {
+                    finalRangeList.Add(rangePos);
+                }
+            }
+        }
+        return finalRangeList;
     }
 
     void CheckChild(int x, int y, int distance, int maxDistance, Dictionary<Vector2Int, int> reachable)
@@ -95,29 +109,6 @@ public class GetRange
         }
     }
 
-    void newCheckChild(int x, int y, int distance, int maxDistance, Dictionary<Vector2Int, int> reachable)
-    {
-        var position = new Vector2Int(x, y);
-        bool isInBounds = x >= 0 && x < currentmap.GetUpperBound(0) && y >= 0 && y < currentmap.GetUpperBound(1);
-        if (!isInBounds)
-        {
-            return;
-        }
-
-        if (reachable.ContainsKey(position))
-        {
-            return;
-        }
-
-        reachable.Add(position, distance);
-
-        if (distance < maxDistance)
-        {
-            Spot newSpot = new Spot(x, y, 0);
-            newSpot.dist = distance;
-            OpenSet.Enqueue(newSpot);
-        }
-    }
 
 
 

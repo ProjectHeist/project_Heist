@@ -14,6 +14,7 @@ public class EnemyMove : MonoBehaviour
     public EnemyPatternType enemyPatternType;
     public EnemyAnim enemyAnim;
     public bool moving;
+    private Vector2Int currentPos;
     Coroutine move;
 
     public void StopMove()
@@ -141,6 +142,7 @@ public class EnemyMove : MonoBehaviour
         GameObject model = eb.enemyModel;
         float startRotation = model.transform.eulerAngles.y;
         float t = 0.0f;
+        gameObject.GetComponent<EnemyVision>().visionRotate((int)endRotation);
         while (t < 0.2f)
         {
             t += Time.deltaTime;
@@ -159,6 +161,7 @@ public class EnemyMove : MonoBehaviour
         //Debug.Log("path: " + path.Count);
         EnemyState es = gameObject.GetComponent<EnemyState>();
         MapManager map = IngameManager.Instance.mapManager;
+        currentPos = map.GetGridPositionFromWorld(gameObject.transform.position);
         int currentPathIndex = 0;
         float moveSpeed = es.moveSpeed;
         GameObject suspect = gameObject.GetComponent<EnemyBehaviour>().suspect;
@@ -189,7 +192,15 @@ public class EnemyMove : MonoBehaviour
                 if (enemyPatternType == EnemyPatternType.Alert)
                     Debug.Log("엄 준 식");
 
-                gameObject.GetComponent<EnemyVision>().visionMove(target);
+                Vector2Int movementDelta = target - currentPos;
+                gameObject.GetComponent<EnemyVision>().visionMove(movementDelta);
+                foreach (Vector2Int vision in gameObject.GetComponent<EnemyVision>().visionList)
+                {
+                    GridCell gridCell = map.GetGridCellFromPosition(vision).GetComponent<GridCell>();
+                    gridCell.CheckIfPlayerIsDetected();
+                }
+                ChangeGridStateOnEnemyMove(currentPathIndex, path);
+                currentPos = target;
                 currentPathIndex++;
                 if (currentPathIndex >= path.Count)
                 {
@@ -213,7 +224,23 @@ public class EnemyMove : MonoBehaviour
             eb.enemyPattern.currentPos = currentpos;
             eb.enemyPattern.UpdateState();
         }
-        map.spots[currentpos.x, currentpos.y].z = 1;
+        map.spots[currentpos.x, currentpos.y].z = 3;
         gameObject.GetComponent<EnemyBehaviour>().actFinished = true;
+
+    }
+
+    void ChangeGridStateOnEnemyMove(int pathIdx, List<Spot> path)
+    {
+        EnemyBehaviour enemyBehaviour = gameObject.GetComponent<EnemyBehaviour>();
+        if (pathIdx == 0)
+        {
+            IngameManager.Instance.mapManager.GetGridCellFromPosition(currentPos).GetComponent<GridCell>().SetEnemy(enemyBehaviour.enemyIndex, false);
+            IngameManager.Instance.mapManager.GetGridCellFromPosition(path[pathIdx].position).GetComponent<GridCell>().SetEnemy(enemyBehaviour.enemyIndex, true);
+        }
+        else
+        {
+            IngameManager.Instance.mapManager.GetGridCellFromPosition(path[pathIdx - 1].position).GetComponent<GridCell>().SetEnemy(enemyBehaviour.enemyIndex, false);
+            IngameManager.Instance.mapManager.GetGridCellFromPosition(path[pathIdx].position).GetComponent<GridCell>().SetEnemy(enemyBehaviour.enemyIndex, true);
+        }
     }
 }

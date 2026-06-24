@@ -17,5 +17,6 @@ public class Database : ScriptableObject
     public WeaponDatabase weaponDatabase;
     [SerializeField]
     public TagDatabase tagDatabase;
-
+    [SerializeField]
+    public TileStyleDatabase tileStyle;
 }

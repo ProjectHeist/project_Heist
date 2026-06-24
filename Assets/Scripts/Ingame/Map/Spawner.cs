@@ -54,7 +54,7 @@ public class Spawner
     public GameObject CreateEnemy(int index, int routeNum, Vector2Int startPos)
     {
         Vector3 initPos = mapManager.GetWorldPositionFromGridPosition(startPos);
-        mapManager.spots[startPos.x, startPos.y].z = 1;
+        mapManager.spots[startPos.x, startPos.y].z = 3;
         GameObject enemyobj = Object.Instantiate(enemy, initPos, Quaternion.identity) as GameObject;
         enemyobj.GetComponent<EnemyState>().GetEnemyInfo();
         enemyobj.GetComponent<EnemyState>().suspicionInit();
@@ -65,62 +65,88 @@ public class Spawner
         CreateEnemyVision(enemyobj.GetComponent<EnemyState>().detectRange, enemyobj);
         enemyobj.GetComponent<EnemyBehaviour>().init(EnemyPatternType.Patrol);
         IngameManager.Instance.enemies.Add(enemyobj);
+        mapManager.GetGridCellFromPosition(startPos).GetComponent<GridCell>().SetEnemy(index, true);
         return enemyobj;
     }
 
     private void CreateEnemyVision(int range, GameObject enemyobj)
     {
         int facedir = enemyobj.GetComponent<EnemyState>().faceDir;
+        Vector2 faceVector = new Vector2();
         GameObject enemyModel = enemyobj.GetComponent<EnemyBehaviour>().enemyModel;
         EnemyVision enemyVision = enemyobj.GetComponent<EnemyVision>();
         Vector2Int enemyPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(enemyobj.transform.position);
+
         switch (facedir)
         {
             case 0:
                 enemyModel.transform.eulerAngles = new Vector3(0, 90, 0);
-                for (int i = 0; i < range; i++) //세로
+                faceVector = new Vector2(1, 0);
+                /*for (int i = 0; i < range; i++) //세로
                 {
                     for (int j = -i; j < i + 1; j++) //가로
                     {
                         Vector2Int visionComp = new Vector2Int(enemyPos.x + range - i, enemyPos.y + j);
-                        enemyVision.visionList.Add(visionComp);
+                        enemyVision.originalVisionList.Add(visionComp);
                     }
-                }
+                }*/
                 break;
             case 1:
-                for (int i = 0; i < range; i++) //세로
+                faceVector = new Vector2(0, 1);
+                /*for (int i = 0; i < range; i++) //세로
                 {
                     for (int j = -i; j < i + 1; j++) //가로
                     {
                         Vector2Int visionComp = new Vector2Int(enemyPos.x + j, enemyPos.y + range - i);
-                        enemyVision.visionList.Add(visionComp);
+                        enemyVision.originalVisionList.Add(visionComp);
                     }
-                }
+                }*/
                 break;
             case 2:
+                faceVector = new Vector2(-1, 0);
                 enemyModel.transform.eulerAngles = new Vector3(0, -90, 0);
-                for (int i = 0; i < range; i++) //세로
+                /*for (int i = 0; i < range; i++) //세로
                 {
                     for (int j = -i; j < i + 1; j++) //가로
                     {
                         Vector2Int visionComp = new Vector2Int(enemyPos.x - (range - i), enemyPos.y + j);
-                        enemyVision.visionList.Add(visionComp);
+                        enemyVision.originalVisionList.Add(visionComp);
                     }
-                }
+                }*/
                 break;
             case 3:
+                faceVector = new Vector2(0, -1);
                 enemyModel.transform.eulerAngles = new Vector3(0, 180, 0);
-                for (int i = 0; i < range; i++) //세로
+                /*for (int i = 0; i < range; i++) //세로
                 {
                     for (int j = -i; j < i + 1; j++) //가로
                     {
                         Vector2Int visionComp = new Vector2Int(enemyPos.x - (range - i), enemyPos.y + j);
-                        enemyVision.visionList.Add(visionComp);
+                        enemyVision.originalVisionList.Add(visionComp);
+                    }
+                }*/
+                break;
+        }
+
+        const float HalfAngle = 60f;
+        for (int x = -range; x <= range; x++)
+        {
+            for (int y = -range; y <= range; y++)
+            {
+                if (!(x == 0 && y == 0) && range >= Mathf.Sqrt(x * x + y * y))
+                {
+                    Vector2Int visionComp = new Vector2Int(enemyPos.x + x, enemyPos.y + y);
+                    Vector2 dirToComp = new Vector2(x, y).normalized;
+                    float dot = Vector2.Dot(dirToComp, faceVector);
+                    if (Mathf.Acos(Mathf.Clamp(dot, -1f, 1f)) * Mathf.Rad2Deg <= HalfAngle)
+                    {
+                        enemyVision.originalVisionList.Add(visionComp);
                     }
                 }
-                break;
+            }
         }
         enemyVision.ApplyVisionToTile();
     }
+
 
 }

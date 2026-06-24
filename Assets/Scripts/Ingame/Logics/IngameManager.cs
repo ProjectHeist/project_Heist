@@ -52,7 +52,9 @@ namespace Logics
 
         //-------------------PlayerList and Enemies--------------------//
         public List<GameObject> players;
+        public List<bool> isPlayerDead;
         public List<GameObject> enemies;
+        public List<bool> isEnemyDead;
         public List<string> tags;
         //-------------------------------------------------------------//
 
@@ -77,13 +79,13 @@ namespace Logics
                 instance = this;
             }
             mapCreator.init();
-            mapManager.initGrid();
             tags = GetTags();
             extractionPoint = mapManager.GetGridCellFromPosition(new Vector2Int(0, 0)).GetComponent<GridCell>();
             turn = 1;
 
             spawner = new Spawner(mapManager, Prefabs[1]);
             CreatePlayerList();
+            mapManager.initGrid();
             EnemyInit();
             ingameUI.Init();
             StartPlayerPhase();
@@ -97,6 +99,7 @@ namespace Logics
             phase = 1;
             for (int i = 0; i < enemies.Count; i++)
             {
+                if (isEnemyDead[i]) continue;
                 enemies[i].GetComponent<EnemyBehaviour>().EnemyAct();
                 yield return new WaitUntil(() => enemies[i].GetComponent<EnemyBehaviour>().actFinished);
             }
@@ -108,7 +111,7 @@ namespace Logics
         public void StartPlayerPhase() //플레이어의 페이즈일 때 모든 플레이어에 대해 돌면서 작용함
         {
             isEnemyPhase = false;
-            foreach (GameObject player in players)
+            foreach (GameObject player in AlivePlayers())
             {
                 PlayerState ps = player.GetComponent<PlayerState>(); // 의심도 50 이하에서 용의자가 아닐 시 의심도가 떨어짐
                 ps.DecreaseSuspicion();
@@ -163,7 +166,7 @@ namespace Logics
                     ingameUI.IsSelected(PanelType.EX, true);
                 }
             }
-            foreach (GameObject enemy in enemies)
+            foreach (GameObject enemy in AliveEnemies())
             {
                 EnemyState es = enemy.GetComponent<EnemyState>();
                 for (int i = 0; i < es.wasDetected.Count; i++)
@@ -182,8 +185,10 @@ namespace Logics
                 PlayerState ps = players[deployedplayers].GetComponent<PlayerState>();
                 players[deployedplayers].transform.position = deploy;
                 players[deployedplayers].SetActive(true);
-                mapManager.spots[deployPos.x, deployPos.y].z = 1;
+                mapManager.spots[deployPos.x, deployPos.y].z = 4;
+                mapManager.GetGridCellFromPosition(deployPos).GetComponent<GridCell>().SetPlayer(ps.playerIndex, true);
 
+                //mapManager.GetGridCellFromPosition(deployPos).GetComponent<GridCell>().CheckIfPlayerIsDetected();
                 SetDir(ps.faceDir, ps);
 
                 deployedplayers++;
@@ -214,8 +219,16 @@ namespace Logics
 
         public void CheckObjective()
         {
+            int alivePlayerNum = 0;
+            for (int i = 0; i < isPlayerDead.Count; i++)
+            {
+                if (!isPlayerDead[i])
+                {
+                    alivePlayerNum++;
+                }
+            }
             //check objective and decide ending game
-            if (players.Count == 0)
+            if (alivePlayerNum == 0)
             {
                 EndGameDefeat();
             }
@@ -226,7 +239,6 @@ namespace Logics
             if (ObjectiveCleared)
             {
                 Debug.Log("Start Extraction");
-                extractionPoint.CheckPlayer();
                 if (extractionPoint.playerInThisGrid != null)
                 {
                     extractionPoint.playerInThisGrid.transform.position = new Vector3(-100, -100, -100);
@@ -235,12 +247,38 @@ namespace Logics
                     extractionPoint.playerInThisGrid = null;
                     extractedplayers++;
                 }
-                if (extractedplayers >= players.Count)
+                if (extractedplayers >= alivePlayerNum)
                 {
                     Debug.Log("End Extraction");
                     EndGame();
                 }
             }
+        }
+
+        public List<GameObject> AlivePlayers()
+        {
+            List<GameObject> list = new List<GameObject>();
+            for (int i = 0; i < players.Count; i++)
+            {
+                if (!isPlayerDead[i])
+                {
+                    list.Add(players[i]);
+                }
+            }
+            return list;
+        }
+
+        public List<GameObject> AliveEnemies()
+        {
+            List<GameObject> list = new List<GameObject>();
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                if (!isEnemyDead[i])
+                {
+                    list.Add(enemies[i]);
+                }
+            }
+            return list;
         }
 
         public void EndGame()
@@ -280,6 +318,7 @@ namespace Logics
                 player.GetComponentInChildren<HPBar>().SetMaxHealth(player.GetComponent<PlayerState>().HP);
 
                 players.Add(player);
+                isPlayerDead.Add(false);
                 player.SetActive(false);
             }
             /*for (int i = 0; i < playerlist.Length; i++) //테스트 시 이 부분은 주석 처리
@@ -314,6 +353,7 @@ namespace Logics
             MapData mapdata = GameManager.Instance._data.totalDB.mapDatabase.MapDataList[GameManager.Instance.mapIndex];
             for (int i = 0; i < mapdata.EnemyNum; i++)
             {
+                isEnemyDead.Add(false);
                 Vector2Int startPos = mapdata.enemyPos[i];
                 if (i < 2)
                     spawner.CreateEnemy(i, i, startPos);

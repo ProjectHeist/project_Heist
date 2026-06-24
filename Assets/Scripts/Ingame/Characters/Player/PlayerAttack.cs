@@ -9,7 +9,7 @@ namespace Ingame
     public class PlayerAttack : MonoBehaviour
     {
         // Start is called before the first frame update
-        public void AttackTarget(GameObject target, int dist)
+        public void AttackTarget(GameObject target, double dist)
         {
             PlayerState playerState = gameObject.GetComponent<PlayerState>();
             float finalaccuracy = 0.0f;

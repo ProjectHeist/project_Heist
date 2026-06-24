@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 107868725a305454e90f23ae69dd2ac5, type: 3}
+  m_Name: TileStyleDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::TileStyleDatabase
+  styles:
+  - {fileID: 11400000, guid: 71ad3caa3162e1f4c935f0e59f788279, type: 2}
+  - {fileID: 11400000, guid: 62988584721169a4ba126a6fa31bd07e, type: 2}
+  - {fileID: 11400000, guid: 2ac77453dd24d474e9734a1c85223d26, type: 2}
+  - {fileID: 11400000, guid: 5aa63c4ac6d4795419dc6c731480ab98, type: 2}
+  - {fileID: 11400000, guid: 1dff5532be6faae4ba796e9ee2443b24, type: 2}
+  - {fileID: 11400000, guid: 5db7993daf213894a902038823b8ed8a, type: 2}
+  - {fileID: 11400000, guid: bf3a5204923e4df41aa8cc736ba9875b, type: 2}
+  - {fileID: 11400000, guid: 942602e19298fcc42b91d58b3e616536, type: 2}
+  - {fileID: 11400000, guid: b1401c33ad802d942b9e4a613ddeb1c2, type: 2}

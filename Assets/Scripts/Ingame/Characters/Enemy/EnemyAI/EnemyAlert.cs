@@ -48,7 +48,7 @@ public class EnemyAlert : EnemyPattern
 
         Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
         List<Spot> p = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(current.transform.position), targetPos, 10000, false);
-        map.spots[targetPos.x, targetPos.y].z = 1;
+        map.spots[targetPos.x, targetPos.y].z = 3;
         List<Spot> newPath = new List<Spot>();
 
         p.Reverse();

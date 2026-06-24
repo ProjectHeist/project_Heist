@@ -25,9 +25,10 @@ namespace Ingame
         private EnemyState es;
         public EnemyMovement em;
         public int enemyIndex;
-
+        //---------- 플레이어 관련 ----------//
         public GameObject suspect; // 시야 내에 들어온 용의자
         public List<GameObject> detectedplayers = new List<GameObject>();
+        //---------------------------------//
         public int memoryturn = 0; // 적의 기억력. 해당 턴 동안 적은 용의자를 지속해서 추격한다
         public Vector2Int lurePos;
         public GameObject enemyModel;
@@ -168,6 +169,7 @@ namespace Ingame
             em = gameObject.GetComponent<EnemyMovement>();
             for (int i = 0; i < enemies.Count; i++)
             {
+                if (IngameManager.Instance.isEnemyDead[i]) continue;
                 EnemyBehaviour eb = enemies[i].GetComponent<EnemyBehaviour>();
                 Vector2Int currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
                 Vector2Int targetPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(enemies[i].transform.position);

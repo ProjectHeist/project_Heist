@@ -80,16 +80,30 @@ namespace Ingame
                 OnCharacterHit(damage);
         }
 
-        public void OnPlayerDeath()
+        public override void OnCharacterDeath()
         {
             IngameManager.Instance.spawner.stopSpawnTimer();
+            Vector2Int pos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
+            IngameManager.Instance.mapManager.spots[pos.x, pos.y].z = 0;
+            IngameManager.Instance.mapManager.GetGridCellFromPosition(pos).GetComponent<GridCell>().SetPlayer(playerIndex, false);
+            foreach (GameObject enemy in IngameManager.Instance.AliveEnemies())
+            {
+                enemy.GetComponent<EnemyState>().RemovePlayer(playerIndex);
+            }
+            IngameManager.Instance.isPlayerDead[gameObject.GetComponent<PlayerState>().playerIndex] = true;
+            base.OnCharacterDeath();
+        }
+
+        public void removeEnemy(int index)
+        {
+            enemyDetectedPlayer.Remove(IngameManager.Instance.enemies[index]);
         }
 
         public void DecreaseSuspicion()
         {
-            for (int i = 0; i < IngameManager.Instance.enemies.Count; i++)
+            for (int i = 0; i < IngameManager.Instance.AliveEnemies().Count; i++)
             {
-                EnemyState es = IngameManager.Instance.enemies[i].GetComponent<EnemyState>();
+                EnemyState es = IngameManager.Instance.AliveEnemies()[i].GetComponent<EnemyState>();
                 if (!es.isSuspect[playerIndex] && es.suspicion[playerIndex] < 50 && !es.susIncreased[playerIndex])
                 {
                     es.suspicion[playerIndex] -= 20;

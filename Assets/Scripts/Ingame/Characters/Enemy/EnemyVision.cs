@@ -3,22 +3,54 @@ using System.Collections.Generic;
 using Ingame;
 using UnityEngine;
 using Logics;
+using System.Numerics;
 
 public class EnemyVision : MonoBehaviour
 {
     // Start is called before the first frame update
-    public List<Vector2Int> visionList = new List<Vector2Int>();  // 시야 타일들을 저장하는 리스트
+    public List<Vector2Int> originalVisionList = new List<Vector2Int>();  // 시야 타일들을 저장하는 리스트
+    public List<Vector2Int> visionList = new List<Vector2Int>();  // 시야 가려짐 현상을 적용한 후의 시야 타일 리스트 
 
     public void ApplyVisionToTile()
     {
+        visionList.Clear();
+        visionList.AddRange(originalVisionList);
         MapManager map = IngameManager.Instance.mapManager;
         EnemyBehaviour enemyBehaviour = gameObject.GetComponent<EnemyBehaviour>();
+        deleteVisionUnavailable();
         foreach (Vector2Int vision in visionList)
         {
             GridCell gridCell = map.GetGridCellFromPosition(vision).GetComponent<GridCell>();
             gridCell.SetSight(enemyBehaviour.enemyIndex, true);
         }
     }
+
+    private void deleteVisionUnavailable()
+    {
+        MapManager map = IngameManager.Instance.mapManager;
+        Vector2Int currentPos = map.GetGridPositionFromWorld(gameObject.transform.position);
+        List<Vector2Int> newVisionList = new List<Vector2Int>();
+        foreach (Vector2Int vision in visionList) //범위 밖 타일 제거
+        {
+            if (!(vision.x < 0 || vision.x >= map.width || vision.y < 0 || vision.y >= map.height))
+            {
+                bool notblocked = IngameManager.Instance.walldetection.HasLineOfSight(currentPos, vision);
+                Debug.Log(notblocked);
+                if (notblocked)
+                {
+                    newVisionList.Add(vision);
+                }
+                else
+                {
+                    GridCell gridCell = map.GetGridCellFromPosition(vision).GetComponent<GridCell>();
+                    gridCell.SetSight(gameObject.GetComponent<EnemyBehaviour>().enemyIndex, false);
+                }
+            }
+        }
+        visionList.Clear();
+        visionList.AddRange(newVisionList);
+    }
+
 
     public void DeleteVisionFromTile()
     {
@@ -35,34 +67,34 @@ public class EnemyVision : MonoBehaviour
     {
         switch (angle)
         {
-            case -90:
-                for (int i = 0; i < visionList.Count; i++)
+            case 90:
+                for (int i = 0; i < originalVisionList.Count; i++)
                 {
                     Vector2Int currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
-                    int x = visionList[i].x - currentPos.x;
-                    int y = visionList[i].y - currentPos.y;
-                    Vector2Int newPos = new Vector2Int(currentPos.x - y, currentPos.y + x);
-                    visionList[i] = newPos;
+                    int dx = originalVisionList[i].x - currentPos.x;
+                    int dy = originalVisionList[i].y - currentPos.y;
+                    Vector2Int newPos = new Vector2Int(currentPos.x + dy, currentPos.y - dx);
+                    originalVisionList[i] = newPos;
                 }
                 break;
-            case 90:
-                for (int i = 0; i < visionList.Count; i++)
+            case -90:
+                for (int i = 0; i < originalVisionList.Count; i++)
                 {
                     Vector2Int currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
-                    int x = visionList[i].x - currentPos.x;
-                    int y = visionList[i].y - currentPos.y;
-                    Vector2Int newPos = new Vector2Int(currentPos.x + y, currentPos.y - x);
-                    visionList[i] = newPos;
+                    int dx = originalVisionList[i].x - currentPos.x;
+                    int dy = originalVisionList[i].y - currentPos.y;
+                    Vector2Int newPos = new Vector2Int(currentPos.x - dy, currentPos.y + dx);
+                    originalVisionList[i] = newPos;
                 }
                 break;
             case 180:
-                for (int i = 0; i < visionList.Count; i++)
+                for (int i = 0; i < originalVisionList.Count; i++)
                 {
                     Vector2Int currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
-                    int x = visionList[i].x - currentPos.x;
-                    int y = visionList[i].y - currentPos.y;
-                    Vector2Int newPos = new Vector2Int(currentPos.x - x, currentPos.y - y);
-                    visionList[i] = newPos;
+                    int x = 2 * currentPos.x - originalVisionList[i].x;
+                    int y = 2 * currentPos.y - originalVisionList[i].y;
+                    Vector2Int newPos = new Vector2Int(x, y);
+                    originalVisionList[i] = newPos;
                 }
                 break;
         }
@@ -76,6 +108,11 @@ public class EnemyVision : MonoBehaviour
             Vector2Int newPos = new Vector2Int(visionList[i].x + vector2Int.x, visionList[i].y + vector2Int.y);
             visionList[i] = newPos;
         }
+        for (int i = 0; i < originalVisionList.Count; i++)
+        {
+            Vector2Int newPos = new Vector2Int(originalVisionList[i].x + vector2Int.x, originalVisionList[i].y + vector2Int.y);
+            originalVisionList[i] = newPos;
+        }
         ApplyVisionToTile();
     }
 
@@ -85,10 +122,13 @@ public class EnemyVision : MonoBehaviour
         EnemyMove enemyMove = gameObject.GetComponentInParent<EnemyMove>();
         EnemyState es = gameObject.GetComponentInParent<EnemyState>();
         int idx = enemyBehaviour.enemyIndex;
-        if (!IngameManager.Instance.walldetection.IsWallBetween(transform.position, player.transform.position) && !enemyBehaviour.detectedplayers.Contains(player)) // 사이에 벽이 없고, 이미 감지되지 않은 경우
+        Vector2Int currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(transform.position);
+        Vector2Int playerPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(player.transform.position);
+        if (IngameManager.Instance.walldetection.HasLineOfSight(currentPos, playerPos) && !enemyBehaviour.detectedplayers.Contains(player)) // 사이에 벽이 없고, 이미 감지되지 않은 경우
         {
             enemyBehaviour.detectedplayers.Add(player);
-            player.GetComponent<PlayerState>().enemyDetectedPlayer.Add(gameObject.transform.parent.gameObject);
+            Debug.Log("parent is:" + gameObject);
+            player.GetComponent<PlayerState>().enemyDetectedPlayer.Add(gameObject);
 
             Vector2Int currPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(player.transform.position);
             PlayerState ps = player.GetComponent<PlayerState>();

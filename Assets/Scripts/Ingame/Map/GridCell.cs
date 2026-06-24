@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Logics;
+using Ingame;
 
 public class GridCell : MonoBehaviour
 {
@@ -26,11 +27,11 @@ public class GridCell : MonoBehaviour
         {
             isPlayerIn.Add(false);
         }
-        for (int i = 0; i < IngameManager.Instance.enemies.Count; i++)
+        for (int i = 0; i < IngameManager.Instance.mapManager.EnemyNum; i++)
         {
             isEnemyIn.Add(false);
         }
-        for (int i = 0; i < IngameManager.Instance.enemies.Count; i++)
+        for (int i = 0; i < IngameManager.Instance.mapManager.EnemyNum; i++)
         {
             isInSight.Add(false);
         }
@@ -44,12 +45,30 @@ public class GridCell : MonoBehaviour
 
     public void SetPlayer(int i, bool exist)
     {
+        if (IngameManager.Instance.isPlayerDead[i]) return;
         isPlayerIn[i] = exist;
+        if (exist)
+        {
+            playerInThisGrid = IngameManager.Instance.players[i];
+        }
+        else
+        {
+            playerInThisGrid = null;
+        }
     }
 
     public void SetEnemy(int i, bool exist)
     {
+        if (IngameManager.Instance.isEnemyDead[i]) return;
         isEnemyIn[i] = exist;
+        if (exist)
+        {
+            enemyInThisGrid = IngameManager.Instance.enemies[i];
+        }
+        else
+        {
+            enemyInThisGrid = null;
+        }
     }
 
     public void SetSight(int i, bool exist)
@@ -59,17 +78,30 @@ public class GridCell : MonoBehaviour
 
     public void CheckIfPlayerIsDetected()
     {
-        for (int i = 0; i < isInSight.Count; i++)
+        if (playerInThisGrid != null)
         {
-            if (isInSight[i])
+            for (int i = 0; i < isInSight.Count; i++)
             {
-                EnemyVision enemyVision = IngameManager.Instance.enemies[i].GetComponent<EnemyVision>();
-                enemyVision.PlayerEnterSight(playerInThisGrid);
+                if (IngameManager.Instance.isEnemyDead[i]) continue;
+                if (isInSight[i])
+                {
+                    EnemyVision enemyVision = IngameManager.Instance.enemies[i].GetComponent<EnemyVision>();
+                    enemyVision.PlayerEnterSight(playerInThisGrid);
+                }
+                else if (playerInThisGrid.GetComponent<PlayerState>().enemyDetectedPlayer.Count != 0)
+                {
+                    List<GameObject> enemies = playerInThisGrid.GetComponent<PlayerState>().enemyDetectedPlayer;
+                    if (enemies.Contains(IngameManager.Instance.enemies[i]))
+                    {
+                        EnemyVision enemyVision = IngameManager.Instance.enemies[i].GetComponent<EnemyVision>();
+                        enemyVision.PlayerExitSight(playerInThisGrid);
+                    }
+                }
             }
         }
     }
 
-    public void CheckPlayer()
+    public void CheckPlayer() // 아군이 그리드에 존재한다면 해당 아군을 playerInThisGrid에 저장, 존재하지 않는다면 null로 초기화
     {
         bool playerIn = false;
         for (int i = 0; i < isPlayerIn.Count; i++)
@@ -87,20 +119,18 @@ public class GridCell : MonoBehaviour
     }
     public void CheckEnemy()
     {
-        Vector2Int position = new Vector2Int(posX, posY);
-        Vector3 gridpos = IngameManager.Instance.mapManager.GetWorldPositionFromGridPosition(position);
-        Collider[] colliders = Physics.OverlapSphere(gridpos, 0.4f);
-        for (int i = 0; i < colliders.Length; i++)
+        bool enemyIn = false;
+        for (int i = 0; i < isEnemyIn.Count; i++)
         {
-            if (colliders[i].gameObject.tag == "Enemy")
+            if (isEnemyIn[i])
             {
-                enemyInThisGrid = colliders[i].gameObject;
-                break;
+                enemyInThisGrid = IngameManager.Instance.enemies[i];
+                enemyIn = true;
             }
-            else
-            {
-                enemyInThisGrid = null;
-            }
+        }
+        if (!enemyIn)
+        {
+            enemyInThisGrid = null;
         }
     }
     public void CheckObject()

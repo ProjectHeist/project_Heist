@@ -12,7 +12,6 @@ namespace Logics
         private static GameManager instance = null;
         public MasterData currentMaster;
         public DataManager _data = new DataManager();
-        public DisplayRange _ui = new DisplayRange();
         public List<PlayerEX> playerEXes;
         public List<PatrolRoute> patrolRoutes;
         public IngameManager _ingame;
