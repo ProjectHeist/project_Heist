@@ -7,7 +7,7 @@ using Ingame;
 
 public class PlayerSound : MonoBehaviour
 {
-    public void Notify(Vector2Int soundPos, int soundRange)
+    public void Notify(Vector2Int soundPos, int soundRange, bool isGunShot)
     {
         List<GameObject> enemies = IngameManager.Instance.enemies;
         MapManager map = IngameManager.Instance.mapManager;

@@ -121,7 +121,7 @@ namespace Logics
                 {
                     Debug.Log("Please Select enemy to attack");
                 }
-                currentPlayer.GetComponent<PlayerSound>().Notify(playerPos, currentPlayer.GetComponent<PlayerState>().soundRange);
+                currentPlayer.GetComponent<PlayerSound>().Notify(playerPos, currentPlayer.GetComponent<PlayerState>().soundRange, true);
             }
             else
             {

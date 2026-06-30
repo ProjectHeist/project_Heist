@@ -6,7 +6,6 @@ using Ingame;
 
 public class EnemyChase : EnemyPattern
 {
-    EnemyState es;
     EnemyBehaviour eb;
     public override EnemyPatternType PatternType => EnemyPatternType.Chase;
     public override List<Spot> path { get => base.path; set => base.path = value; }
@@ -50,32 +49,6 @@ public class EnemyChase : EnemyPattern
     }
     public override void EnemyAct(Vector2Int targetPos, GameObject current)
     {
-        MapManager map = IngameManager.Instance.mapManager;
-        Vector2Int currentpos = map.GetGridPositionFromWorld(current.transform.position);
-        map.spots[targetPos.x, targetPos.y].z = 0;
 
-        Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
-        List<Spot> p = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(current.transform.position), targetPos, 1000, false);
-        map.spots[targetPos.x, targetPos.y].z = 3;
-
-        List<Spot> newPath = new List<Spot>();
-        p.Reverse();
-        map.spots[currentpos.x, currentpos.y].z = 0;
-
-        if (path.Count < es.moveRange)
-        {
-            for (int i = 0; i < path.Count - 4; i++)
-            {
-                newPath.Add(path[i]);
-            }
-        }
-        else
-        {
-            for (int i = 0; i < es.moveRange - 3; i++)
-            {
-                newPath.Add(path[i]);
-            }
-        }
-        path = newPath;
     }
 }

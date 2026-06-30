@@ -138,11 +138,11 @@ public class EnemyVision : MonoBehaviour
             {
                 if (sus != 0) // 금지구역에 있을 때
                 {
-                    es.AddSuspicion(ps.playerIndex, sus);
+                    es.IncreaseSuspicion(playerPos, currentPos, ps.playerIndex);
                 }
                 else if (enemyBehaviour.enemyPattern.PatternType == EnemyPatternType.Lured)
                 {
-                    es.AddSuspicion(ps.playerIndex, 10);
+                    es.IncreaseSuspicion(playerPos, currentPos, ps.playerIndex);
                 }
             }
 

@@ -7,7 +7,6 @@ using Ingame;
 public class EnemyPatrol : EnemyPattern
 {
     int currentRoute = 0;
-    EnemyState es;
     EnemyBehaviour eb;
     public override EnemyPatternType PatternType => EnemyPatternType.Patrol;
     public override List<Spot> path { get => base.path; set => base.path = value; }
@@ -34,7 +33,7 @@ public class EnemyPatrol : EnemyPattern
             }
         }
     }
-    public override void EnemyAct(Vector2Int targetPos, GameObject current)
+    public override void SetPath(Vector2Int targetPos, GameObject current)
     {
         if (es.routeNum != -1)
         {

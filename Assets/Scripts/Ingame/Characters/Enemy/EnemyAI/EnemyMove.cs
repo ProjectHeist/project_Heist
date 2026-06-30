@@ -28,7 +28,7 @@ public class EnemyMove : MonoBehaviour
     public void MoveTo(EnemyPattern ep, Vector2Int targetPos)
     {
         GameObject current = gameObject;
-        ep.EnemyAct(targetPos, current);
+        ep.SetPath(targetPos, current);
         List<Spot> path = ep.path;
         enemyPatternType = ep.PatternType;
         if (enemyPatternType == EnemyPatternType.Alert)

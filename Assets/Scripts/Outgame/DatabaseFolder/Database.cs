@@ -19,4 +19,6 @@ public class Database : ScriptableObject
     public TagDatabase tagDatabase;
     [SerializeField]
     public TileStyleDatabase tileStyle;
+    [SerializeField]
+    public SuspicionSettings suspicionSettings;
 }

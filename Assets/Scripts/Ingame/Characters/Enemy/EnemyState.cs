@@ -14,6 +14,7 @@ namespace Ingame
         public int faceDir; //0: +x, 1: +y, 2: -x, 3: -y
         public int alertRange = 6;
         public float moveSpeed = 20.0f;
+        private SuspicionSettings suspicionSettings;
         //---------- 플레이어 관련 ----------//
         public List<int> suspicion = new List<int>(); // 플레이어별 의심도
         public List<bool> susIncreased = new List<bool>(); // 의심도가 증가하였는가?
@@ -36,6 +37,7 @@ namespace Ingame
 
         public void suspicionInit()
         {
+            suspicionSettings = GameManager.Instance._data.totalDB.suspicionSettings;
             for (int i = 0; i < IngameManager.Instance.players.Count; i++)
             {
                 suspicion.Add(0);
@@ -45,18 +47,18 @@ namespace Ingame
             }
         }
 
-        public void AddSuspicion(int index, int sus)
+        public void IncreaseSuspicion(Vector2Int src, Vector2Int dest, int index)
         {
-            for (int i = 0; i < suspicion.Count; i++)
-            {
-                if (index == i)
-                {
-                    suspicion[i] += sus;
-                    susIncreased[i] = true;
-                    wasDetected[i] = true;
-                }
-            }
+            suspicion[index] += suspicionSettings.GetSuspicionByDistance(src, dest, detectRange);
+            susIncreased[index] = true;
+            wasDetected[index] = true;
         }
+
+        public void DecreaseSuspicion(int index)
+        {
+
+        }
+
         public void SetSuspicion(bool isSus, int index, int sus)
         {
             for (int i = 0; i < suspicion.Count; i++)

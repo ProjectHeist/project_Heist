@@ -106,10 +106,13 @@ namespace Ingame
                 EnemyState es = IngameManager.Instance.AliveEnemies()[i].GetComponent<EnemyState>();
                 if (!es.isSuspect[playerIndex] && es.suspicion[playerIndex] < 50 && !es.susIncreased[playerIndex])
                 {
-                    es.suspicion[playerIndex] -= 20;
-                    if (es.suspicion[playerIndex] <= 0)
+                    if (es.suspicion[playerIndex] > 0)
                     {
-                        es.suspicion[playerIndex] = 0;
+                        es.DecreaseSuspicion(playerIndex);
+                        if (es.suspicion[playerIndex] <= 0)
+                        {
+                            es.suspicion[playerIndex] = 0;
+                        }
                     }
                 }
             }

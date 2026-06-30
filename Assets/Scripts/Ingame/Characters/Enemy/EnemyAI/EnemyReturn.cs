@@ -6,7 +6,6 @@ using Logics;
 
 public class EnemyReturn : EnemyPattern
 {
-    EnemyState es;
     EnemyBehaviour eb;
     public Vector2Int destPos;
     public override Vector2Int currentPos { get => base.currentPos; set => base.currentPos = value; }
@@ -24,7 +23,7 @@ public class EnemyReturn : EnemyPattern
             eb.enemyPattern = new EnemyPatrol(es, eb);
         }
     }
-    public override void EnemyAct(Vector2Int targetPos, GameObject current)
+    public override void SetPath(Vector2Int targetPos, GameObject current)
     {
         destPos = GameManager.Instance._data.totalDB.mapDatabase.MapDataList[GameManager.Instance.mapIndex].enemyPos[eb.enemyIndex];
 

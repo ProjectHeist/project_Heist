@@ -4250,6 +4250,11 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &1375811227 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3145595683286990711, guid: 0d7dde636d6be4246b483041aa168754, type: 3}
+  m_PrefabInstance: {fileID: 1455023968}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1383077702
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5528,7 +5533,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  doorModel: {fileID: 0}
+  doorModel: {fileID: 1375811227}
   isOpened: 0
   DoorIsOpening: 1
   requiredTime: 0

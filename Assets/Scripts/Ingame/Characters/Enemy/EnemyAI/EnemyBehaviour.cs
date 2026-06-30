@@ -86,21 +86,22 @@ namespace Ingame
             {
                 for (int i = 0; i < detectedplayers.Count; i++)
                 {
-                    Vector2Int currPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(detectedplayers[i].transform.position);
-                    int sus = IngameManager.Instance.mapManager.GetSuspicion(currPos); //의심도 체크
+                    Vector2Int playerPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(detectedplayers[i].transform.position);
+                    Vector2Int currPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(gameObject.transform.position);
+                    int sus = IngameManager.Instance.mapManager.GetSuspicion(playerPos); //의심도 체크
 
                     if (es.wasDetected[detectedplayers[i].GetComponent<PlayerState>().playerIndex])
                     {
                         int idx = detectedplayers[i].GetComponent<PlayerState>().playerIndex;
                         if (sus != 0) // 금지구역에 있을 때 TODO: 다른 조건들도 추가
                         {
-                            es.suspicion[idx] += sus;
+                            es.IncreaseSuspicion(currPos, playerPos, idx);
                             es.wasDetected[idx] = true;
                             es.susIncreased[idx] = true;
                         }
                         else if (enemyPattern.PatternType == EnemyPatternType.Lured) // 어그로가 끌린 상태에서 플레이어를 발견했을 때
                         {
-                            es.suspicion[idx] += 10;
+                            es.IncreaseSuspicion(currPos, playerPos, idx);
                             es.wasDetected[idx] = true;
                             es.susIncreased[idx] = true;
                         }

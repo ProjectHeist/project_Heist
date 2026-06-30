@@ -6,7 +6,6 @@ using Ingame;
 
 public class EnemyLured : EnemyPattern
 {
-    EnemyState es;
     EnemyBehaviour eb;
     public override EnemyPatternType PatternType => EnemyPatternType.Lured;
     public override List<Spot> path { get => base.path; set => base.path = value; }
@@ -41,7 +40,7 @@ public class EnemyLured : EnemyPattern
             }
         }
     }
-    public override void EnemyAct(Vector2Int targetPos, GameObject current)
+    public override void SetPath(Vector2Int targetPos, GameObject current)
     {
         MapManager map = IngameManager.Instance.mapManager;
         Vector2Int currentpos = map.GetGridPositionFromWorld(current.transform.position);

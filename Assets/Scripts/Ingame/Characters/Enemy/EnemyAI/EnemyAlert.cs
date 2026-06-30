@@ -7,7 +7,6 @@ using Unity.VisualScripting;
 
 public class EnemyAlert : EnemyPattern
 {
-    EnemyState es;
     EnemyBehaviour eb;
     public override EnemyPatternType PatternType => EnemyPatternType.Alert;
     public override List<Spot> path { get => base.path; set => base.path = value; }
@@ -42,32 +41,7 @@ public class EnemyAlert : EnemyPattern
     }
     public override void EnemyAct(Vector2Int targetPos, GameObject current)
     {
-        MapManager map = IngameManager.Instance.mapManager;
-        Vector2Int currentpos = map.GetGridPositionFromWorld(current.transform.position);
-        map.spots[targetPos.x, targetPos.y].z = 0;
 
-        Astar astar = new Astar(IngameManager.Instance.mapManager.spots, IngameManager.Instance.mapManager.width, IngameManager.Instance.mapManager.height);
-        List<Spot> p = astar.CreatePath(map.spots, map.GetGridPositionFromWorld(current.transform.position), targetPos, 10000, false);
-        map.spots[targetPos.x, targetPos.y].z = 3;
-        List<Spot> newPath = new List<Spot>();
-
-        p.Reverse();
-        map.spots[currentpos.x, currentpos.y].z = 0;
-        if (p.Count < es.moveRange)
-        {
-            for (int i = 0; i < p.Count - 4; i++)
-            {
-                newPath.Add(p[i]);
-            }
-        }
-        else
-        {
-            for (int i = 0; i < es.moveRange - 3; i++)
-            {
-                newPath.Add(p[i]);
-            }
-        }
-        path = newPath;
     }
 
     public override void Attack(GameObject current)

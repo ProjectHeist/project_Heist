@@ -19,3 +19,4 @@ MonoBehaviour:
   weaponDatabase: {fileID: 11400000, guid: 1712b9013809e854f86a7d7de643eca5, type: 2}
   tagDatabase: {fileID: 11400000, guid: f08d51ee370a9954a8fb4ea0a5207a89, type: 2}
   tileStyle: {fileID: 11400000, guid: 92b63f1167d1f7440ae34a319551eb83, type: 2}
+  suspicionSettings: {fileID: 11400000, guid: 064ba23040ede184795a88a989357ae5, type: 2}
