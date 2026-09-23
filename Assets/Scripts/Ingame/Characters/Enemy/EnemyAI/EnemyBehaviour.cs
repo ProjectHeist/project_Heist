@@ -15,7 +15,8 @@ public enum EnemyPatternType
     Return,
     Chase,
     Alert,
-    Lured
+    Lured,
+    Investigate
 }
 
 namespace Ingame
@@ -238,6 +239,8 @@ namespace Ingame
                 case EnemyPatternType.Lured:
                     enemyMove.MoveTo(enemyPattern, lurePos);
                     em.changeFaceDir(lurePos);
+                    break;
+                case EnemyPatternType.Investigate:
                     break;
             }
             Debug.Log(enemyPattern.PatternType);

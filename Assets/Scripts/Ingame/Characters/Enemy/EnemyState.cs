@@ -47,16 +47,32 @@ namespace Ingame
             }
         }
 
+        public int GetSuspicionByDistance(float distance)
+        {
+            return suspicionSettings.GetSuspicionByDistance(distance, detectRange);
+        }
+
         public void IncreaseSuspicion(Vector2Int src, Vector2Int dest, int index)
         {
             suspicion[index] += suspicionSettings.GetSuspicionByDistance(src, dest, detectRange);
             susIncreased[index] = true;
             wasDetected[index] = true;
         }
+        public void IncreaseSuspicion(int index, int sus)
+        {
+            suspicion[index] += sus;
+            susIncreased[index] = true;
+            wasDetected[index] = true;
+        }
 
         public void DecreaseSuspicion(int index)
         {
-
+            EnemyBehaviour eb = gameObject.GetComponent<EnemyBehaviour>();
+            suspicion[index] -= suspicionSettings.GetSuspicionDecayByPattern(eb.enemyPattern.PatternType);
+        }
+        public void DecreaseSuspicion(int index, int decay)
+        {
+            suspicion[index] -= decay;
         }
 
         public void SetSuspicion(bool isSus, int index, int sus)

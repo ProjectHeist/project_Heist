@@ -191,7 +191,10 @@ public class EnemyMove : MonoBehaviour
             {
                 if (enemyPatternType == EnemyPatternType.Alert)
                     Debug.Log("엄 준 식");
+                if (enemyPatternType == EnemyPatternType.Investigate)
+                {
 
+                }
                 Vector2Int movementDelta = target - currentPos;
                 gameObject.GetComponent<EnemyVision>().visionMove(movementDelta);
                 foreach (Vector2Int vision in gameObject.GetComponent<EnemyVision>().visionList)

@@ -10,6 +10,7 @@ public class EnemyVision : MonoBehaviour
     // Start is called before the first frame update
     public List<Vector2Int> originalVisionList = new List<Vector2Int>();  // 시야 타일들을 저장하는 리스트
     public List<Vector2Int> visionList = new List<Vector2Int>();  // 시야 가려짐 현상을 적용한 후의 시야 타일 리스트 
+    float dist;
 
     public void ApplyVisionToTile()
     {
@@ -124,61 +125,85 @@ public class EnemyVision : MonoBehaviour
         int idx = enemyBehaviour.enemyIndex;
         Vector2Int currentPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(transform.position);
         Vector2Int playerPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(player.transform.position);
-        if (IngameManager.Instance.walldetection.HasLineOfSight(currentPos, playerPos) && !enemyBehaviour.detectedplayers.Contains(player)) // 사이에 벽이 없고, 이미 감지되지 않은 경우
+        PlayerState ps = player.GetComponent<PlayerState>();
+        int sus = IngameManager.Instance.mapManager.GetSuspicion(playerPos); //의심도 체크
+        if (IngameManager.Instance.walldetection.HasLineOfSight(currentPos, playerPos)) // 사이에 벽이 없고, 이미 감지되지 않은 경우
         {
-            enemyBehaviour.detectedplayers.Add(player);
-            Debug.Log("parent is:" + gameObject);
-            player.GetComponent<PlayerState>().enemyDetectedPlayer.Add(gameObject);
-
-            Vector2Int currPos = IngameManager.Instance.mapManager.GetGridPositionFromWorld(player.transform.position);
-            PlayerState ps = player.GetComponent<PlayerState>();
-            int sus = IngameManager.Instance.mapManager.GetSuspicion(currPos); //의심도 체크
-
-            if (!es.wasDetected[ps.playerIndex])
+            if (!enemyBehaviour.detectedplayers.Contains(player))
             {
-                if (sus != 0) // 금지구역에 있을 때
+                dist = Vector2Int.Distance(playerPos, currentPos);
+                enemyBehaviour.detectedplayers.Add(player);
+                Debug.Log("parent is:" + gameObject);
+                player.GetComponent<PlayerState>().enemyDetectedPlayer.Add(gameObject);
+                if (!es.wasDetected[ps.playerIndex])
                 {
-                    es.IncreaseSuspicion(playerPos, currentPos, ps.playerIndex);
-                }
-                else if (enemyBehaviour.enemyPattern.PatternType == EnemyPatternType.Lured)
-                {
-                    es.IncreaseSuspicion(playerPos, currentPos, ps.playerIndex);
-                }
-            }
-
-            if (es.suspicion[ps.playerIndex] >= 100) // 의심가는 인물이 포착될 경우
-            {
-                GameObject max = enemyBehaviour.GetMaxSuspicion();
-                if (player == max)
-                {
-                    enemyBehaviour.suspect = player;
-                    enemyBehaviour.memoryturn = 2;
-                    if (enemyBehaviour.enemyPattern.PatternType != EnemyPatternType.Alert)
+                    if (sus != 0) // 금지구역에 있을 때
                     {
-                        if (enemyMove.moving)
-                            enemyMove.StopMove();
-                        enemyBehaviour.enemyPattern = new EnemyAlert(es, enemyBehaviour);
-                        enemyBehaviour.AlertOthers();
+                        es.IncreaseSuspicion(playerPos, currentPos, ps.playerIndex);
+                    }
+                    else if (enemyBehaviour.enemyPattern.PatternType == EnemyPatternType.Lured)
+                    {
+                        es.IncreaseSuspicion(playerPos, currentPos, ps.playerIndex);
                     }
                 }
-                if (!IngameManager.Instance.spawner.policeSpawn)
+
+
+                if (es.suspicion[ps.playerIndex] >= 100) // 의심가는 인물이 포착될 경우
                 {
-                    IngameManager.Instance.spawner.startspawnTimer(enemyBehaviour.suspect);
+                    GameObject max = enemyBehaviour.GetMaxSuspicion();
+                    if (player == max)
+                    {
+                        enemyBehaviour.suspect = player;
+                        enemyBehaviour.memoryturn = 2;
+                        if (enemyBehaviour.enemyPattern.PatternType != EnemyPatternType.Alert)
+                        {
+                            if (enemyMove.moving)
+                                enemyMove.StopMove();
+                            enemyBehaviour.enemyPattern = new EnemyAlert(es, enemyBehaviour);
+                            enemyBehaviour.AlertOthers();
+                        }
+                    }
+                    if (!IngameManager.Instance.spawner.policeSpawn)
+                    {
+                        IngameManager.Instance.spawner.startspawnTimer(enemyBehaviour.suspect);
+                    }
+                }
+                else if (es.suspicion[ps.playerIndex] >= 50)
+                {
+                    GameObject max = enemyBehaviour.GetMaxSuspicion();
+                    if (player == max)
+                    {
+                        enemyBehaviour.suspect = player;
+                        enemyBehaviour.memoryturn = 2;
+                        if (enemyBehaviour.enemyPattern.PatternType == EnemyPatternType.Patrol || enemyBehaviour.enemyPattern.PatternType == EnemyPatternType.Guard)
+                        {
+                            if (enemyMove.moving)
+                                enemyMove.StopMove();
+                            enemyBehaviour.enemyPattern = new EnemyChase(es, enemyBehaviour);
+                        }
+                    }
                 }
             }
-            else if (es.suspicion[ps.playerIndex] >= 50)
+            else if (enemyBehaviour.detectedplayers.Contains(player))
             {
-                GameObject max = enemyBehaviour.GetMaxSuspicion();
-                if (player == max)
+                int maxSus = es.GetSuspicionByDistance(dist);
+                dist = Vector2Int.Distance(playerPos, currentPos);
+                int currSus = es.GetSuspicionByDistance(dist);
+                if (!es.wasDetected[ps.playerIndex])
                 {
-                    enemyBehaviour.suspect = player;
-                    enemyBehaviour.memoryturn = 2;
-                    if (enemyBehaviour.enemyPattern.PatternType == EnemyPatternType.Patrol || enemyBehaviour.enemyPattern.PatternType == EnemyPatternType.Guard)
+                    if (sus != 0) // 금지구역에 있을 때
                     {
-                        if (enemyMove.moving)
-                            enemyMove.StopMove();
-                        enemyBehaviour.enemyPattern = new EnemyChase(es, enemyBehaviour);
+                        es.IncreaseSuspicion(playerPos, currentPos, ps.playerIndex);
                     }
+                    else if (enemyBehaviour.enemyPattern.PatternType == EnemyPatternType.Lured)
+                    {
+                        es.IncreaseSuspicion(playerPos, currentPos, ps.playerIndex);
+                    }
+                }
+                else if (maxSus < currSus)
+                {
+                    if (sus != 0)
+                        es.IncreaseSuspicion(ps.playerIndex, currSus - maxSus);
                 }
             }
         }

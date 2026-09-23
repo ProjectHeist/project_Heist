@@ -68,5 +68,20 @@ MonoBehaviour:
     length: 10
     direction: +y
     suspicion: 0
+  - x: 2
+    y: 10
+    length: 10
+    direction: +y
+    suspicion: 0
+  - x: 3
+    y: 10
+    length: 10
+    direction: +y
+    suspicion: 0
+  - x: 4
+    y: 10
+    length: 10
+    direction: +y
+    suspicion: 0
   doorPos:
   - {x: 7, y: 11}
